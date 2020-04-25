@@ -1,0 +1,39 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Card Game</title>
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <script src="index.js"></script>
+
+        <!-- Username -->
+
+        <div id = "loginPage">
+
+            <input id="usernameInput" type="text" maxlength="14" />
+            <button class="login" onclick="setUsername()">Login</button>
+
+        </div>
+
+        <div id = 'lobbyPage' style="display: none"}>
+    
+                <h1>Lobby - <span id="username"></span></h1>
+                <h2>Players currently in the lobby...</h2>
+                <p id="userList"></p>
+    
+                <button value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
+    
+                <h2>Message Box</h2>
+                <p id="messages"></p>
+    
+                <button onclick="joinRoom()"></button>
+
+            </div>
+
+
+    </body>
+</html>
