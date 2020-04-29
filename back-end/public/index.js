@@ -17,18 +17,18 @@ let setUsername = () => {
 
 //LOBBY PAGE
 
-//confirm user has joined
+//redirect to lobby
 
-
-
-socket.on('user joined', (user) => {
-    console.log(user)
-    //move to lobby page
+socket.on('joined', (user) => {
     document.getElementById("loginPage").style.display = 'none'
     document.getElementById("lobbyPage").style.display = ''
-
-    document.getElementById("userList").innerHTML = ''
     document.getElementById("username").innerHTML = socket.username
+})
+
+//infrom userbase new user has joined
+
+socket.on('new user joined', (user) => {
+    document.getElementById("userList").innerHTML = ''
     document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${Object.keys(user.users).length == 1 ? ' 1 player' : `${Object.keys(user.users).length} players`} in lobby <br>`
     Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `${x}<br>`)
 });

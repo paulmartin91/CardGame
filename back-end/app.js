@@ -46,10 +46,16 @@ io.sockets.on('connection', (socket) => {
         }
         //console.log(`${socket.username} `)
         socket.joined = true
-        socket.emit('user joined', {
+        io.sockets.emit('new user joined', {
             username: socket.username,
             users: users,
         });
+
+        socket.emit('joined', {
+            username: socket.username,
+            users: users,
+        });
+
     });
 
     //handle ready requests from lobby
@@ -59,7 +65,7 @@ io.sockets.on('connection', (socket) => {
         // console.log(`${username} ready = ${users[username].ready}`)
         setTimeout(()=>io.to('ready').emit(`joined`, username), 1000);
         socket.emit('ready status changed', users[username].ready)
-        //io.sockets.adapter.rooms['ready'].length <--- get number of people in ready
+        console.log(Object.keys(users).length) //== io.sockets.adapter.rooms['ready'].length)
     })
 
 
