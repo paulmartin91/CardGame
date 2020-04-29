@@ -65,7 +65,24 @@ io.sockets.on('connection', (socket) => {
         // console.log(`${username} ready = ${users[username].ready}`)
         setTimeout(()=>io.to('ready').emit(`joined`, username), 1000);
         socket.emit('ready status changed', users[username].ready)
-        console.log(Object.keys(users).length) //== io.sockets.adapter.rooms['ready'].length)
+        let readyCount = 0;
+        await Object.keys(users).forEach(x => users[x].ready && readyCount++)
+        
+        //if all players are ready and there is more than one player
+        if (readyCount == Object.keys(users).length && Object.keys(users).length > 1) {
+            console.log('starting game')
+
+            let countDown = 5
+            const count = setInterval( () => {
+                console.log(countDown)
+                io.to('ready').emit('starting game', {
+                    count: countDown,
+                    start: countDown == 0
+                })
+                countDown--
+                if (countDown < 0) clearInterval(count)
+            }, 1000)
+        }
     })
 
 
@@ -79,7 +96,8 @@ io.sockets.on('connection', (socket) => {
         });
     });
 
-    socket.on('disconnect', () => {
-        console.log(`${socket.username} disconnected`);
+    socket.on('disconnect', async () => {
+        await delete users[socket.username]
+        await console.log(`${socket.username} disconnected`);
       });
 })

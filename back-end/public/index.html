@@ -10,7 +10,7 @@
     <body>
         <script src="index.js"></script>
 
-        <!-- Username -->
+        <!-- Login Page -->
 
         <div id = "loginPage">
 
@@ -19,9 +19,11 @@
 
         </div>
 
+        <!-- Lobby Page -->
+
         <div id = 'lobbyPage' style="display: none"}>
     
-                <h1>Lobby - <span id="username"></span></h1>
+                <h1>Lobby - <span id="lobbyUsername"></span></h1>
                 <h2>Players currently in the lobby...</h2>
                 <p id="userList"></p>
     
@@ -29,10 +31,23 @@
     
                 <h2>Message Box</h2>
                 <p id="messages"></p>
-    
-                <button onclick="joinRoom()"></button>
 
-            </div>
+        </div>
+
+        <!-- Lobby Page -->
+
+        <div id = 'gamePage' style="display: none"}>
+    
+            <h1>Card Game Page - <span id="gameUsername"></span></h1>
+            <!-- <h2>Players currently in the lobby...</h2>
+            <p id="userList"></p>
+
+            <button value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
+
+            <h2>Message Box</h2>
+            <p id="messages"></p> -->
+
+        </div>
 
 
     </body>

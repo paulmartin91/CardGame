@@ -22,7 +22,7 @@ let setUsername = () => {
 socket.on('joined', (user) => {
     document.getElementById("loginPage").style.display = 'none'
     document.getElementById("lobbyPage").style.display = ''
-    document.getElementById("username").innerHTML = socket.username
+    document.getElementById("lobbyUsername").innerHTML = socket.username
 })
 
 //infrom userbase new user has joined
@@ -52,6 +52,15 @@ socket.on('ready status changed', (ready)=>{
     } else {
         document.getElementById("readyButton").value = "true"
         document.getElementById("readyButton").innerHTML = "unready"
+    }
+})
+
+//all ready, starting game
+socket.on('starting game', (startObj) => {
+    if (!startObj.start) document.getElementById("messages").innerHTML += `Game starting in ${startObj.count}...<br>`
+    if (startObj.start) {
+        document.getElementById("lobbyPage").style.display = 'none'
+        document.getElementById("gamePage").style.display = ''
     }
 })
 
