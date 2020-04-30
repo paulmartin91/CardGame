@@ -28,23 +28,22 @@
 
 ### To do...
 
-⋅* General App
-⋅⋅* Can I use epress routing?
-⋅⋅* Can I use React.js
-⋅⋅* Integrate MongoDB for saving user info
-⋅⋅* Create new account / login
+General App
+- Can I use epress routing?
+- Integrate MongoDB for saving user info
+- Create new account / login
 
-⋅* Login Page
-Vet for invalid login info
-Give some explanation as to how the app works
-Check for duplicate login info
-Create new login / sign in
+Login Page
+- Vet for invalid login info
+- Give some explanation as to how the app works
+- Check for duplicate login info
+- Create new login / sign in
 
-> Lobby Page
+Lobby Page
 - Style
 - Lobby message board
 
-> Game Page
+Game Page
 - Make the game page
 - Style
 - Find a set of card image files to use
