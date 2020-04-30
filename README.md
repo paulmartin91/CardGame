@@ -15,10 +15,23 @@ To fix...
 
 To do...
 
-- Make the game page
-- Style all pages
-- Lobby message board
+> General App
 - Can I use epress routing?
 - Can I use React.js
 - Integrate MongoDB for saving user info
 - Create new account / login
+
+> Login Page
+- Vet for invalid login info
+- Give some explanation as to how the app works
+- Check for duplicate login info
+- Create new login / sign in
+
+> Lobby Page
+- Style
+- Lobby message board
+
+> Game Page
+- Make the game page
+- Style
+- Find a set of card image files to use
