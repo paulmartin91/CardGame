@@ -37,8 +37,25 @@ io.sockets.on('connection', (socket) => {
         setTimeout(()=>console.log(io.sockets.adapter.rooms), 2000)
     })
 
-    //add a user
-    socket.on('add user',  (username) => {
+    //request to log in
+    socket.on('login attempt',  (username) => {
+        // To test invalid username --> users[username] = {loggedIn: false}
+        if (username in users && !users[username].loggedIn) {
+            socket.username = username
+            users[username].loggedIn = true
+            io.emit('new user joined', {
+                username: socket.username,
+                users: users,
+            });
+            socket.emit('log in attempt response', true)
+        } else {
+            socket.emit('log in attempt response', {
+                exists: username in users,
+                alreadyLoggedIn: username in users && users[username].loggedIn
+            })
+        }
+
+        /*
         socket.username = username;
         users[username] = {
             "name": username,
@@ -55,7 +72,7 @@ io.sockets.on('connection', (socket) => {
             username: socket.username,
             users: users,
         });
-
+        */
     });
 
     //handle ready requests from lobby
@@ -69,7 +86,7 @@ io.sockets.on('connection', (socket) => {
         await Object.keys(users).forEach(x => users[x].ready && readyCount++)
         
         //if all players are ready and there is more than one player
-        if (readyCount == Object.keys(users).length && Object.keys(users).length > 1) {
+        if (readyCount == Object.keys(users).length){// to test with one user --> && Object.keys(users).length > 1) {
             console.log('starting game')
 
             let countDown = 5

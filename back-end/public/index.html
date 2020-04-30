@@ -4,18 +4,25 @@
     <head>
         <meta charset="utf-8">
         <title>Card Game</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     </head>
     <body>
         <script src="index.js"></script>
+        <link rel="stylesheet" type="text/css" href="index.css">
 
         <!-- Login Page -->
 
-        <div id = "loginPage">
+        <div id = "loginPage" class = "loginBody container">
+            <h1>Log in</h1>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <button class="btn btn-outline-secondary" type="button" onclick="login()" id="button-addon1">Login</button>
+                </div>
+                <input id="usernameInput" type="text" class="form-control" placeholder="Username..." aria-label="Example text with button addon" aria-describedby="button-addon1">
+            </div>
 
-            <input id="usernameInput" type="text" maxlength="14" />
-            <button class="login" onclick="setUsername()">Login</button>
 
         </div>
 

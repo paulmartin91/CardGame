@@ -10,19 +10,32 @@ socket.on('redirect', (destination)=> {
 //LOGIN PAGE
 
 // Sets the client's username
-let setUsername = () => {
-    socket.username = document.getElementById("usernameInput").value
-    socket.emit('add user', socket.username);
+let login = () => {
+    let username = document.getElementById("usernameInput").value;
+    if (username.length > 1) { 
+        socket.emit('login attempt', username);
+        // socket.emit('add user', socket.username);
+    }
 }
+
+//
+socket.on('log in attempt response', success => {
+    if (success === true) {
+        socket.username = document.getElementById("usernameInput").value
+        document.getElementById("loginPage").style.display = 'none'
+        document.getElementById("lobbyPage").style.display = ''
+        document.getElementById("lobbyUsername").innerHTML = socket.username
+    } else {
+        !success.exists ? console.log(`user doesn't exist`) : console.log('user already logged in')
+    }
+})
 
 //LOBBY PAGE
 
 //redirect to lobby
 
 socket.on('joined', (user) => {
-    document.getElementById("loginPage").style.display = 'none'
-    document.getElementById("lobbyPage").style.display = ''
-    document.getElementById("lobbyUsername").innerHTML = socket.username
+    
 })
 
 //infrom userbase new user has joined
