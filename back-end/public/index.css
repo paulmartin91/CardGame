@@ -1,8 +1,9 @@
 .loginBody {
     display: flex;
+    padding: 20px;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     flex-direction: column;
     margin-top: 50px;
-    max-width: 500px;
+    max-width: 400px;
 }

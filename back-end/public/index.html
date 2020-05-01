@@ -14,15 +14,31 @@
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class = "loginBody container">
-            <h1>Log in</h1>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <button class="btn btn-outline-secondary" type="button" onclick="login()" id="button-addon1">Login</button>
+        <div id = "loginPage" class = "border rounded loginBody container">
+            <!-- Login existing user -->
+            <div style="width: 100%; margin-bottom: 20px">
+                <h2>Log in</h2>
+                <div class="input-group mb-1" >
+                    <div class="input-group-prepend">
+                        <button class="btn btn-primary" type="button" onclick="login()" id="button-addon1">Login</button>
+                    </div>
+                    <input id="usernameInput" type="text" class="form-control" placeholder="username">
                 </div>
-                <input id="usernameInput" type="text" class="form-control" placeholder="Username..." aria-label="Example text with button addon" aria-describedby="button-addon1">
             </div>
-
+            <!-- Create new user -->
+            <div style="width: 100%;">
+                <h2>Create account</h2>
+                <div class="form-group">
+                    <input class="form-control" id="" placeholder="username">
+                </div>
+                <div class="form-group">
+                        <input type="password" class="form-control" placeholder="password">
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" id="" placeholder="email">
+                </div>
+                <button onClick="" class="btn btn-primary">Create Account</button>
+            </div>
 
         </div>
 
