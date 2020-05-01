@@ -18,7 +18,16 @@ let login = () => {
     }
 }
 
-//
+//Sends request to create new user
+const newUser = (event) => {
+    socket.emit('new user request', {
+        username: event.username.value,
+        password: event.password.value,
+        email: event.email.value
+    })
+}
+
+//responds to login attempt
 socket.on('log in attempt response', success => {
     if (success === true) {
         socket.username = document.getElementById("usernameInput").value

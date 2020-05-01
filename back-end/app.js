@@ -75,6 +75,10 @@ io.sockets.on('connection', (socket) => {
         */
     });
 
+    socket.on('new user request', user => {
+        console.log(user)
+    })
+
     //handle ready requests from lobby
     socket.on('ready', async (username) => {
         users[username].ready = await !users[username].ready
