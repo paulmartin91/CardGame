@@ -16,13 +16,14 @@
 
 ### To test...
 
-- What happens when a player leaves?
+- What happens when a player leaves at each stage?
 - More than 2 users
 
 ### To fix...
 
 - "[object, object] has joined" logs client side when a user logs in
 - "undefined disconnected" logs server side at random
+- All players unreadying stops the timer, but one player unreadying doesn't
 
 
 ### To do...
@@ -30,17 +31,17 @@
 General App
 - Can I use epress routing?
 - Integrate MongoDB for saving user info
-- Create new account / login
+- Create new account
 
 Login Page
-- Vet for invalid login info
+✔ Vet for invalid login info
 - Give some explanation as to how the app works
-- Check for duplicate login info
-- Create new login / sign in
+✔ Check for duplicate login info
+- Create new login and sign in
 
 Lobby Page
 - Style
-- Lobby message board
+- Lobby message board timestamps and user input
 
 Game Page
 - Make the game page
