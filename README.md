@@ -34,9 +34,9 @@ General App
 - Create new account
 
 Login Page
-✔ Vet for invalid login info
+- ✔ Vet for invalid login info
 - Give some explanation as to how the app works
-✔ Check for duplicate login info
+- ✔ Check for duplicate login info
 - Create new login and sign in
 
 Lobby Page
