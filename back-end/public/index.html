@@ -4,9 +4,10 @@
     <head>
         <meta charset="utf-8">
         <title>Card Game</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     </head>
     <body>
         <script src="index.js"></script>
@@ -14,17 +15,34 @@
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class = "border rounded loginBody container">
+        <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px">
             <!-- Login existing user -->
-            <div style="width: 100%; margin-bottom: 40px">
+            <div style="width: 100%">
                 <h3>Log in</h3>
-                <div class="input-group mb-1" >
+
+                <form class="input-group mb-3" onsubmit="login(this);return false">
                     <div class="input-group-prepend">
-                        <button class="btn btn-primary" type="button" onclick="login()" id="button-addon1">Login</button>
+                        <button class="btn btn-primary" type="submit">Login</button>
                     </div>
-                    <input id="usernameInput" type="text" class="form-control" placeholder="username">
+                    <input name="username" type="text" class="form-control" placeholder="username" required>
+                    <input name="password" type="password" class="form-control" placeholder="password" required>
+                </form>
+                <div style="min-height: 60px">
+                    <div class="alert alert-warning small" id="loginInvalidUsername" style="display: none">
+                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                        Invalid username
+                    </div>
+                    <div class="alert alert-warning small" id="loginAlreadyLoggedIn" style="display: none">
+                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                        User already logged in
+                    </div>
+                    <div class="alert alert-danger small" id="loginInvalidPassword" style="display: none">
+                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                        Password incorrect
+                    </div>
                 </div>
             </div>
+
             <!-- Create new user -->
             <div style="width: 100%;">
                 <h3>Create account</h3>
@@ -45,7 +63,7 @@
 
         <div id = 'lobbyPage' style="display: none"}>
     
-                <h1>Lobby - <span id="lobbyUsername"></span></h1>
+                <h1>Welcome to the lobby <span id="lobbyUsername"></span></h1>
                 <h2>Players currently in the lobby...</h2>
                 <p id="userList"></p>
     

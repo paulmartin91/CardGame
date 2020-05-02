@@ -10,12 +10,11 @@ socket.on('redirect', (destination)=> {
 //LOGIN PAGE
 
 // Sets the client's username
-let login = () => {
-    let username = document.getElementById("usernameInput").value;
-    if (username.length > 1) { 
-        socket.emit('login attempt', username);
-        // socket.emit('add user', socket.username);
-    }
+let login = (event) => {
+        socket.emit('login attempt', {
+            username: event.username.value,
+            password: event.password.value
+        });
 }
 
 //Sends request to create new user
@@ -28,16 +27,35 @@ const newUser = (event) => {
 }
 
 //responds to login attempt
-socket.on('log in attempt response', success => {
-    if (success === true) {
-        socket.username = document.getElementById("usernameInput").value
+socket.on('log in attempt response', response => {
+    if (response.success === true) {
+        socket.username = response.username
         document.getElementById("loginPage").style.display = 'none'
         document.getElementById("lobbyPage").style.display = ''
         document.getElementById("lobbyUsername").innerHTML = socket.username
     } else {
-        !success.exists ? console.log(`user doesn't exist`) : console.log('user already logged in')
+        if (!response.exists){
+            console.log(`username doesnt exit`)
+            document.getElementById('loginAlreadyLoggedIn').style.display = 'none'
+            document.getElementById('loginInvalidPassword').style.display = 'none'
+            document.getElementById('loginInvalidUsername').style.display = ''
+        } else if (!response.password){
+            console.log(`password inccorect`)
+            document.getElementById('loginAlreadyLoggedIn').style.display = 'none'
+            document.getElementById('loginInvalidUsername').style.display = 'none'
+            document.getElementById('loginInvalidPassword').style.display = ''
+        } else {
+            console.log('user already logged in')
+            document.getElementById('loginInvalidUsername').style.display = 'none'
+            document.getElementById('loginInvalidPassword').style.display = 'none'
+            document.getElementById('loginAlreadyLoggedIn').style.display = ''
+        }
     }
 })
+
+const hide = (event) => {
+    event.parentElement.style.display = "none"
+}
 
 //LOBBY PAGE
 

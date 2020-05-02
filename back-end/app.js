@@ -20,7 +20,16 @@ let deal = cards.Deal //function to deal
 //websocket
 var socket = require('socket.io')
 
-var users = {};
+var users = {
+    paul: {
+        loggedIn: false,
+        password: "1234"
+    },
+    john: {
+        loggedIn: false,
+        password: "1234"
+    }
+};
 
 //randomised deck of cards
 let deckInPlay = shuffle(deck)
@@ -38,41 +47,25 @@ io.sockets.on('connection', (socket) => {
     })
 
     //request to log in
-    socket.on('login attempt',  (username) => {
-        // To test invalid username --> users[username] = {loggedIn: false}
-        if (username in users && !users[username].loggedIn) {
-            socket.username = username
-            users[username].loggedIn = true
+    socket.on('login attempt',  (user) => {
+        if (user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn) {
+            socket.username = user.username
+            users[user.username].loggedIn = true
             io.emit('new user joined', {
                 username: socket.username,
                 users: users,
             });
-            socket.emit('log in attempt response', true)
+            socket.emit('log in attempt response', {
+                success: true,
+                username: socket.username
+            })
         } else {
             socket.emit('log in attempt response', {
-                exists: username in users,
-                alreadyLoggedIn: username in users && users[username].loggedIn
+                exists: user.username in users,
+                password: user.username in users && user.password == users[user.username].password,
+                alreadyLoggedIn: user.username in users && users[user.username].loggedIn
             })
         }
-
-        /*
-        socket.username = username;
-        users[username] = {
-            "name": username,
-            "ready": false
-        }
-        //console.log(`${socket.username} `)
-        socket.joined = true
-        io.sockets.emit('new user joined', {
-            username: socket.username,
-            users: users,
-        });
-
-        socket.emit('joined', {
-            username: socket.username,
-            users: users,
-        });
-        */
     });
 
     socket.on('new user request', user => {
