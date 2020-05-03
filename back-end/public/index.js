@@ -32,7 +32,7 @@ socket.on('log in attempt response', response => {
         socket.username = response.username
         document.getElementById("loginPage").style.display = 'none'
         document.getElementById("lobbyPage").style.display = ''
-        document.getElementById("lobbyUsername").innerHTML = socket.username
+        document.getElementById("lobbyUsername").innerHTML = `${socket.username}`
     } else {
         if (!response.exists){
             console.log(`username doesnt exit`)
@@ -70,7 +70,7 @@ socket.on('joined', (user) => {
 socket.on('new user joined', (user) => {
     document.getElementById("userList").innerHTML = ''
     document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${Object.keys(user.users).length == 1 ? ' 1 player' : `${Object.keys(user.users).length} players`} in lobby <br>`
-    Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `${x}<br>`)
+    Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `${x} <span id="${x}"></span><br>`)
 });
 
 socket.on('joined', (name)=>{console.log(`${name} is ready`)})
@@ -78,8 +78,10 @@ socket.on('joined', (name)=>{console.log(`${name} is ready`)})
 //send ready requests
 let ready = (target) => {
     if (target.value == "true") {
+        document.getElementById(socket.username).innerHTML = ""
         socket.emit('ready', socket.username);
     } else {
+        document.getElementById(socket.username).innerHTML = "is ready"
         socket.emit('ready', socket.username);
     }
 }

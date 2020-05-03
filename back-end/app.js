@@ -48,6 +48,7 @@ io.sockets.on('connection', (socket) => {
 
     //request to log in
     socket.on('login attempt',  (user) => {
+        console.log(user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn)
         if (user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn) {
             socket.username = user.username
             users[user.username].loggedIn = true
@@ -91,8 +92,7 @@ io.sockets.on('connection', (socket) => {
             let countDown = 5
             const count = setInterval( () => {
                 console.log(countDown)
-                // console.log(`readycount = ${readyCount}`)
-                // console.log(`number of users = ${Object.keys(users).length}`)
+                //if a player unreadys, stop the countdown
                 if (Object.keys(users).length !== io.sockets.adapter.rooms['ready'].length) {clearInterval(count)}
                 io.to('ready').emit('starting game', {
                     count: countDown,
