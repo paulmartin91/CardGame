@@ -15,7 +15,7 @@
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px">
+        <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px;">
             <!-- Login existing user -->
             <div style="width: 100%">
                 <!-- <h3>Log in</h3> -->
@@ -60,27 +60,33 @@
                     </div>
                 </form>
             </div>
-        </div>
 
         <!-- Lobby Page -->
-
-        <div id = 'lobbyPage' style="display: none"}>
-    
-                <h1>Welcome to the lobby <span id="lobbyUsername"></span></h1>
-                <h2>Players currently in the lobby...</h2>
+        <div id="lobbyPage" class="p-3 border rounded container mt-3" style="max-width: 700px; display: none">
+            <h1 class="mb-5" style="text-align: center">Welcome to the lobby <span id="lobbyUsername"></span></h1>
+            <h2>Players currently in the lobby...</h2>
                 <p id="userList"></p>
-    
                 <button value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
-    
-                <h2>Message Box</h2>
-                <p id="messages"></p>
-
+                <div class="mt-3">
+                    <div class="border">
+                        <div id="messageBox" style="cursor:default; height: 100px; overflow: scroll;">
+                            <p id="messages">Messages...<br></p>
+                        </div>
+                        <form onsubmit="typeMessage(this);return false">
+                            <div class="input-group">
+                                <input type="text" style="border-radius: 0" name="message" class="border form-control" placeholder="Type message..." id="messagesInput">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit" style="border-radius: 0">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
         </div>
 
-        <!-- Lobby Page -->
+        <!-- Card Game Page -->
 
-        <div id = 'gamePage' style="display: none"}>
-    
+        <div id = 'gamePage' style="display: none">
             <h1>Card Game Page - <span id="gameUsername"></span></h1>
             <!-- <h2>Players currently in the lobby...</h2>
             <p id="userList"></p>
@@ -89,9 +95,6 @@
 
             <h2>Message Box</h2>
             <p id="messages"></p> -->
-
         </div>
-
-
     </body>
 </html>

@@ -48,7 +48,9 @@ io.sockets.on('connection', (socket) => {
 
     //request to log in
     socket.on('login attempt',  (user) => {
-        console.log(user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn)
+        console.log(`username = ${user.username in users}`)
+        console.log(`password = ${user.password == users[user.username].password}`)
+        console.log(`isloggedin = ${!users[user.username].loggedIn}`)
         if (user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn) {
             socket.username = user.username
             users[user.username].loggedIn = true

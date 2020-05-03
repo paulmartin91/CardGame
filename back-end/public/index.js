@@ -86,6 +86,12 @@ let ready = (target) => {
     }
 }
 
+const typeMessage = event => {
+    document.getElementById("messages").innerHTML += `${socket.username}: ${event.message.value}<br>`
+    document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
+    document.getElementById("messagesInput").value = ''
+}
+
 //change ready status on button
 socket.on('ready status changed', (ready)=>{
     if (!ready) {
