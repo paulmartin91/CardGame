@@ -28,7 +28,7 @@ var users = {
     john: {
         loggedIn: false,
         password: "1234"
-    }
+    },
 };
 
 //randomised deck of cards
@@ -74,9 +74,12 @@ io.sockets.on('connection', (socket) => {
 
     //handle ready requests from lobby
     socket.on('ready', async (username) => {
+        //toggle user ready
         users[username].ready = await !users[username].ready
+        //add or remove from 'ready' room
         users[username].ready == true ? socket.join('ready') : socket.leave('ready')
         // console.log(`${username} ready = ${users[username].ready}`)
+
         setTimeout(()=>io.to('ready').emit(`joined`, username), 1000);
         socket.emit('ready status changed', users[username].ready)
         let readyCount = 0;
@@ -85,10 +88,12 @@ io.sockets.on('connection', (socket) => {
         //if all players are ready and there is more than one player
         if (readyCount == Object.keys(users).length){// to test with one user --> && Object.keys(users).length > 1) {
             console.log('starting game')
-
             let countDown = 5
             const count = setInterval( () => {
                 console.log(countDown)
+                // console.log(`readycount = ${readyCount}`)
+                // console.log(`number of users = ${Object.keys(users).length}`)
+                if (Object.keys(users).length !== io.sockets.adapter.rooms['ready'].length) {clearInterval(count)}
                 io.to('ready').emit('starting game', {
                     count: countDown,
                     start: countDown == 0

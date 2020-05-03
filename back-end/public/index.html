@@ -18,14 +18,14 @@
         <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px">
             <!-- Login existing user -->
             <div style="width: 100%">
-                <h3>Log in</h3>
+                <!-- <h3>Log in</h3> -->
 
                 <form class="input-group mb-3" onsubmit="login(this);return false">
-                    <div class="input-group-prepend">
-                        <button class="btn btn-primary" type="submit">Login</button>
-                    </div>
-                    <input name="username" type="text" class="form-control" placeholder="username" required>
-                    <input name="password" type="password" class="form-control" placeholder="password" required>
+                        <input name="username" type="text" class="form-control" placeholder="username" required>
+                        <input name="password" type="password" class="form-control" placeholder="password" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Login</button>
+                        </div>
                 </form>
                 <div style="min-height: 60px">
                     <div class="alert alert-warning small" id="loginInvalidUsername" style="display: none">
@@ -45,18 +45,21 @@
 
             <!-- Create new user -->
             <div style="width: 100%;">
-                <h3>Create account</h3>
+                <!-- <h3>Create account</h3> -->
                 <form class="form-group" onsubmit="newUser(this);return false">
-                    <input name="username" class="form-control" placeholder="username" required>
-                </div>
-                <div class="form-group" style="width: 100%;">
-                    <input name="password" type="password" class="form-control" placeholder="password" required>
-                </div>
-                <div class="form-group" style="width: 100%;">
-                    <input name="email" type="email" class="form-control" placeholder="email" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Create Account</button>
+                    <div class ="input-group form-group">
+                        <input name="username" class="form-control" placeholder="username" required>
+                        <input name="password" type="password" class="form-control" placeholder="password" required>
+                    </div>
+                        <div class ="input-group">
+                            <input name="email" type="email" class="form-control" placeholder="email" required>
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary">Create Account</button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
+            </div>
         </div>
 
         <!-- Lobby Page -->
