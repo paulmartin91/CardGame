@@ -26,6 +26,14 @@ const newUser = (event) => {
     })
 }
 
+socket.on('new user response', response => {
+    if (response.success) {
+        console.log(response.user)
+    } else {
+        console.log(response.reason)
+    }
+})
+
 //responds to login attempt
 socket.on('log in attempt response', response => {
     if (response.success === true) {
@@ -53,6 +61,7 @@ socket.on('log in attempt response', response => {
     }
 })
 
+//hides warning
 const hide = (event) => {
     event.parentElement.style.display = "none"
 }
@@ -68,6 +77,7 @@ socket.on('joined', (user) => {
 //infrom userbase new user has joined
 
 socket.on('new user joined', (user) => {
+    console.log(user.users)
     document.getElementById("userList").innerHTML = ''
     document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${Object.keys(user.users).length == 1 ? ' 1 player' : `${Object.keys(user.users).length} players`} in lobby <br>`
     Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `${x} <span id="${x}"></span><br>`)

@@ -17,7 +17,7 @@
 ### To test...
 
 - What happens when a player leaves at each stage?
-- More than 2 users
+- Do more than 2 users cause problems
 
 ### To fix...
 
@@ -30,14 +30,14 @@
 
 General App
 - Can I use epress routing?
-- Integrate MongoDB for saving user info
+- ~~Integrate MongoDB for saving user info~~ ✔
 - Create new account
 
 Login Page
 - ~~Vet for invalid login info~~ ✔
 - Give some explanation as to how the app works
 - ~~Check for duplicate login info~~ ✔
-- Create new login and sign in
+- ~~Create new login and sign in~~ ✔
 
 Lobby Page
 - Style
