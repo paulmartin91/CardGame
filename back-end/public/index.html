@@ -30,7 +30,7 @@
                 <div style="min-height: 60px">
                     <div class="alert alert-warning small" id="loginInvalidUsername" style="display: none">
                         <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        Invalid username
+                        Username doesn't exist
                     </div>
                     <div class="alert alert-warning small" id="loginAlreadyLoggedIn" style="display: none">
                         <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
@@ -66,8 +66,8 @@
             <h1 class="mb-5" style="text-align: center">Welcome to the lobby <span id="lobbyUsername"></span></h1>
             <h2>Players currently in the lobby...</h2>
                 <p id="userList"></p>
-                <button value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
-                <div class="mt-3">
+                <button class="mb-5" value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
+                <div class="mt-5">
                     <div class="border">
                         <div id="messageBox" style="cursor:default; height: 100px; overflow: scroll;">
                             <p id="messages">Messages...<br></p>

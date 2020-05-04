@@ -21,8 +21,8 @@
 
 ### To fix...
 
-- "[object, object] has joined" logs client side when a user logs in
-- "undefined disconnected" logs server side at random
+- ~~"[object, object] has joined" logs client side when a user logs in~~ ✔
+- ~~"undefined disconnected" logs server side at random~~ ✔
 - ~~All players unreadying stops the timer, but one player unreadying doesn't~~ ✔
 
 
@@ -41,9 +41,9 @@ Login Page
 
 Lobby Page
 - Style
-- Messages emit to all users, currently just sender
-- Ready status emit to all users, currently just user that is ready
-- Game start countdown needs to reset scroll to lowest on message board
+- ~~Messages emit to all users, currently just sender~~ ✔
+- ~~Ready status emit to all users, currently just user that is ready~~ ✔
+- ~~Game start countdown needs to reset scroll to lowest on message board~~ ✔
 - Lobby message board timestamps and user input
 
 Game Page

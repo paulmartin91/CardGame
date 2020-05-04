@@ -48,9 +48,9 @@ io.sockets.on('connection', (socket) => {
 
     //request to log in
     socket.on('login attempt',  (user) => {
-        console.log(`username = ${user.username in users}`)
-        console.log(`password = ${user.password == users[user.username].password}`)
-        console.log(`isloggedin = ${!users[user.username].loggedIn}`)
+        // console.log(`username = ${user.username in users}`)
+        // console.log(`password = ${user.password == users[user.username].password}`)
+        // console.log(`isloggedin = ${!users[user.username].loggedIn}`)
         if (user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn) {
             socket.username = user.username
             users[user.username].loggedIn = true
@@ -84,7 +84,10 @@ io.sockets.on('connection', (socket) => {
         // console.log(`${username} ready = ${users[username].ready}`)
 
         setTimeout(()=>io.to('ready').emit(`joined`, username), 1000);
-        socket.emit('ready status changed', users[username].ready)
+        io.emit('ready status changed', {
+            username: username,
+            ready: users[username].ready,
+        })
         let readyCount = 0;
         await Object.keys(users).forEach(x => users[x].ready && readyCount++)
         
@@ -95,16 +98,26 @@ io.sockets.on('connection', (socket) => {
             const count = setInterval( () => {
                 console.log(countDown)
                 //if a player unreadys, stop the countdown
-                if (Object.keys(users).length !== io.sockets.adapter.rooms['ready'].length) {clearInterval(count)}
-                io.to('ready').emit('starting game', {
-                    count: countDown,
-                    start: countDown == 0
-                })
+                if (Object.keys(users).length !== io.sockets.adapter.rooms['ready'].length) {
+                    clearInterval(count)
+                } else {
+                    io.to('ready').emit('starting game', {
+                        count: countDown,
+                        start: countDown == 0
+                    })
+                }
                 countDown--
                 if (countDown < 0) clearInterval(count)
             }, 1000)
         }
     })
+
+    //lobby message box
+
+    socket.on('send lobby message', message => {
+        io.emit('recieve lobby message', message)
+    })
+
 
 
     //test getting random card
@@ -118,7 +131,8 @@ io.sockets.on('connection', (socket) => {
     });
 
     socket.on('disconnect', async () => {
-        await delete users[socket.username]
+        //await delete users[socket.username] <-- uncomment to delete user when they disconnect
         await console.log(`${socket.username} disconnected`);
+        console.log(users)
       });
 })

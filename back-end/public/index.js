@@ -78,34 +78,50 @@ socket.on('joined', (name)=>{console.log(`${name} is ready`)})
 //send ready requests
 let ready = (target) => {
     if (target.value == "true") {
-        document.getElementById(socket.username).innerHTML = ""
         socket.emit('ready', socket.username);
     } else {
-        document.getElementById(socket.username).innerHTML = "is ready"
         socket.emit('ready', socket.username);
     }
 }
 
 const typeMessage = event => {
-    document.getElementById("messages").innerHTML += `${socket.username}: ${event.message.value}<br>`
-    document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
-    document.getElementById("messagesInput").value = ''
+    socket.emit('send lobby message', {
+        message: event.message.value,
+        username: socket.username
+    })
 }
 
+socket.on('recieve lobby message', message => {
+    document.getElementById("messages").innerHTML += `${message.username}: ${message.message}<br>`
+    document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
+    document.getElementById("messagesInput").value = ''
+})
+
 //change ready status on button
-socket.on('ready status changed', (ready)=>{
-    if (!ready) {
-        document.getElementById("readyButton").value = "false"
-        document.getElementById("readyButton").innerHTML = "ready up"
+socket.on('ready status changed', (user)=>{
+    if (user.ready) {
+        //if it was the user who readied
+        if (user.username == socket.username) {
+            document.getElementById("readyButton").value = "true"
+            document.getElementById("readyButton").innerHTML = "unready"
+        }
+        //add is ready for all users
+        document.getElementById(user.username).innerHTML = "is ready"
     } else {
-        document.getElementById("readyButton").value = "true"
-        document.getElementById("readyButton").innerHTML = "unready"
+        //if it was not the user who readied
+        if (user.username == socket.username) {
+            document.getElementById("readyButton").value = "true"
+            document.getElementById("readyButton").innerHTML = "ready up"
+        }
+        //remove is ready for all users
+        document.getElementById(user.username).innerHTML = ""
     }
 })
 
 //all ready, starting game
 socket.on('starting game', (startObj) => {
     if (!startObj.start) document.getElementById("messages").innerHTML += `Game starting in ${startObj.count}...<br>`
+    document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
     if (startObj.start) {
         document.getElementById("lobbyPage").style.display = 'none'
         document.getElementById("gamePage").style.display = ''
