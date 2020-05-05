@@ -29,8 +29,21 @@ const newUser = (event) => {
 socket.on('new user response', response => {
     if (response.success) {
         console.log(response.user)
+        document.getElementById('newUserInvalidEmail').style.display = 'none'
+        document.getElementById('newUserInvalidUsername').style.display = 'none'
+        document.getElementById('newUserSuccess').style.display = ''
+        document.getElementById('loginUsername').value = response.user.username
     } else {
-        console.log(response.reason)
+        if (response.reason == 'Email address already exists') {
+            document.getElementById('newUserInvalidEmail').style.display = ''
+            document.getElementById('newUserInvalidUsername').style.display = 'none'
+            document.getElementById('newUserSuccess').style.display = 'none'
+        }
+        if (response.reason == 'Username already exists') {
+            document.getElementById('newUserInvalidUsername').style.display = ''
+            document.getElementById('newUserInvalidEmail').style.display = 'none'
+            document.getElementById('newUserSuccess').style.display = 'none'
+        }
     }
 })
 
@@ -75,7 +88,6 @@ socket.on('joined', (user) => {
 })
 
 //infrom userbase new user has joined
-
 socket.on('new user joined', (user) => {
     console.log(user.users)
     document.getElementById("userList").innerHTML = ''

@@ -4,6 +4,8 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const mongoose = require('mongoose');
 
+mongoose.set('useFindAndModify', false);
+
 server.listen(8000, function () {
     console.log('Your app is listening on port ' + server.address().port);
   });
@@ -36,9 +38,10 @@ var userSchema = new mongoose.Schema({
     username: String,
     password: String,
     email: String,
+    loggedIn: Boolean
 });
 
-var Users = mongoose.model("Users", userSchema);
+var Users = mongoose.model("users", userSchema);
 
 var readyPlayers = 0;
 var userList = {};
@@ -60,7 +63,6 @@ io.sockets.on('connection', (socket) => {
 
     //request to log in
     socket.on('login attempt',  (user) => {
-
         Users.findOne({username: user.username}, (err, instance) => {
             if (err) console.log(err)
             //doesn't exist
@@ -72,11 +74,14 @@ io.sockets.on('connection', (socket) => {
                 })
             } else {
                 //all valid
-                if (instance.password == user.password && !userList.loggedIn) {
+                if (instance.password == user.password && !instance.loggedIn) {
                     userList[user.username] = {
-                        loggedIn: true,
                         ready: false
                     }
+                    //set db loggedin to true
+                    Users.findOneAndUpdate({"username" : user.username}, {$set: {loggedIn: true}}, {returnNewDocument:true}).then(res => console.log(res))
+                    
+                    socket.isLoggedIn = true
                     socket.username = user.username
                     io.emit('new user joined', {
                         username: socket.username,
@@ -90,30 +95,11 @@ io.sockets.on('connection', (socket) => {
                     socket.emit('log in attempt response', {
                         exists: true,
                         password: instance.password == user.password,
-                        alreadyLoggedIn: userList[user.username].loggedIn
+                        alreadyLoggedIn: instance.loggedIn
                     })
                 }
             }
         })
-
-        // if (user.username in users && user.password == users[user.username].password && !users[user.username].loggedIn) {
-        //     socket.username = user.username
-        //     users[user.username].loggedIn = true
-        //     io.emit('new user joined', {
-        //         username: socket.username,
-        //         users: users,
-        //     });
-        //     socket.emit('log in attempt response', {
-        //         success: true,
-        //         username: socket.username
-        //     })
-        // } else {
-        //     socket.emit('log in attempt response', {
-        //         exists: user.username in users,
-        //         password: user.username in users && user.password == users[user.username].password,
-        //         alreadyLoggedIn: user.username in users && users[user.username].loggedIn
-        //     })
-        // }
     });
 
     socket.on('new user request', async (user) => {
@@ -132,6 +118,7 @@ io.sockets.on('connection', (socket) => {
                             username: user.username,
                             password: user.password,
                             email: user.email,
+                            loggedIn: false
                         }, (err, instance) => {
                             if (err) console.log(err)
                             socket.emit('new user response', {
@@ -149,7 +136,7 @@ io.sockets.on('connection', (socket) => {
             } else {
                 socket.emit('new user response', {
                     success: false,
-                    reason: 'Username already exists!'
+                    reason: 'Username already exists'
                 })
             }
         })
@@ -212,6 +199,7 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('disconnect', async () => {
         await delete userList[socket.username]
+        socket.isLoggedIn == true && Users.findOneAndUpdate({"username" : socket.username}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(res))
         await console.log(`${socket.username} disconnected`);
       });
 })

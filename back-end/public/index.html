@@ -18,11 +18,9 @@
         <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px;">
             <!-- Login existing user -->
             <div style="width: 100%">
-                <!-- <h3>Log in</h3> -->
-
                 <form class="input-group mb-3" onsubmit="login(this);return false">
-                        <input name="username" type="text" class="form-control" placeholder="username" required>
-                        <input name="password" type="password" class="form-control" placeholder="password" required>
+                        <input name="username" type="text" class="form-control" placeholder="username" id="loginUsername" required autofocus>
+                        <input name="password" type="password" class="form-control" placeholder="password" pattern=".{6,}" required>
                         <div class="input-group-append">
                             <button class="btn btn-primary" type="submit">Login</button>
                         </div>
@@ -49,7 +47,7 @@
                 <form class="form-group" onsubmit="newUser(this);return false">
                     <div class ="input-group form-group">
                         <input name="username" class="form-control" placeholder="username" required>
-                        <input name="password" type="password" class="form-control" placeholder="password" required>
+                        <input name="password" type="password" class="form-control" placeholder="password" pattern=".{6,}" oninvalid="this.setCustomValidity(`Minimum 6 characters`)" onchange="try{setCustomValidity('')}catch(e){}" required>
                     </div>
                         <div class ="input-group">
                             <input name="email" type="email" class="form-control" placeholder="email" required>
@@ -57,10 +55,21 @@
                                 <button type="submit" class="btn btn-primary">Create Account</button>
                             </div>
                         </div>
+                    </form>
+                    <div class="alert alert-danger small" id="newUserInvalidEmail" style="display: none">
+                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                        Email already exists
                     </div>
-                </form>
+                    <div class="alert alert-danger small" id="newUserInvalidUsername" style="display: none">
+                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                        Username already exists
+                    </div>
+                    <div class="alert alert-success small" id="newUserSuccess" style="display: none">
+                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                        New user created, please login above
+                    </div>
+                </div>
             </div>
-
         <!-- Lobby Page -->
         <div id="lobbyPage" class="p-3 border rounded container mt-3" style="max-width: 700px; display: none">
             <h1 class="mb-5" style="text-align: center">Welcome to the lobby <span id="lobbyUsername"></span></h1>
