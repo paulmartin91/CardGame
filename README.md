@@ -40,11 +40,11 @@ Login Page
 - ~~Create new login and sign in~~ ✔
 
 Lobby Page
-- Style
+- ~~Style~~ ✔
 - ~~Messages emit to all users, currently just sender~~ ✔
 - ~~Ready status emit to all users, currently just user that is ready~~ ✔
 - ~~Game start countdown needs to reset scroll to lowest on message board~~ ✔
-- Lobby message board timestamps and user input
+- ~~Lobby message board timestamps and user input~~ ✔
 
 Game Page
 - Make the game page
