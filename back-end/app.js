@@ -43,8 +43,11 @@ var userSchema = new mongoose.Schema({
 
 var Users = mongoose.model("users", userSchema);
 
+//count the number of players that have readyd
 var readyPlayers = 0;
-var userList = {};
+//store some user info server side for less intensive access
+var userList = {
+};
 
 //randomised deck of cards
 let deckInPlay = shuffle(deck)

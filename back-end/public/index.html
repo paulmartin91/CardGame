@@ -15,7 +15,7 @@
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px;">
+        <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px; display: ''">
             <!-- Login existing user -->
             <div style="width: 100%">
                 <form class="input-group mb-3" onsubmit="login(this);return false">
@@ -70,16 +70,17 @@
                     </div>
                 </div>
             </div>
+
         <!-- Lobby Page -->
-        <div id="lobbyPage" class="p-3 border rounded container mt-3" style="max-width: 700px; display: none">
+        <div id="lobbyPage" class="p-3 border rounded container mt-3" style="max-width: 500px; display: none">
             <h1 class="mb-5" style="text-align: center">Welcome to the lobby <span id="lobbyUsername"></span></h1>
-            <h2>Players currently in the lobby...</h2>
-                <p id="userList"></p>
-                <button class="mb-5" value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
+            <h3><small>Players currently in the lobby...</small></h3>
+                <ul id="userList" class="list-group mb-1"></ul>
+                <button class="mb-5 btn btn-success" value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
                 <div class="mt-5">
                     <div class="border">
-                        <div id="messageBox" style="cursor:default; height: 100px; overflow: scroll;">
-                            <p id="messages">Messages...<br></p>
+                        <div id="messageBox" style="cursor:default; height: 150px; overflow: scroll;">
+                            <p id="messages" style="word-break: break-all;">Messages...<br></p>
                         </div>
                         <form onsubmit="typeMessage(this);return false">
                             <div class="input-group">
