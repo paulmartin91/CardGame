@@ -31,11 +31,11 @@
 General App
 - Can I use epress routing?
 - ~~Integrate MongoDB for saving user info~~ ✔
-- Create new account
+- ~~Create new account~~ ✔
 
 Login Page
 - ~~Vet for invalid login info~~ ✔
-- Give some explanation as to how the app works
+- ~~Give some explanation as to how the app works~~ ✔
 - ~~Check for duplicate login info~~ ✔
 - ~~Create new login and sign in~~ ✔
 

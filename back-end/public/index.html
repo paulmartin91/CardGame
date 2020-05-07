@@ -9,78 +9,82 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
     </head>
-    <body>
+    <body style="background-position: center; background-image: url(https://static.vecteezy.com/system/resources/thumbnails/000/210/685/original/dark-geometric-background.jpg)">
         <script src="index.js"></script>
         <link rel="stylesheet" type="text/css" href="index.css">
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class = "border rounded loginBody container" style="min-width: 240px; display: ''">
-            <!-- Login existing user -->
-            <div style="width: 100%">
-                <form class="input-group mb-3" onsubmit="login(this);return false">
-                        <input name="username" type="text" class="form-control" placeholder="username" id="loginUsername" required autofocus>
-                        <input name="password" type="password" class="form-control" placeholder="password" pattern=".{6,}" required>
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="submit">Login</button>
+        <div id = "loginPage" class="container text-center" style="max-width: 900px;">
+            <h1 class="text-center mt-5" style="color: white;">Deck of Cards</h1>
+            <h4 class=" mt-5" style="color: white;">A place to sit and play cards. You can play with friends, find a game to join or host your own game. Login or create an account below to get started.</h4>
+            <div class = "border loginBody container" style="display: ''; background-color: white"">
+                <!-- Login existing user -->
+                <div style="width: 100%">
+                    <form class="input-group mb-3" onsubmit="login(this);return false">
+                            <input name="username" type="text" class="form-control" placeholder="username" id="loginUsername" required autofocus>
+                            <input name="password" type="password" class="form-control" placeholder="password" pattern=".{6,}" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">Login</button>
+                            </div>
+                    </form>
+                    <div style="min-height: 60px">
+                        <div class="alert alert-warning small" id="loginInvalidUsername" style="display: none">
+                            <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                            Username doesn't exist
                         </div>
-                </form>
-                <div style="min-height: 60px">
-                    <div class="alert alert-warning small" id="loginInvalidUsername" style="display: none">
-                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        Username doesn't exist
-                    </div>
-                    <div class="alert alert-warning small" id="loginAlreadyLoggedIn" style="display: none">
-                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        User already logged in
-                    </div>
-                    <div class="alert alert-danger small" id="loginInvalidPassword" style="display: none">
-                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        Password incorrect
+                        <div class="alert alert-warning small" id="loginAlreadyLoggedIn" style="display: none">
+                            <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                            User already logged in
+                        </div>
+                        <div class="alert alert-danger small" id="loginInvalidPassword" style="display: none">
+                            <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                            Password incorrect
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Create new user -->
-            <div style="width: 100%;">
-                <!-- <h3>Create account</h3> -->
-                <form class="form-group" onsubmit="newUser(this);return false">
-                    <div class ="input-group form-group">
-                        <input name="username" class="form-control" placeholder="username" required>
-                        <input name="password" type="password" class="form-control" placeholder="password" pattern=".{6,}" oninvalid="this.setCustomValidity(`Minimum 6 characters`)" onchange="try{setCustomValidity('')}catch(e){}" required>
-                    </div>
-                        <div class ="input-group">
-                            <input name="email" type="email" class="form-control" placeholder="email" required>
-                            <div class="input-group-append">
-                                <button type="submit" class="btn btn-primary">Create Account</button>
-                            </div>
+                <!-- Create new user -->
+                <div style="width: 100%;">
+                    <!-- <h3>Create account</h3> -->
+                    <form class="form-group" onsubmit="newUser(this);return false">
+                        <div class ="input-group form-group">
+                            <input name="username" class="form-control" placeholder="username" required>
+                            <input name="password" type="password" class="form-control" placeholder="password" pattern=".{6,}" oninvalid="this.setCustomValidity(`Minimum 6 characters`)" onchange="try{setCustomValidity('')}catch(e){}" required>
                         </div>
-                    </form>
-                    <div class="alert alert-danger small" id="newUserInvalidEmail" style="display: none">
-                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        Email already exists
-                    </div>
-                    <div class="alert alert-danger small" id="newUserInvalidUsername" style="display: none">
-                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        Username already exists
-                    </div>
-                    <div class="alert alert-success small" id="newUserSuccess" style="display: none">
-                        <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
-                        New user created, please login above
+                            <div class ="input-group">
+                                <input name="email" type="email" class="form-control" placeholder="email" required>
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">Create Account</button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="alert alert-danger small" id="newUserInvalidEmail" style="display: none">
+                            <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                            Email already exists
+                        </div>
+                        <div class="alert alert-danger small" id="newUserInvalidUsername" style="display: none">
+                            <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                            Username already exists
+                        </div>
+                        <div class="alert alert-success small" id="newUserSuccess" style="display: none">
+                            <span type="button" onclick="hide(this)" style="cursor: pointer;"><span>&times;</span></span>
+                            New user created, please login above
+                        </div>
                     </div>
                 </div>
             </div>
 
         <!-- Lobby Page -->
-        <div id="lobbyPage" class="p-3 border rounded container mt-3" style="max-width: 500px; display: none">
+        <div id="lobbyPage" class="p-3 border rounded container mt-5" style="max-width: 500px; display: none; background-color: white">
             <h1 class="mb-5" style="text-align: center">Welcome to the lobby <span id="lobbyUsername"></span></h1>
             <h3><small>Players currently in the lobby...</small></h3>
-                <ul id="userList" class="list-group mb-1"></ul>
+                <ul id="userList" class="list-group mb-1" style="transition: 1s"></ul>
                 <button class="mb-5 btn btn-success" value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
                 <div class="mt-5">
                     <div class="border">
                         <div id="messageBox" style="cursor:default; height: 150px; overflow: scroll;">
-                            <p id="messages" style="word-break: break-all;">Messages...<br></p>
+                            <p id="messages" style="word-break: break-all;"></p>
                         </div>
                         <form onsubmit="typeMessage(this);return false">
                             <div class="input-group">

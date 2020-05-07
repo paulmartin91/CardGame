@@ -9,7 +9,7 @@ var date = new Date(unix_timestamp * 1000);
 var hours = date.getHours();
 var minutes = "0" + date.getMinutes();
 var seconds = "0" + date.getSeconds();
-var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+var formattedTime = hours + ':' + minutes.substr(-2)// + ':' + seconds.substr(-2);
 return formattedTime
 }
 
@@ -61,6 +61,7 @@ socket.on('new user response', response => {
 
 //responds to login attempt
 socket.on('log in attempt response', response => {
+    console.log(response)
     if (response.success === true) {
         socket.username = response.username
         document.getElementById("loginPage").style.display = 'none'
@@ -104,7 +105,7 @@ socket.on('new user joined', (user) => {
     console.log(user.users)
     document.getElementById("userList").innerHTML = ''
     document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${Object.keys(user.users).length == 1 ? ' 1 player' : `${Object.keys(user.users).length} players`} in lobby <br>`
-    Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center">${x} <span class="badge badge-warning" id="${x}">waiting</span></li>`)
+    Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center" id=${x}>${x}</li>`)  //<span class="badge badge-warning" id="${x}">waiting</span>
 }); 
 
 socket.on('joined', (name)=>{console.log(`${name} is ready`)})
@@ -130,7 +131,7 @@ const typeMessage = event => {
 
 //recieve messages from all users
 socket.on('recieve lobby message', message => {
-    document.getElementById("messages").innerHTML += `${getTime()} - ${message.username}: ${message.message}<br>`
+    document.getElementById("messages").innerHTML += `<span class="text-muted small">[${getTime()}]</span> ${message.username}: ${message.message}<br>`
     document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
     document.getElementById("messagesInput").value = ''
 })
@@ -145,8 +146,9 @@ socket.on('ready status changed', (user)=>{
             document.getElementById("readyButton").className = "mb-5 btn btn-warning"
         }
         //add is ready for all users
-        document.getElementById(user.username).innerHTML = "ready"
-        document.getElementById(user.username).className = "badge badge-success"
+        // document.getElementById(user.username).innerHTML = "ready"
+        // document.getElementById(user.username).className = "badge badge-success"
+        document.getElementById(user.username).style = "background-color: #B7E2C0; transition: 0.5s"
     } else {
         //if it was not the user who readied
         if (user.username == socket.username) {
@@ -155,8 +157,9 @@ socket.on('ready status changed', (user)=>{
             document.getElementById("readyButton").className = "mb-5 btn btn-success"
         }
         //remove is ready for all users
-        document.getElementById(user.username).innerHTML = "waiting"
-        document.getElementById(user.username).className = "badge badge-warning"
+        // document.getElementById(user.username).innerHTML = "waiting"
+        // document.getElementById(user.username).className = "badge badge-warning"
+        document.getElementById(user.username).style = "background-color:; transition: 0.5s"
     }
 })
 
