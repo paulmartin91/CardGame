@@ -39,6 +39,11 @@ Login Page
 - ~~Check for duplicate login info~~ ✔
 - ~~Create new login and sign in~~ ✔
 
+Pre Lobby Page?
+- Need a place to create/join games
+- Need to be able to host and name rooms where you can invite other players
+- Need a list of active games to join
+
 Lobby Page
 - ~~Style~~ ✔
 - ~~Messages emit to all users, currently just sender~~ ✔
@@ -47,6 +52,13 @@ Lobby Page
 - ~~Lobby message board timestamps and user input~~ ✔
 
 Game Page
-- Make the game page
 - Style
-- Find a set of card image files to use
+- ~~Find a set of card image files to use~~ ✔
+- Create a table space for active cards
+- Players need positions that are visible
+- Dealer needs to switch around players
+- Player cards need to be visible, but blind to other players
+- Play card function
+- Keep message board constant between lobby and game page
+- Actions need to be visible for all players
+

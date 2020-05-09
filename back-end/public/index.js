@@ -67,6 +67,7 @@ socket.on('log in attempt response', response => {
         document.getElementById("loginPage").style.display = 'none'
         document.getElementById("lobbyPage").style.display = ''
         document.getElementById("lobbyUsername").innerHTML = `${socket.username}`
+        document.getElementById("gameUsername").innerHTML = `${socket.username}`
     } else {
         if (!response.exists){
             console.log(`username doesnt exit`)
@@ -182,15 +183,15 @@ const playCard = (card) => {
 }
 
 //request to deal
-const deal = () => {
-    socket.emit('deal cards')
+const deal = (event) => {
+    socket.emit('deal cards', event.number.value)
 }
 
 //recieve delt hand
 socket.on('hand delt', function(result){
+    console.log(result)
     result.hand.forEach(x=> {
-        let cardObj = JSON.stringify({"val": x.value, "suit": x.suit});
-        document.getElementById('hand').innerHTML +=`<button value=${cardObj} onclick="playCard(this)">${x.value} of ${x.suit}</button>`
+        document.getElementById('hand').innerHTML +=`<img style="width: 15%; height: auto" src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img>`
     })
 });
 

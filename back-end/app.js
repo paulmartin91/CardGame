@@ -3,7 +3,6 @@ const app = express()
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const mongoose = require('mongoose');
-
 mongoose.set('useFindAndModify', false);
 
 server.listen(8000, function () {
@@ -14,11 +13,6 @@ app.use(express.static('public'))
 
 //import card object
 var cards = require('./cards.js');
-
-//import deck object, deal and shuffle functions
-let deck = cards.Deck //deck of cards in order
-let shuffle = cards.Shuffle //function to shuffle deck
-let deal = cards.Deal //function to deal
 
 //websocket
 var socket = require('socket.io')
@@ -48,9 +42,6 @@ var readyPlayers = 0;
 //store some user info server side for less intensive access
 var userList = {
 };
-
-//randomised deck of cards
-let deckInPlay = shuffle(deck)
 
 //on connection
 io.sockets.on('connection', (socket) => {
@@ -191,10 +182,23 @@ io.sockets.on('connection', (socket) => {
         io.emit('recieve lobby message', message)
     })
 
+
+    //game mechanics
+
+    //import deck object, deal and shuffle functions
+    let deck = cards.Deck //deck of cards in order
+    let shuffle = cards.Shuffle //function to shuffle deck
+    let deal = cards.Deal //function to deal
+
+    //randomised deck of cards
+    let deckInPlay = shuffle(deck)
+
     //test getting random card
-    socket.on('deal cards', (msg) => {
+    socket.on('deal cards', number => {
+        console.log(number)
         console.log(`request to deal from ${socket.username}`)
-        socket.hand = deal(deckInPlay, 5)
+        socket.hand = deal(deckInPlay, number)
+        console.log(socket.hand)
         socket.emit('hand delt', {
             hand: socket.hand,
             cardsLeft: deckInPlay.length
@@ -203,7 +207,9 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('disconnect', async () => {
         await delete userList[socket.username]
-        socket.isLoggedIn == true && Users.findOneAndUpdate({"username" : socket.username}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(res))
+        if (socket.isLoggedIn == true){
+            Users.findOneAndUpdate({"username" : socket.username}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(res))
+        }
         await console.log(`${socket.username} disconnected`);
       });
 })

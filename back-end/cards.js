@@ -2,211 +2,211 @@ module.exports = {
 
     Deck: [
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 2
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 3
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 4
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 5
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 6
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 7
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 8
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 9
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 10
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 11
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 12
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 13
     },
     {
-        "suit": "hearts",
+        "suit": "H",
         "value": 14
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 2
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 3
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 4
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 5
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 6
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 7
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 8
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 9
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 10
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 11
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 12
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 13
     },
     {
-        "suit": "diamonds",
+        "suit": "D",
         "value": 14
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 2
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 3
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 4
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 5
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 6
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 7
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 8
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 9
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 10
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 11
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 12
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 13
     },
     {
-        "suit": "clubs",
+        "suit": "C",
         "value": 14
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 2
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 3
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 4
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 5
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 6
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 7
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 8
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 9
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 10
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 11
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 12
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 13
     },
     {
-        "suit": "spades",
+        "suit": "S",
         "value": 14
     }
     ],
@@ -225,14 +225,15 @@ module.exports = {
           array[currentIndex] = array[randomIndex];
           array[randomIndex] = temporaryValue;
         }
-      
+        
         return array;
-      },
+    },
     Deal: function deal(deck, numCards){
         let hand = [];
         for (let i = 0; i<numCards; i++){
             hand.push(...deck.splice(0, 1));
         }
+        console.log(numCards)
         return hand
     }
 }

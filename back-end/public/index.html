@@ -11,11 +11,12 @@
     </head>
     <body style="background-position: center; background-image: url(https://static.vecteezy.com/system/resources/thumbnails/000/210/685/original/dark-geometric-background.jpg)">
         <script src="index.js"></script>
+        <script src="./CardPics/cardPics.js"></script>
         <link rel="stylesheet" type="text/css" href="index.css">
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class="container text-center" style="max-width: 900px;">
+        <div id = "loginPage" class="container text-center" style="max-width: 900px; display: ''">
             <h1 class="text-center mt-5" style="color: white;">Deck of Cards</h1>
             <h4 class=" mt-5" style="color: white;">A place to sit and play cards. You can play with friends, find a game to join or host your own game. Login or create an account below to get started.</h4>
             <div class = "border loginBody container" style="display: ''; background-color: white"">
@@ -100,15 +101,16 @@
 
         <!-- Card Game Page -->
 
-        <div id = 'gamePage' style="display: none">
+        <div id="gamePage" style="display: none; color: white">
             <h1>Card Game Page - <span id="gameUsername"></span></h1>
-            <!-- <h2>Players currently in the lobby...</h2>
-            <p id="userList"></p>
 
-            <button value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
-
-            <h2>Message Box</h2>
-            <p id="messages"></p> -->
+            <form class="input-group mb-3" style="width: 150px;" onsubmit="deal(this);return false">
+                <input class="form-control" name="number" type="number" min="1" max="52"></input>
+                <div class="input-group-append">
+                    <button type="submit">Deal</button>
+                </div>
+            </form>
+            <div style="display: flex; max-width: 1000px;" id="hand"></div>
         </div>
     </body>
 </html>
