@@ -24,6 +24,7 @@
 - ~~"[object, object] has joined" logs client side when a user logs in~~ ✔
 - ~~"undefined disconnected" logs server side at random~~ ✔
 - ~~All players unreadying stops the timer, but one player unreadying doesn't~~ ✔
+- Blind cards not appearing when delt to other players, nothing in log
 
 
 ### To do...
@@ -54,10 +55,10 @@ Lobby Page
 Game Page
 - Style
 - ~~Find a set of card image files to use~~ ✔
-- Create a table space for active cards
+- ~~Create a table space for active cards~~ ✔
 - Players need positions that are visible
-- Dealer needs to switch around players
-- Player cards need to be visible, but blind to other players
+- Dealer chip needs to move around players
+- Player cards need to be visible, but blind to other players 
 - Play card function
 - Keep message board constant between lobby and game page
 - Actions need to be visible for all players

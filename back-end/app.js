@@ -71,7 +71,8 @@ io.sockets.on('connection', (socket) => {
                 //all valid
                 if (instance.password == user.password && !instance.loggedIn) {
                     userList[user.username] = {
-                        ready: false
+                        ready: false,
+                        userId: socket.id
                     }
                     //set db loggedin to true
                     Users.findOneAndUpdate({"username" : user.username}, {$set: {loggedIn: true}}, {returnNewDocument:true}).then(res => console.log(res))
@@ -167,7 +168,8 @@ io.sockets.on('connection', (socket) => {
                 } else {
                     io.to('ready').emit('starting game', {
                         count: countDown,
-                        start: countDown == 0
+                        start: countDown == 0,
+                        users: userList
                     })
                 }
                 countDown--
@@ -193,18 +195,42 @@ io.sockets.on('connection', (socket) => {
     //randomised deck of cards
     let deckInPlay = shuffle(deck)
 
-    //test getting random card
-    socket.on('deal cards', number => {
-        console.log(number)
+    //deal cards
+    socket.on('deal cards', request => {
+        console.log(request.to)
         console.log(`request to deal from ${socket.username}`)
-        socket.hand = deal(deckInPlay, number)
+
+        console.log(userList)
+        
         console.log(socket.hand)
-        socket.emit('hand delt', {
-            hand: socket.hand,
-            cardsLeft: deckInPlay.length
-        });
+        if (request.to === "All") {
+            //loop through users
+            Object.keys(userList).forEach(x=>{
+                let id = userList[x].userId
+                io.to(id).emit('hand delt', {
+                    hand: deal(deckInPlay, request.number),
+                    cardsLeft: deckInPlay.length
+                });
+            })
+            io.emit('hand delt notification', {
+                number: request.number,
+                from: socket.username,
+                to: Object.keys(userList)
+            })
+        } else {
+            io.to(userList[request.to].userId).emit('hand delt', {
+                hand: deal(deckInPlay, request.number),
+                cardsLeft: deckInPlay.length
+            });
+            io.emit('hand delt notification', {
+                number: request.number,
+                from: socket.username,
+                to: [request.to]
+            })
+        }
     });
 
+    
     socket.on('disconnect', async () => {
         await delete userList[socket.username]
         if (socket.isLoggedIn == true){

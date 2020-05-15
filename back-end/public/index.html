@@ -4,10 +4,11 @@
     <head>
         <meta charset="utf-8">
         <title>Card Game</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     </head>
     <body style="background-position: center; background-image: url(https://static.vecteezy.com/system/resources/thumbnails/000/210/685/original/dark-geometric-background.jpg)">
         <script src="index.js"></script>
@@ -103,14 +104,37 @@
 
         <div id="gamePage" style="display: none; color: white">
             <h1>Card Game Page - <span id="gameUsername"></span></h1>
-
-            <form class="input-group mb-3" style="width: 150px;" onsubmit="deal(this);return false">
-                <input class="form-control" name="number" type="number" min="1" max="52"></input>
-                <div class="input-group-append">
-                    <button type="submit">Deal</button>
-                </div>
-            </form>
-            <div style="display: flex; max-width: 1000px;" id="hand"></div>
+            
+            
+            <div id="gameBoard" class="container game-board-4p">
+                <!-- Board 
+                <div class="item1"></div>
+                <div class="item2"></div>
+                <div class="item3"></div>
+                <div class="item4"></div>
+                -->
+            </div>
+            
+            <div class = "container pt-2" style=" background-color: white; color: black">
+                <form class="form-inline" onsubmit="deal(this);return false">
+                        <div class="form-group">
+                            <div class="input-group">
+                                <input class="form-control" name="number" type="number" min="1" max="52"></input>
+                            </div>
+                            <div class="dropdown">
+                                <button type="submit" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    Dropdown button
+                                </button>
+                                <div id="dealSelect" class="dropdown-menu">
+                                    <li>
+                                        <input type="submit" onclick="setDealOption(this)" class="form-control btn" name="submit" value="All" style="width: 100%">
+                                    </li>
+                                </div>
+                            </div>
+                        </div>
+                </form>
+                <div style="display: flex; flex-wrap: wrap;" id="hand"></div>
+            </div>
         </div>
     </body>
 </html>

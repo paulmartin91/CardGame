@@ -1,6 +1,7 @@
 var socket = io();
 //const gameroom = io('/gameroom');
 
+
 //MISC
 //Get the time
 const getTime = () => {
@@ -171,6 +172,19 @@ socket.on('starting game', (startObj) => {
     if (startObj.start) {
         document.getElementById("lobbyPage").style.display = 'none'
         document.getElementById("gamePage").style.display = ''
+        Object.keys(startObj.users).forEach(x=>{
+            console.log(startObj.users)
+            console.log(x)
+            if (x !== socket.username) {
+                document.getElementById('gameBoard').innerHTML += `
+                <div id=${x} class="player"></div>`
+            }
+            //deal form controles
+            document.getElementById('dealSelect').innerHTML += `
+            <li>
+                <input type="submit" onclick="setDealOption(this)" class="form-control btn" name="submit" value="${x}" style="width: 100%">
+            </li>`
+        })
     }
 })
 
@@ -182,16 +196,35 @@ const playCard = (card) => {
     console.log(`the ${cardObj.val} of ${cardObj.suit}`)
 }
 
+const setDealOption = (event) => {
+    dealTo = event.value
+}
+
 //request to deal
 const deal = (event) => {
-    socket.emit('deal cards', event.number.value)
+    socket.emit('deal cards', {
+        number: event.number.value,
+        to: dealTo
+    })
 }
 
 //recieve delt hand
 socket.on('hand delt', function(result){
     console.log(result)
     result.hand.forEach(x=> {
-        document.getElementById('hand').innerHTML +=`<img style="width: 15%; height: auto" src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img>`
+        document.getElementById('hand').innerHTML +=`<div class = "img-container"><img style="max-width:100%; height: auto;" src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img></div>`
     })
 });
 
+//all players recieve notification about delt hand
+socket.on('hand delt notification', (data)=>{
+    console.log(`${data.from} has dealt ${data.number} cards to ${data.to.length >1 ? "all players" : data.to}`)
+
+    //create blank cards for cards delt
+    data.to.forEach(x=>{
+        if (x !== socket.username) {
+            //ERROR HERE
+            document.getElementById(x).innerHTML += `<div class = "img-container"><img style="width:100px; height: auto;" src="CardPics/blue_back.png"></img></div>`
+        }
+    })
+})
