@@ -5,13 +5,13 @@ var socket = io();
 //MISC
 //Get the time
 const getTime = () => {
-let unix_timestamp = Math.round((new Date()).getTime() / 1000);
-var date = new Date(unix_timestamp * 1000);
-var hours = date.getHours();
-var minutes = "0" + date.getMinutes();
-var seconds = "0" + date.getSeconds();
-var formattedTime = hours + ':' + minutes.substr(-2)// + ':' + seconds.substr(-2);
-return formattedTime
+    let unix_timestamp = Math.round((new Date()).getTime() / 1000);
+    var date = new Date(unix_timestamp * 1000);
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    var formattedTime = hours + ':' + minutes.substr(-2)// + ':' + seconds.substr(-2);
+    return formattedTime
 }
 
 //PAGE ROUTING
@@ -177,7 +177,7 @@ socket.on('starting game', (startObj) => {
             console.log(x)
             if (x !== socket.username) {
                 document.getElementById('gameBoard').innerHTML += `
-                <div id=${x} class="player"></div>`
+                <div id="${x}blindcards" class="player"></div>`
             }
             //deal form controles
             document.getElementById('dealSelect').innerHTML += `
@@ -223,8 +223,11 @@ socket.on('hand delt notification', (data)=>{
     //create blank cards for cards delt
     data.to.forEach(x=>{
         if (x !== socket.username) {
-            //ERROR HERE
-            document.getElementById(x).innerHTML += `<div class = "img-container"><img style="width:100px; height: auto;" src="CardPics/blue_back.png"></img></div>`
+            console.log('x')
+            document.getElementById(`${x}blindcards`).innerHTML += `<div class="img-container-blind"><img src="CardPics/blue_back.png"></img></div>`.repeat(data.number)
+            // let childrenCount = document.getElementById(`${x}blindcards`).childElementCount
+            // let widthNumber = 200/childrenCount*3
+            // document.getElementsByClassName(`${x}img-container-blind`).width = `${widthNumber}px`
         }
     })
 })

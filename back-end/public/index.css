@@ -59,8 +59,23 @@
     width: 80px;
 }
 
+.img-container-blind {
+    flex-shrink: 40;
+    overflow: hidden;
+    width: 1px;
+    flex-grow: 5
+}
+
+.img-container-blind img {
+    width: auto;
+    height: 100px;
+}
+
 .player {
-    width: 100%;
+    height: 150px;
     background-color: white;
     color: black;
+    display: flex;
+    /* flex-wrap: nowrap; */
+    flex-direction: row;
 }
