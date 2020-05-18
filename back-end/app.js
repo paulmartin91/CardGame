@@ -55,10 +55,11 @@ io.sockets.on('connection', (socket) => {
         setTimeout(()=>console.log(io.sockets.adapter.rooms), 2000)
     })
 
+    //LOGIN PAGE
+
     //request to log in
     socket.on('login attempt',  (user) => {
         Users.findOne({username: user.username}, (err, instance) => {
-            console.log(instance)
             if (err) console.log(err)
             //doesn't exist
             if (instance === null) {
@@ -137,6 +138,15 @@ io.sockets.on('connection', (socket) => {
             }
         })
     })
+
+    //GAME BROWSE PAGE
+
+    socket.on('request create new game', request => {
+        console.log(request)
+    })
+
+
+    //LOBBY
 
     //handle ready requests from lobby
     socket.on('ready', async (username) => {

@@ -14,6 +14,13 @@ const getTime = () => {
     return formattedTime
 }
 
+//load page
+// const loadPage = (page) => {
+//     if (page == 'game-browse') {}
+//     if (page == 'lobbyPage') {}
+//     if (page == 'gamePage') {}
+// }
+
 //PAGE ROUTING
 
 socket.on('redirect', (destination)=> {
@@ -66,7 +73,7 @@ socket.on('log in attempt response', response => {
     if (response.success === true) {
         socket.username = response.username
         document.getElementById("loginPage").style.display = 'none'
-        document.getElementById("lobbyPage").style.display = ''
+        document.getElementById("game-browse").style.display = ''
         document.getElementById("lobbyUsername").innerHTML = `${socket.username}`
         document.getElementById("gameUsername").innerHTML = `${socket.username}`
     } else {
@@ -93,6 +100,28 @@ socket.on('log in attempt response', response => {
 const hide = (event) => {
     event.parentElement.style.display = "none"
 }
+
+
+//GAME BROWSE PAGE
+
+//temp way to load game lobby
+const loadLobby = () => {
+    document.getElementById("game-browse").style.display = 'none'
+    document.getElementById("lobbyPage").style.display = ''
+}
+
+const createGame = (event) => {
+    socket.emit('request create new game', {
+        name: event.gameName.value,
+        password: event.gamePass.value
+    })
+}
+
+//Join a game
+const joinGame = (event) => {
+    console.log(event)
+}
+
 
 //LOBBY PAGE
 

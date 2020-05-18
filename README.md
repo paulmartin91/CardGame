@@ -24,15 +24,18 @@
 - ~~"[object, object] has joined" logs client side when a user logs in~~ ✔
 - ~~"undefined disconnected" logs server side at random~~ ✔
 - ~~All players unreadying stops the timer, but one player unreadying doesn't~~ ✔
-- Blind cards not appearing when delt to other players, nothing in log
+- ~~Blind cards not appearing when delt to other players, nothing in log~~ ✔
+- Blind cards still show when too many cards have been delt
 
 
 ### To do...
 
 General App
-- Can I use epress routing?
+- Can I use express routing?
 - ~~Integrate MongoDB for saving user info~~ ✔
 - ~~Create new account~~ ✔
+- All users loggedin = false when server resets
+- Okta Auth?
 
 Login Page
 - ~~Vet for invalid login info~~ ✔
@@ -40,10 +43,17 @@ Login Page
 - ~~Check for duplicate login info~~ ✔
 - ~~Create new login and sign in~~ ✔
 
-Pre Lobby Page?
-- Need a place to create/join games
-- Need to be able to host and name rooms where you can invite other players
-- Need a list of active games to join
+Pre Lobby Page
+- ~~Need a place to create games - Client side~~ ✔
+- Client side create games needs max players
+- Server needs to process validate request and create room for game
+- Client needs to process create game server response
+- List of active games to join just a place holder, needs to update
+- Game list needs to display locked games
+- Game list needs to display player count
+- Clicking on games needs to send join request to server with a password if required
+- Server needs to process join request check password
+- Client needs to process join request response from server
 
 Lobby Page
 - ~~Style~~ ✔
@@ -58,7 +68,7 @@ Game Page
 - ~~Create a table space for active cards~~ ✔
 - Players need positions that are visible
 - Dealer chip needs to move around players
-- Player cards need to be visible, but blind to other players 
+- ~~Player cards need to be visible, but blind to other players~~ ✔
 - Play card function
 - Keep message board constant between lobby and game page
 - Actions need to be visible for all players
