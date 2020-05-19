@@ -117,19 +117,29 @@ const createGame = (event) => {
     })
 }
 
+socket.on('response create new game', response => {
+    if (response.exists) {
+        console.log('game already exists')
+    } else {
+        document.getElementById("game-browse").style.display = 'none'
+        document.getElementById("lobbyPage").style.display = ''
+        socket.currentGame = response.name
+        document.getElementById("lobyGameName").innerHTML = `<h1>${response.name}</h1>`
+    }
+})
+
 //Join a game
-const joinGame = (event) => {
-    console.log(event)
+const joinGame = (event, gameName) => {
+    console.log(gameName)
+    console.log(event.gamePass.value)
+    // socket.emit('join game request', {
+    //     user: socket.id,
+    //     gameName: gameName
+    // })
 }
 
 
 //LOBBY PAGE
-
-//redirect to lobby
-
-socket.on('joined', (user) => {
-    
-})
 
 //infrom userbase new user has joined
 socket.on('new user joined', (user) => {

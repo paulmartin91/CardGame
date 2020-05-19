@@ -42,6 +42,9 @@ var readyPlayers = 0;
 //store some user info server side for less intensive access
 var userList = {
 };
+//store active games
+var gameList = {
+};
 
 //on connection
 io.sockets.on('connection', (socket) => {
@@ -141,8 +144,31 @@ io.sockets.on('connection', (socket) => {
 
     //GAME BROWSE PAGE
 
+    //create a game
     socket.on('request create new game', request => {
-        console.log(request)
+        if (request.name in gameList) {
+            socket.emit('response create new game', {
+                exists: true,
+                name: request.name
+            })
+        } else {
+            socket.join(request.name);
+            socket.emit('response create new game', {
+                exists: false,
+                name: request.name
+            })
+        }
+    })
+
+    //join a game
+    socket.on('join game request', request => {
+        if (!request.name in gameList) {
+            console.log('game doesnt exist')
+        } else if (gameList[request.name].currentPlayers >= gameList[request.name].maxPlayers) {
+            console.log('game is full')
+        } else {
+            
+        }
     })
 
 

@@ -1,12 +1,4 @@
-.loginBody {
-    display: flex;
-    padding: 20px;
-    justify-content: center;
-    align-items: flex-start;
-    flex-direction: column;
-    margin-top: 50px;
-    max-width: 400px;
-}
+/* General App */
 
 .btn:focus {
     outline: none;
@@ -17,6 +9,25 @@
     outline: none;
     box-shadow: none;
 }
+
+/* Login Page */
+.loginBody {
+    display: flex;
+    padding: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 50px;
+    max-width: 400px;
+}
+
+/* Game Browse Page */
+
+.gamesList {
+    
+}
+
+/* Game Page */
 
 .game-board-4p {
     background-color: #2196F3;
