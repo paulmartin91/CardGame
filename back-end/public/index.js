@@ -71,24 +71,50 @@ socket.on('new user response', response => {
 socket.on('log in attempt response', response => {
     console.log(response)
     if (response.success === true) {
+        //successful login
         socket.username = response.username
         document.getElementById("loginPage").style.display = 'none'
         document.getElementById("game-browse").style.display = ''
+        if (Object.keys(response.gameList).length == 0) {
+            console.log('no games')
+            document.getElementById('activeGames').innerHTML = `<li class="list-group-item d-flex justify-content-between align-items-center">No active games</li>`
+        } else {
+            Object.keys(response.gameList).forEach(game => {
+                document.getElementById('activeGames').innerHTML += `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>
+                        ${response.gameList[game].name}
+                        <span class="ml-3 badge badge-primary badge-pill">${response.gameList[game].currentPlayers}/${response.gameList[game].maxPlayers}</span>
+                    </span> 
+                    ${!response.gameList[game].password ? 
+                    `<button onclick="joinGame(this, ${response.gameList[game].name})" class="btn btn-primary">Join</button>`
+                    :
+                    `<form class="input-group" onsubmit="joinGame(this, ${response.gameList[game].name});return false" style="width: 250px;">
+                            <input name="gamePass" type="password" class="form-control" placeholder="Password 6-12" pattern=".{6,12}" required>
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">Join</button>
+                            </div>
+                    </form>`
+                    }
+                </li>
+                `
+            })
+        }
         document.getElementById("lobbyUsername").innerHTML = `${socket.username}`
         document.getElementById("gameUsername").innerHTML = `${socket.username}`
     } else {
         if (!response.exists){
-            console.log(`username doesnt exit`)
+            //username doesnt exit
             document.getElementById('loginAlreadyLoggedIn').style.display = 'none'
             document.getElementById('loginInvalidPassword').style.display = 'none'
             document.getElementById('loginInvalidUsername').style.display = ''
         } else if (!response.password){
-            console.log(`password inccorect`)
+            //password inccorect
             document.getElementById('loginAlreadyLoggedIn').style.display = 'none'
             document.getElementById('loginInvalidUsername').style.display = 'none'
             document.getElementById('loginInvalidPassword').style.display = ''
         } else {
-            console.log('user already logged in')
+            //user already logged in
             document.getElementById('loginInvalidUsername').style.display = 'none'
             document.getElementById('loginInvalidPassword').style.display = 'none'
             document.getElementById('loginAlreadyLoggedIn').style.display = ''

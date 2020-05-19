@@ -46,14 +46,16 @@ Login Page
 Pre Lobby Page
 - ~~Need a place to create games - Client side~~ ✔
 - Client side create games needs max players
-- Server needs to process validate request and create room for game
-- Client needs to process create game server response
-- List of active games to join just a place holder, needs to update
-- Game list needs to display locked games
-- Game list needs to display player count
-- Clicking on games needs to send join request to server with a password if required
+- ~~Server needs to process validate request and create room for game~~ ✔
+- ~~Client needs to process create game server response~~ ✔
+- ~~List of active games to join just a place holder, needs to update~~ ✔
+- ~~Game list needs to display locked games~~ ✔
+- Game list needs to display accurate player count
+- ~~Clicking on games needs to send join request to server with a password if required~~ ✔
 - Server needs to process join request check password
 - Client needs to process join request response from server
+- Client leaving game needs to be reflected serverside
+- Empty games need to close and be removed from gameList
 
 Lobby Page
 - ~~Style~~ ✔

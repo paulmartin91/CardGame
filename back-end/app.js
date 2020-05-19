@@ -44,6 +44,7 @@ var userList = {
 };
 //store active games
 var gameList = {
+
 };
 
 //on connection
@@ -76,7 +77,7 @@ io.sockets.on('connection', (socket) => {
                 if (instance.password == user.password && !instance.loggedIn) {
                     userList[user.username] = {
                         ready: false,
-                        userId: socket.id
+                        userId: socket.id,
                     }
                     //set db loggedin to true
                     Users.findOneAndUpdate({"username" : user.username}, {$set: {loggedIn: true}}, {returnNewDocument:true}).then(res => console.log(res))
@@ -89,7 +90,8 @@ io.sockets.on('connection', (socket) => {
                     });
                     socket.emit('log in attempt response', {
                         success: true,
-                        username: socket.username
+                        username: socket.username,
+                        gameList: gameList
                     })
                 } else {
                     socket.emit('log in attempt response', {
@@ -146,12 +148,22 @@ io.sockets.on('connection', (socket) => {
 
     //create a game
     socket.on('request create new game', request => {
+        //name taken
         if (request.name in gameList) {
             socket.emit('response create new game', {
                 exists: true,
                 name: request.name
             })
+            //create new game
         } else {
+            gameList[request.name] = {
+                maxPlayers: 6,
+                password: request.password == '' ? false : request.password,
+                currentPlayers: 1,
+                name: request.name,
+                playerList: [socket.username]
+            }
+            console.log(gameList)
             socket.join(request.name);
             socket.emit('response create new game', {
                 exists: false,
@@ -167,7 +179,11 @@ io.sockets.on('connection', (socket) => {
         } else if (gameList[request.name].currentPlayers >= gameList[request.name].maxPlayers) {
             console.log('game is full')
         } else {
-            
+            if (gameList[request.name].password) {
+                console.log('password exists')
+            } else {
+                console.log('no password')
+            }
         }
     })
 
