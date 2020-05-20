@@ -84,10 +84,6 @@ io.sockets.on('connection', (socket) => {
                     
                     socket.isLoggedIn = true
                     socket.username = user.username
-                    io.emit('new user joined', {
-                        username: socket.username,
-                        users: userList,
-                    });
                     socket.emit('log in attempt response', {
                         success: true,
                         username: socket.username,
@@ -169,20 +165,56 @@ io.sockets.on('connection', (socket) => {
                 exists: false,
                 name: request.name
             })
+            setTimeout(()=>{
+                io.to(request.name).emit('new user joined game', {
+                    username: socket.username,
+                    users: gameList[request.name].playerList,
+                });
+             }, 200)
         }
     })
 
     //join a game
-    socket.on('join game request', request => {
+    socket.on('join game request', async request => {
         if (!request.name in gameList) {
             console.log('game doesnt exist')
         } else if (gameList[request.name].currentPlayers >= gameList[request.name].maxPlayers) {
             console.log('game is full')
         } else {
             if (gameList[request.name].password) {
-                console.log('password exists')
+                if (request.password == gameList[request.name].password) {
+                    //join successful
+                    await gameList[request.name].playerList.push(socket.username)
+                    socket.join(request.name);
+                    setTimeout(()=> {
+                    io.to(request.name).emit('new user joined game', {
+                        username: socket.username,
+                        users: gameList[request.name].playerList,
+                    });
+                    }, 200)
+                    socket.emit('join game response', {
+                        success: true,
+                        name: request.name
+                    })
+                } else {
+                    console.log('password incorrect')
+                    console.log(request.password)
+                }
             } else {
-                console.log('no password')
+            console.log('game has no password')
+                //join successful
+                await gameList[request.name].playerList.push(socket.username)
+                socket.join(request.name);
+                setTimeout(()=> {
+                io.to(request.name).emit('new user joined game', {
+                    username: socket.username,
+                    users: gameList[request.name].playerList,
+                });
+                }, 200)
+                socket.emit('join game response', {
+                    success: true,
+                    name: request.name
+                })
             }
         }
     })

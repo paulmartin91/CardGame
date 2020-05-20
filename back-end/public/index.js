@@ -87,19 +87,21 @@ socket.on('log in attempt response', response => {
                         <span class="ml-3 badge badge-primary badge-pill">${response.gameList[game].currentPlayers}/${response.gameList[game].maxPlayers}</span>
                     </span> 
                     ${!response.gameList[game].password ? 
-                    `<button onclick="joinGame(this, ${response.gameList[game].name})" class="btn btn-primary">Join</button>`
+                    `<button onclick="joinGame(this, '${response.gameList[game].name}')" class="btn btn-primary" >Join</button>`
                     :
-                    `<form class="input-group" onsubmit="joinGame(this, ${response.gameList[game].name});return false" style="width: 250px;">
-                            <input name="gamePass" type="password" class="form-control" placeholder="Password 6-12" pattern=".{6,12}" required>
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="submit">Join</button>
-                            </div>
+                    `<form class="input-group" onsubmit="joinGame(this, '${response.gameList[game].name}');return false">
+                        <input name="gamePass" type="password" class="form-control" placeholder="Password 6-12" pattern=".{6,12}" required>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Join</button>
+                        </div>
                     </form>`
                     }
                 </li>
                 `
             })
         }
+        //onsubmit="login(this);return false"
+        //"joinGame(this, ${response.gameList[game].name});return false"
         document.getElementById("lobbyUsername").innerHTML = `${socket.username}`
         document.getElementById("gameUsername").innerHTML = `${socket.username}`
     } else {
@@ -156,23 +158,30 @@ socket.on('response create new game', response => {
 
 //Join a game
 const joinGame = (event, gameName) => {
-    console.log(gameName)
-    console.log(event.gamePass.value)
-    // socket.emit('join game request', {
-    //     user: socket.id,
-    //     gameName: gameName
-    // })
+    let password = event.gamePass == undefined ? false : event.gamePass.value
+    socket.emit('join game request', {
+        name: gameName,
+        password: password
+    })
 }
+
+//Join game response
+socket.on('join game response', response => {
+    document.getElementById("game-browse").style.display = 'none'
+    document.getElementById("lobbyPage").style.display = ''
+    socket.currentGame = response.name
+    document.getElementById("lobyGameName").innerHTML = `<h1>${response.name}</h1>`
+})
 
 
 //LOBBY PAGE
 
 //infrom userbase new user has joined
-socket.on('new user joined', (user) => {
-    console.log(user.users)
+socket.on('new user joined game', (user) => {
+    console.log(user)
     document.getElementById("userList").innerHTML = ''
-    document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${Object.keys(user.users).length == 1 ? ' 1 player' : `${Object.keys(user.users).length} players`} in lobby <br>`
-    Object.keys(user.users).forEach(x=>document.getElementById("userList").innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center" id=${x}>${x}</li>`)  //<span class="badge badge-warning" id="${x}">waiting</span>
+    document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${user.users.length == 1 ? ' 1 player' : `${user.users.length} players`} in lobby <br>`
+    user.users.forEach(x=>document.getElementById("userList").innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center" id=${x}>${x}</li>`)  //<span class="badge badge-warning" id="${x}">waiting</span>
 }); 
 
 socket.on('joined', (name)=>{console.log(`${name} is ready`)})
