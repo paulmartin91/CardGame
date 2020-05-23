@@ -132,11 +132,40 @@ const hide = (event) => {
 
 //GAME BROWSE PAGE
 
-//temp way to load game lobby
-const loadLobby = () => {
-    document.getElementById("game-browse").style.display = 'none'
-    document.getElementById("lobbyPage").style.display = ''
+//request refresh games
+const refreshGames = () => {
+    socket.emit('request refresh games')
 }
+
+//handle refresh games response
+socket.on('response refresh games', async response => {
+    document.getElementById('activeGames').innerHTML = ''
+    if (Object.keys(response.gameList).length == 0) {
+        console.log('no games')
+        document.getElementById('activeGames').innerHTML = `<li class="list-group-item d-flex justify-content-between align-items-center">No active games</li>`
+    } else {
+        Object.keys(response.gameList).forEach(game => {
+            document.getElementById('activeGames').innerHTML += `
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span>
+                    ${response.gameList[game].name}
+                    <span class="ml-3 badge badge-primary badge-pill">${response.gameList[game].currentPlayers}/${response.gameList[game].maxPlayers}</span>
+                </span> 
+                ${!response.gameList[game].password ? 
+                `<button onclick="joinGame(this, '${response.gameList[game].name}')" class="btn btn-primary" >Join</button>`
+                :
+                `<form class="input-group" onsubmit="joinGame(this, '${response.gameList[game].name}');return false">
+                    <input name="gamePass" type="password" class="form-control" placeholder="Password 6-12" pattern=".{6,12}" required>
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">Join</button>
+                    </div>
+                </form>`
+                }
+            </li>
+            `
+        })
+    }
+})
 
 const createGame = (event) => {
     socket.emit('request create new game', {

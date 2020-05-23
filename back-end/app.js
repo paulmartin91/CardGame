@@ -142,6 +142,14 @@ io.sockets.on('connection', (socket) => {
 
     //GAME BROWSE PAGE
 
+    //refresh game list
+
+    socket.on('request refresh games', ()=>{
+        socket.emit('response refresh games', {
+            gameList: gameList
+        })
+    })
+
     //create a game
     socket.on('request create new game', request => {
         //name taken
