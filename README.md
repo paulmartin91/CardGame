@@ -25,7 +25,8 @@
 - ~~"undefined disconnected" logs server side at random~~ ✔
 - ~~All players unreadying stops the timer, but one player unreadying doesn't~~ ✔
 - ~~Blind cards not appearing when delt to other players, nothing in log~~ ✔
-- Blind cards still show when too many cards have been delt
+- ~~Blind cards still show when too many cards have been delt~~ ✔
+- Game names currently include any special characters
 
 
 ### To do...
@@ -50,12 +51,13 @@ Pre Lobby Page
 - ~~Client needs to process create game server response~~ ✔
 - ~~List of active games to join just a place holder, needs to update~~ ✔
 - ~~Game list needs to display locked games~~ ✔
-- Game list needs to display accurate player count
+- ~~Game list needs to display accurate player count~~ ✔
 - ~~Clicking on games needs to send join request to server with a password if required~~ ✔
-- Server needs to process join request check password
-- Client needs to process join request response from server
+- ~~Server needs to process join request check password~~ ✔
+- ~~Client needs to process join request response from server~~ ✔
 - Client leaving game needs to be reflected serverside
 - Empty games need to close and be removed from gameList
+- ~~Client needs to be able to refresh game list~~ ✔
 
 Lobby Page
 - ~~Style~~ ✔
@@ -74,4 +76,3 @@ Game Page
 - Play card function
 - Keep message board constant between lobby and game page
 - Actions need to be visible for all players
-

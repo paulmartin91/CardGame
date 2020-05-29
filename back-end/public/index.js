@@ -187,6 +187,8 @@ socket.on('response create new game', response => {
 
 //Join a game
 const joinGame = (event, gameName) => {
+    console.log(event)
+    console.log(gameName)
     let password = event.gamePass == undefined ? false : event.gamePass.value
     socket.emit('join game request', {
         name: gameName,
@@ -312,11 +314,15 @@ const deal = (event) => {
 }
 
 //recieve delt hand
-socket.on('hand delt', function(result){
-    console.log(result)
-    result.hand.forEach(x=> {
-        document.getElementById('hand').innerHTML +=`<div class = "img-container"><img style="max-width:100%; height: auto;" src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img></div>`
-    })
+socket.on('hand delt', (result) => {
+    if (!result.enoughCards) {
+        console.log(`you've requested too many cards, there ${result.cardsLeft == 1 ? "is" : "are"} only ${result.cardsLeft} left`)
+    } else {
+        console.log(result)
+        result.hand.forEach(x=> {
+            document.getElementById('hand').innerHTML +=`<div class = "img-container"><img style="max-width:100%; height: auto;" src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img></div>`
+        })
+    }
 });
 
 //all players recieve notification about delt hand

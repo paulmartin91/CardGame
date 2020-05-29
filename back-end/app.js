@@ -47,6 +47,9 @@ var gameList = {
 
 };
 
+//logout all users
+Users.updateMany({}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(res))
+
 //on connection
 io.sockets.on('connection', (socket) => {
     //log user connected on server
@@ -288,37 +291,53 @@ io.sockets.on('connection', (socket) => {
     let deckInPlay = shuffle(deck)
 
     //deal cards
-    socket.on('deal cards', request => {
+    socket.on('deal cards', async request => {
         console.log(request.to)
         console.log(`request to deal from ${socket.username}`)
 
-        console.log(userList)
-        
-        console.log(socket.hand)
-        if (request.to === "All") {
-            //loop through users
-            Object.keys(userList).forEach(x=>{
-                let id = userList[x].userId
-                io.to(id).emit('hand delt', {
-                    hand: deal(deckInPlay, request.number),
-                    cardsLeft: deckInPlay.length
-                });
-            })
-            io.emit('hand delt notification', {
-                number: request.number,
-                from: socket.username,
-                to: Object.keys(userList)
+        let cardsRequested = await request.to == "All" ? (request.number * Object.keys(userList).length) : request.number
+
+        console.log(`cardsRequested = ${cardsRequested}`)
+        console.log(`request to = ${request.to}`)
+        console.log(`userList.length = ${Object.keys(userList).length}`)
+        console.log(`req.number = ${request.number}`)
+
+        //if user requested more cards than deck has available
+        if (cardsRequested > deckInPlay.length) {
+            socket.emit('hand delt', {
+                enoughCards: false,
+                cardsLeft: deckInPlay.length,
+                number: request.number
             })
         } else {
-            io.to(userList[request.to].userId).emit('hand delt', {
-                hand: deal(deckInPlay, request.number),
-                cardsLeft: deckInPlay.length
-            });
-            io.emit('hand delt notification', {
-                number: request.number,
-                from: socket.username,
-                to: [request.to]
-            })
+            console.log(socket.hand)
+            if (request.to === "All") {
+                //loop through users
+                Object.keys(userList).forEach(x=>{
+                    let id = userList[x].userId
+                    io.to(id).emit('hand delt', {
+                        hand: deal(deckInPlay, request.number),
+                        cardsLeft: deckInPlay.length,
+                        enoughCards: true
+                    });
+                })
+                io.emit('hand delt notification', {
+                    number: request.number,
+                    from: socket.username,
+                    to: Object.keys(userList)
+                })
+            } else {
+                io.to(userList[request.to].userId).emit('hand delt', {
+                    hand: deal(deckInPlay, request.number),
+                    cardsLeft: deckInPlay.length,
+                    enoughCards: true
+                });
+                io.emit('hand delt notification', {
+                    number: request.number,
+                    from: socket.username,
+                    to: [request.to]
+                })
+            }
         }
     });
 
