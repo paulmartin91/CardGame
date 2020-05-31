@@ -170,7 +170,7 @@ io.sockets.on('connection', (socket) => {
                 name: request.name,
                 playerList: [socket.username]
             }
-            console.log(gameList)
+            socket.gameName = request.name
             socket.join(request.name);
             socket.emit('response create new game', {
                 exists: false,
@@ -215,6 +215,7 @@ io.sockets.on('connection', (socket) => {
             console.log('game has no password')
                 //join successful
                 await gameList[request.name].playerList.push(socket.username)
+                socket.gameName = request.name
                 socket.join(request.name);
                 setTimeout(()=> {
                 io.to(request.name).emit('new user joined game', {
@@ -261,6 +262,7 @@ io.sockets.on('connection', (socket) => {
                 if (Object.keys(userList).length !== readyPlayers) {
                     clearInterval(count)
                 } else {
+                    console.log('here')
                     io.to('ready').emit('starting game', {
                         count: countDown,
                         start: countDown == 0,
@@ -290,8 +292,17 @@ io.sockets.on('connection', (socket) => {
     //randomised deck of cards
     let deckInPlay = shuffle(deck)
 
+    //play cards
+    socket.on('request card played', request => {
+        // card: selectedCard,
+        // blind: false
+        // io.to(request.gameName).emit('')
+        console.log(`${socket.username} just played a ${request.card} in ${socket.gameName}`)
+        
+    })
+
     //deal cards
-    socket.on('deal cards', async request => {
+    socket.on('deal cards request', async request => {
         console.log(request.to)
         console.log(`request to deal from ${socket.username}`)
 

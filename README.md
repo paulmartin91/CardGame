@@ -35,7 +35,7 @@ General App
 - Can I use express routing?
 - ~~Integrate MongoDB for saving user info~~ ✔
 - ~~Create new account~~ ✔
-- All users loggedin = false when server resets
+- ~~All users loggedin = false when server resets~~ ✔
 - Okta Auth?
 
 Login Page
@@ -46,7 +46,6 @@ Login Page
 
 Pre Lobby Page
 - ~~Need a place to create games - Client side~~ ✔
-- Client side create games needs max players
 - ~~Server needs to process validate request and create room for game~~ ✔
 - ~~Client needs to process create game server response~~ ✔
 - ~~List of active games to join just a place holder, needs to update~~ ✔
@@ -65,6 +64,7 @@ Lobby Page
 - ~~Ready status emit to all users, currently just user that is ready~~ ✔
 - ~~Game start countdown needs to reset scroll to lowest on message board~~ ✔
 - ~~Lobby message board timestamps and user input~~ ✔
+- Ready currently set as room across all gameRooms, needs to be gameRoom specific
 
 Game Page
 - Style
@@ -73,6 +73,8 @@ Game Page
 - Players need positions that are visible
 - Dealer chip needs to move around players
 - ~~Player cards need to be visible, but blind to other players~~ ✔
-- Play card function
+- ~~Play card function~~ ✔
+- Cards only play to player that payed them
+- Cards can be played from gameboard
 - Keep message board constant between lobby and game page
 - Actions need to be visible for all players

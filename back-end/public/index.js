@@ -180,7 +180,7 @@ socket.on('response create new game', response => {
     } else {
         document.getElementById("game-browse").style.display = 'none'
         document.getElementById("lobbyPage").style.display = ''
-        socket.currentGame = response.name
+        socket.gameName = response.name
         document.getElementById("lobyGameName").innerHTML = `<h1>${response.name}</h1>`
     }
 })
@@ -200,7 +200,7 @@ const joinGame = (event, gameName) => {
 socket.on('join game response', response => {
     document.getElementById("game-browse").style.display = 'none'
     document.getElementById("lobbyPage").style.display = ''
-    socket.currentGame = response.name
+    socket.gameName = response.name
     document.getElementById("lobyGameName").innerHTML = `<h1>${response.name}</h1>`
 })
 
@@ -295,11 +295,23 @@ socket.on('starting game', (startObj) => {
 
 //GAME PAGE
 
-//Play a card, send it to server
+//request played card
 const playCard = (card) => {
-    let cardObj = JSON.parse(card.value)
-    console.log(`the ${cardObj.val} of ${cardObj.suit}`)
+    let selectedCard = card.src.match(/(.{2})\.png$/)[1]
+    socket.emit('request card played', {
+        card: selectedCard,
+        blind: false,
+    })
+    //this needs to be done through the server, atm cards just appear to player that played them
+    document.getElementById("gameCards").innerHTML+= `<div class = "img-container"><img style="max-width:100%; height: auto;" src="${card.src}" onclick="playCard(this)"></img></div>`
+    card.remove()
 }
+
+//response from played card
+socket.on('deal cards reponse', reposnse => {
+
+})
+
 
 const setDealOption = (event) => {
     dealTo = event.value
@@ -307,11 +319,13 @@ const setDealOption = (event) => {
 
 //request to deal
 const deal = (event) => {
-    socket.emit('deal cards', {
+    console.log('here')
+    socket.emit('deal cards request', {
         number: event.number.value,
         to: dealTo
     })
 }
+
 
 //recieve delt hand
 socket.on('hand delt', (result) => {
