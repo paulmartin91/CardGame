@@ -281,7 +281,7 @@ socket.on('starting game', (startObj) => {
             console.log(startObj.users)
             console.log(x)
             if (x !== socket.username) {
-                document.getElementById('gameBoard').innerHTML += `
+                document.getElementById('otherPlayers').innerHTML += `
                 <div id="${x}blindcards" class="player"></div>`
             }
             //deal form controles

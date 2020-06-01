@@ -84,7 +84,7 @@
 
 .player {
     height: 150px;
-    background-color: white;
+    background-color: lightblue;
     color: black;
     display: flex;
     /* flex-wrap: nowrap; */
