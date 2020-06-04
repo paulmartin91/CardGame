@@ -37,8 +37,6 @@ var userSchema = new mongoose.Schema({
 
 var Users = mongoose.model("users", userSchema);
 
-//count the number of players that have readyd
-var readyPlayers = 0;
 //store some user info server side for less intensive access
 var userList = {
 };
@@ -172,6 +170,9 @@ io.sockets.on('connection', (socket) => {
             }
             socket.gameName = request.name
             socket.join(request.name);
+            io.sockets.adapter.rooms[request.name].players = [socket.username]
+            io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
+            io.sockets.adapter.rooms[request.name].readyPlayers = 0
             socket.emit('response create new game', {
                 exists: false,
                 name: request.name
@@ -196,11 +197,13 @@ io.sockets.on('connection', (socket) => {
                 if (request.password == gameList[request.name].password) {
                     //join successful
                     await gameList[request.name].playerList.push(socket.username)
-                    socket.join(request.name);
+                    await socket.join(request.name);
+                    await io.sockets.adapter.rooms[request.name].players.push(socket.username)
+                    io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                     setTimeout(()=> {
                     io.to(request.name).emit('new user joined game', {
                         username: socket.username,
-                        users: gameList[request.name].playerList,
+                        users: io.sockets.adapter.rooms[request.name].players,
                     });
                     }, 200)
                     socket.emit('join game response', {
@@ -214,9 +217,9 @@ io.sockets.on('connection', (socket) => {
             } else {
             console.log('game has no password')
                 //join successful
-                await gameList[request.name].playerList.push(socket.username)
                 socket.gameName = request.name
-                socket.join(request.name);
+                await socket.join(request.name);
+                await io.sockets.adapter.rooms[request.name].players.push(socket.username)
                 setTimeout(()=> {
                 io.to(request.name).emit('new user joined game', {
                     username: socket.username,
@@ -235,38 +238,45 @@ io.sockets.on('connection', (socket) => {
     //LOBBY
 
     //handle ready requests from lobby
-    socket.on('ready', async (username) => {
+    socket.on('ready', async isReady => {
         //toggle user ready
-        userList[username].ready = await !userList[username].ready
+        userList[socket.username].ready = await isReady
         //add or subtract from readyplayers
-        userList[username].ready ? readyPlayers++ : readyPlayers--
+        isReady ? io.sockets.adapter.rooms[socket.gameName].readyPlayers++ : io.sockets.adapter.rooms[socket.gameName].readyPlayers--
         //add or remove from 'ready' room
-        userList[username].ready == true ? socket.join('ready') : socket.leave('ready')
+        // userList[username].ready == true ? socket.join('ready') : socket.leave('ready')
         // console.log(`${username} ready = ${users[username].ready}`)
 
-        io.to('ready').emit(`joined`, username);
-        io.emit('ready status changed', {
-            username: username,
-            ready: userList[username].ready,
+        console.log(socket.username)
+        console.log(socket.gameName)
+
+        socket.to(socket.gameName).emit('other player ready status changed', {
+            username: socket.username,
+            ready: isReady,
+        });
+
+        socket.emit('player ready status changed', {
+            username: socket.username,
+            ready: isReady,
         })
-        let readyCount = 0;
-        await Object.keys(userList).forEach(x => userList[x].ready && readyCount++)
-        
+
+        console.log(`number of ready players = ${io.sockets.adapter.rooms[socket.gameName].readyPlayers}`)
+        console.log(`number of players = ${io.sockets.adapter.rooms[socket.gameName].length}`)
+
         //if all players are ready and there is more than one player
-        if (readyCount == Object.keys(userList).length){// to test with one user --> && Object.keys(users).length > 1) {
+        if (io.sockets.adapter.rooms[socket.gameName].readyPlayers == io.sockets.adapter.rooms[socket.gameName].length){// to test with one user --> && Object.keys(users).length > 1) {
             console.log('starting game')
             let countDown = 5
             const count = setInterval( () => {
-                console.log(countDown)
+                console.log(io.sockets.adapter.rooms[socket.gameName].players)
                 //if a player unreadys, stop the countdown
-                if (Object.keys(userList).length !== readyPlayers) {
+                if (io.sockets.adapter.rooms[socket.gameName].length !== io.sockets.adapter.rooms[socket.gameName].readyPlayers) {
                     clearInterval(count)
                 } else {
-                    console.log('here')
-                    io.to('ready').emit('starting game', {
+                    io.to(socket.gameName).emit('starting game', {
                         count: countDown,
                         start: countDown == 0,
-                        users: userList
+                        users: io.sockets.adapter.rooms[socket.gameName].players
                     })
                 }
                 countDown--
@@ -298,7 +308,7 @@ io.sockets.on('connection', (socket) => {
         // blind: false
         // io.to(request.gameName).emit('')
         console.log(`${socket.username} just played a ${request.card} in ${socket.gameName}`)
-        
+
     })
 
     //deal cards
@@ -306,44 +316,43 @@ io.sockets.on('connection', (socket) => {
         console.log(request.to)
         console.log(`request to deal from ${socket.username}`)
 
-        let cardsRequested = await request.to == "All" ? (request.number * Object.keys(userList).length) : request.number
+        let cardsRequested = await request.to == "All" ? (request.number * io.sockets.adapter.rooms[socket.gameName].length) : request.number
 
         console.log(`cardsRequested = ${cardsRequested}`)
         console.log(`request to = ${request.to}`)
-        console.log(`userList.length = ${Object.keys(userList).length}`)
+        console.log(`userList.length = ${io.sockets.adapter.rooms[socket.gameName].length}`)
         console.log(`req.number = ${request.number}`)
 
         //if user requested more cards than deck has available
         if (cardsRequested > deckInPlay.length) {
-            socket.emit('hand delt', {
+            io.in(socket.gameName).emit('hand delt', {
                 enoughCards: false,
                 cardsLeft: deckInPlay.length,
                 number: request.number
             })
         } else {
-            console.log(socket.hand)
+            //to all players
             if (request.to === "All") {
-                //loop through users
-                Object.keys(userList).forEach(x=>{
-                    let id = userList[x].userId
-                    io.to(id).emit('hand delt', {
+                io.sockets.adapter.rooms[socket.gameName].players.forEach(username =>{
+                    io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
                         hand: deal(deckInPlay, request.number),
                         cardsLeft: deckInPlay.length,
                         enoughCards: true
                     });
                 })
-                io.emit('hand delt notification', {
+                io.in(socket.gameName).emit('hand delt notification', {
                     number: request.number,
                     from: socket.username,
                     to: Object.keys(userList)
                 })
             } else {
-                io.to(userList[request.to].userId).emit('hand delt', {
+                //to one player
+                io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[request.to]).emit('hand delt', {
                     hand: deal(deckInPlay, request.number),
                     cardsLeft: deckInPlay.length,
                     enoughCards: true
                 });
-                io.emit('hand delt notification', {
+                io.in(socket.gameName).emit('hand delt notification', {
                     number: request.number,
                     from: socket.username,
                     to: [request.to]

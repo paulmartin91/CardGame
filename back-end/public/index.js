@@ -215,16 +215,63 @@ socket.on('new user joined game', (user) => {
     user.users.forEach(x=>document.getElementById("userList").innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center" id=${x}>${x}</li>`)  //<span class="badge badge-warning" id="${x}">waiting</span>
 }); 
 
-socket.on('joined', (name)=>{console.log(`${name} is ready`)})
-
 //send ready requests
 let ready = (target) => {
     if (target.value == "true") {
-        socket.emit('ready', socket.username);
+        socket.emit('ready', false);
     } else {
-        socket.emit('ready', socket.username);
+        socket.emit('ready', true);
     }
 }
+
+//change ready status on button
+socket.on('other player ready status changed', (user)=>{
+    //show player is ready
+    if (user.ready) {
+        document.getElementById(user.username).style = "background-color: #B7E2C0; transition: 0.5s"
+    } else {
+        document.getElementById(user.username).style = "background-color:; transition: 0.5s"
+    }
+})
+
+socket.on('player ready status changed', user => {
+    if (user.ready) {
+        document.getElementById("readyButton").value = "true"
+        document.getElementById("readyButton").innerHTML = "unready"
+        document.getElementById("readyButton").className = "mb-5 btn btn-warning"
+    } else {
+        document.getElementById("readyButton").value = "false"
+        document.getElementById("readyButton").innerHTML = "ready up"
+        document.getElementById("readyButton").className = "mb-5 btn btn-success"
+    }
+})
+
+
+
+//     if (user.ready) {
+//         //if it was the user who readied
+//         if (user.username == socket.username) {
+//             document.getElementById("readyButton").value = "true"
+//             document.getElementById("readyButton").innerHTML = "unready"
+//             document.getElementById("readyButton").className = "mb-5 btn btn-warning"
+//         }
+//         //add is ready for all users
+//         // document.getElementById(user.username).innerHTML = "ready"
+//         // document.getElementById(user.username).className = "badge badge-success"
+//         document.getElementById(user.username).style = "background-color: #B7E2C0; transition: 0.5s"
+//     } else {
+//         //if it was not the user who readied
+//         if (user.username == socket.username) {
+//             document.getElementById("readyButton").value = "true"
+//             document.getElementById("readyButton").innerHTML = "ready up"
+//             document.getElementById("readyButton").className = "mb-5 btn btn-success"
+//         }
+//         //remove is ready for all users
+//         // document.getElementById(user.username).innerHTML = "waiting"
+//         // document.getElementById(user.username).className = "badge badge-warning"
+//         document.getElementById(user.username).style = "background-color:; transition: 0.5s"
+//     }
+// })
 
 //send messages
 const typeMessage = event => {
@@ -243,32 +290,6 @@ socket.on('recieve lobby message', message => {
     document.getElementById("messagesInput").value = ''
 })
 
-//change ready status on button
-socket.on('ready status changed', (user)=>{
-    if (user.ready) {
-        //if it was the user who readied
-        if (user.username == socket.username) {
-            document.getElementById("readyButton").value = "true"
-            document.getElementById("readyButton").innerHTML = "unready"
-            document.getElementById("readyButton").className = "mb-5 btn btn-warning"
-        }
-        //add is ready for all users
-        // document.getElementById(user.username).innerHTML = "ready"
-        // document.getElementById(user.username).className = "badge badge-success"
-        document.getElementById(user.username).style = "background-color: #B7E2C0; transition: 0.5s"
-    } else {
-        //if it was not the user who readied
-        if (user.username == socket.username) {
-            document.getElementById("readyButton").value = "true"
-            document.getElementById("readyButton").innerHTML = "ready up"
-            document.getElementById("readyButton").className = "mb-5 btn btn-success"
-        }
-        //remove is ready for all users
-        // document.getElementById(user.username).innerHTML = "waiting"
-        // document.getElementById(user.username).className = "badge badge-warning"
-        document.getElementById(user.username).style = "background-color:; transition: 0.5s"
-    }
-})
 
 //all ready, starting game
 socket.on('starting game', (startObj) => {
@@ -277,7 +298,7 @@ socket.on('starting game', (startObj) => {
     if (startObj.start) {
         document.getElementById("lobbyPage").style.display = 'none'
         document.getElementById("gamePage").style.display = ''
-        Object.keys(startObj.users).forEach(x=>{
+        startObj.users.forEach(x=>{
             console.log(startObj.users)
             console.log(x)
             if (x !== socket.username) {
