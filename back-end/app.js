@@ -45,6 +45,11 @@ var gameList = {
 
 };
 
+//import deck object, deal and shuffle functions
+let deck = cards.Deck //deck of cards in order
+let shuffle = cards.Shuffle //function to shuffle deck
+let deal = cards.Deal //function to deal
+
 //logout all users
 Users.updateMany({}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(res))
 
@@ -168,10 +173,12 @@ io.sockets.on('connection', (socket) => {
                 name: request.name,
                 playerList: [socket.username]
             }
+
             socket.gameName = request.name
             socket.join(request.name);
             io.sockets.adapter.rooms[request.name].players = [socket.username]
             io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
+            io.sockets.adapter.rooms[request.name].deckInPlay = shuffle(Array.from(cards.Deck))
             io.sockets.adapter.rooms[request.name].readyPlayers = 0
             socket.emit('response create new game', {
                 exists: false,
@@ -300,7 +307,7 @@ io.sockets.on('connection', (socket) => {
     let deal = cards.Deal //function to deal
 
     //randomised deck of cards
-    let deckInPlay = shuffle(deck)
+    // let deckInPlay = shuffle(deck)
 
     //play cards
     socket.on('request card played', request => {
@@ -322,12 +329,16 @@ io.sockets.on('connection', (socket) => {
         console.log(`request to = ${request.to}`)
         console.log(`userList.length = ${io.sockets.adapter.rooms[socket.gameName].length}`)
         console.log(`req.number = ${request.number}`)
+        console.log(`game name = ${socket.gameName}`)
+
+        console.log(`length of deck = ${io.sockets.adapter.rooms[socket.gameName].deckInPlay.length}`)
+
 
         //if user requested more cards than deck has available
-        if (cardsRequested > deckInPlay.length) {
+        if (cardsRequested > io.sockets.adapter.rooms[socket.gameName].deckInPlay.length) {
             io.in(socket.gameName).emit('hand delt', {
                 enoughCards: false,
-                cardsLeft: deckInPlay.length,
+                cardsLeft: io.sockets.adapter.rooms[socket.gameName].deckInPlay.length,
                 number: request.number
             })
         } else {
@@ -335,8 +346,8 @@ io.sockets.on('connection', (socket) => {
             if (request.to === "All") {
                 io.sockets.adapter.rooms[socket.gameName].players.forEach(username =>{
                     io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
-                        hand: deal(deckInPlay, request.number),
-                        cardsLeft: deckInPlay.length,
+                        hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
+                        cardsLeft: io.sockets.adapter.rooms[socket.gameName].deckInPlay.length,
                         enoughCards: true
                     });
                 })
@@ -348,8 +359,8 @@ io.sockets.on('connection', (socket) => {
             } else {
                 //to one player
                 io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[request.to]).emit('hand delt', {
-                    hand: deal(deckInPlay, request.number),
-                    cardsLeft: deckInPlay.length,
+                    hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
+                    cardsLeft: io.sockets.adapter.rooms[socket.gameName].deckInPlay.length,
                     enoughCards: true
                 });
                 io.in(socket.gameName).emit('hand delt notification', {
