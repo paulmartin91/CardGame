@@ -107,12 +107,12 @@
                 <button class="mb-5 btn btn-success" value = "false" id = "readyButton" onclick="ready(this)">ready up</button>
                 <div class="mt-5">
                     <div class="border">
-                        <div id="messageBox" style="cursor:default; height: 150px; overflow: scroll;">
-                            <p id="messages" style="word-break: break-all;"></p>
+                        <div id="lobbymessageBox" style="cursor:default; height: 150px; overflow: scroll;">
+                            <p id="lobbymessages" style="word-break: break-all;"></p>
                         </div>
-                        <form onsubmit="typeMessage(this);return false">
+                        <form onsubmit="typeMessage(this, 'lobby');return false">
                             <div class="input-group">
-                                <input type="text" style="border-radius: 0" name="message" class="border form-control" placeholder="Type message..." id="messagesInput">
+                                <input type="text" style="border-radius: 0" name="message" class="border form-control" placeholder="Type message..." id="lobbymessagesInput">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit" style="border-radius: 0">Send Message</button>
                                 </div>
@@ -150,6 +150,22 @@
                 </form>
                 <div style="display: flex; flex-wrap: wrap;" id="hand"></div>
             </div>
+            <!-- Message Box -->
+            <div class="mt-5">
+                    <div class="border">
+                        <div id="gamemessageBox" style="cursor:default; height: 150px; overflow: scroll; background-color: white; color: black">
+                            <p id="gamemessages" style="word-break: break-all;"></p>
+                        </div>
+                        <form onsubmit="typeMessage(this, 'game');return false">
+                            <div class="input-group">
+                                <input type="text" style="border-radius: 0" name="message" class="border form-control" placeholder="Type message..." id="gamemessagesInput">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="submit" style="border-radius: 0">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
         </div>
     </body>
 </html>

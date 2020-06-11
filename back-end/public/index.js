@@ -211,7 +211,7 @@ socket.on('join game response', response => {
 socket.on('new user joined game', (user) => {
     console.log(user)
     document.getElementById("userList").innerHTML = ''
-    document.getElementById("messages").innerHTML += `${user.username} has joined the lobby, currently ${user.users.length == 1 ? ' 1 player' : `${user.users.length} players`} in lobby <br>`
+    document.getElementById("lobbymessages").innerHTML += `${user.username} has joined the lobby, currently ${user.users.length == 1 ? ' 1 player' : `${user.users.length} players`} in lobby <br>`
     user.users.forEach(x=>document.getElementById("userList").innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center" id=${x}>${x}</li>`)  //<span class="badge badge-warning" id="${x}">waiting</span>
 }); 
 
@@ -274,30 +274,42 @@ socket.on('player ready status changed', user => {
 // })
 
 //send messages
-const typeMessage = event => {
+const typeMessage = (event, location) => {
     if (event.message.value.length > 0) {
-        socket.emit('send lobby message', {
-            message: event.message.value,
-            username: socket.username
-        })
+            socket.emit(`send message`, {
+                message: event.message.value,
+                username: socket.username,
+                location: location,
+                time: getTime()
+            })
     }
 }
 
 //recieve messages from all users
-socket.on('recieve lobby message', message => {
-    document.getElementById("messages").innerHTML += `<span class="text-muted small">[${getTime()}]</span> ${message.username}: ${message.message}<br>`
-    document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
-    document.getElementById("messagesInput").value = ''
+socket.on('recieve message', message => {
+    document.getElementById(`${message.location}messages`).innerHTML += `<span class="text-muted small">[${message.time}]</span> ${message.username}: ${message.message}<br>`
+    document.getElementById(`${message.location}messageBox`).scrollTop = document.getElementById(`${message.location}messageBox`).scrollHeight
+    document.getElementById(`${message.location}messagesInput`).value = ''
 })
 
 
 //all ready, starting game
 socket.on('starting game', (startObj) => {
-    if (!startObj.start) document.getElementById("messages").innerHTML += `Game starting in ${startObj.count}...<br>`
-    document.getElementById("messageBox").scrollTop = document.getElementById("messageBox").scrollHeight
+    if (!startObj.start) document.getElementById("lobbymessages").innerHTML += `Game starting in ${startObj.count}...<br>`
+    document.getElementById("lobbymessageBox").scrollTop = document.getElementById("lobbymessageBox").scrollHeight
     if (startObj.start) {
         document.getElementById("lobbyPage").style.display = 'none'
         document.getElementById("gamePage").style.display = ''
+
+        //fill messages
+        startObj.chat.forEach((x, y)=>{
+            console.log(`y = ${y} and len = ${startObj.chat.length}`)
+            document.getElementById(`gamemessages`).innerHTML += `<span class="text-muted small">[${x.time}]</span> ${x.username}: ${x.message}<br>`
+            if (y == startObj.chat.length-1) {
+                document.getElementById(`gamemessageBox`).scrollTop = document.getElementById(`gamemessageBox`).scrollHeight
+            }
+        })
+
         startObj.users.forEach(x=>{
             console.log(startObj.users)
             console.log(x)

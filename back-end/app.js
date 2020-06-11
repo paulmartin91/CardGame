@@ -180,6 +180,7 @@ io.sockets.on('connection', (socket) => {
             io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
             io.sockets.adapter.rooms[request.name].deckInPlay = shuffle(Array.from(cards.Deck))
             io.sockets.adapter.rooms[request.name].readyPlayers = 0
+            io.sockets.adapter.rooms[request.name].chat = []
             socket.emit('response create new game', {
                 exists: false,
                 name: request.name
@@ -283,7 +284,8 @@ io.sockets.on('connection', (socket) => {
                     io.to(socket.gameName).emit('starting game', {
                         count: countDown,
                         start: countDown == 0,
-                        users: io.sockets.adapter.rooms[socket.gameName].players
+                        users: io.sockets.adapter.rooms[socket.gameName].players,
+                        chat: io.sockets.adapter.rooms[socket.gameName].chat
                     })
                 }
                 countDown--
@@ -294,10 +296,14 @@ io.sockets.on('connection', (socket) => {
 
     //lobby message box
 
-    socket.on('send lobby message', message => {
-        io.emit('recieve lobby message', message)
+    socket.on('send message', message => {
+        io.sockets.adapter.rooms[socket.gameName].chat.push({
+            message: message.message,
+            username: message.username,
+            time: message.time
+        })
+        io.emit('recieve message', message)
     })
-
 
     //game mechanics
 
