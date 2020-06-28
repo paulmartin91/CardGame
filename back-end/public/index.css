@@ -30,7 +30,7 @@
 /* Game Page */
 
 .game-board-4p {
-    background-color: #2196F3;
+    background-color:white;
     height: 400px;
     /* display: grid;
     grid-template-areas:
@@ -84,7 +84,7 @@
 
 .player {
     height: 150px;
-    background-color: lightblue;
+    /* background-color: lightblue; */
     color: black;
     display: flex;
     /* flex-wrap: nowrap; */

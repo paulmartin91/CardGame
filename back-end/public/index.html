@@ -18,7 +18,7 @@
 
         <!-- Login Page -->
 
-        <div id = "loginPage" class="container text-center" style="max-width: 900px; display: ''">
+        <div id = "loginPage" class="container text-center" style="max-width: 900px; display: none">
             <h1 class="text-center mt-5" style="color: white;">Deck of Cards</h1>
             <h4 class=" mt-5" style="color: white;">A place to sit and play cards. You can play with friends, find a game to join or host your own game. Login or create an account below to get started.</h4>
             <div class = "border loginBody container" style="display: ''; background-color: white"">
@@ -124,39 +124,41 @@
 
         <!-- Card Game Page -->
 
-        <div id="gamePage" style="display: none; color: white">
+        <div class = "container-fluid" id="gamePage" style="height: 100vh; color: white">
+            <div class="container-fluid text-center">
                 <h1>Card Game Page - <span id="gameUsername"></span></h1>
-                <div id="gameBoard" class="container game-board-4p" style="background-color: white; color: black;">
-                    <div id="otherPlayers"></div>
-                    <div class="container align-self-center" style="display: flex; background-color: green; flex-wrap: wrap; min-height: 150px; padding-bottom: 10px;" id="gameCards"></div>
-                </div>
-            <div class = "container pt-2" style="background-color: white; color: black">
-                <form class="form-inline" onsubmit="deal(this);return false">
-                        <div class="form-group">
-                            <div class="input-group">
-                                <input class="form-control" name="number" type="number" min="1" max="52"></input>
-                            </div>
-                            <div class="dropdown">
-                                <button type="submit" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    Deal to...
-                                </button>
-                                <div id="dealSelect" class="dropdown-menu">
-                                    <li>
-                                        <input type="submit" onclick="setDealOption(this)" class="form-control btn" name="submit" value="All" style="width: 100%">
-                                    </li>
-                                </div>
-                            </div>
-                        </div>
-                </form>
-                <div style="display: flex; flex-wrap: wrap;" id="hand"></div>
             </div>
-            <!-- Message Box -->
-            <div class="mt-5">
-                    <div class="border">
-                        <div id="gamemessageBox" style="cursor:default; height: 150px; overflow: scroll; background-color: white; color: black">
+            <div class = "row" style="height: calc(100% - 60px);">
+                <!--Deal Box-->
+                <div class = "col-sm-3" style="display: flex; flex-direction: column; justify-content: space-between">
+                    <div class="container" style="background-color: ''; height: 50%; display: flex; justify-content: space-between; flex-direction: column; color: black">
+                        <div class="container mb-1" style="background-color: white; height: 100%; color: black">
+                            <h2>Deal Options</h2>
+                            <form class="form-inline mt-3" onsubmit="deal(this);return false">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <input class="form-control" name="number" type="number" min="1" max="52"></input>
+                                    </div>
+                                    <div class="dropdown">
+                                        <button type="submit" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                            Deal to...
+                                        </button>
+                                        <div id="dealSelect" class="dropdown-menu">
+                                            <li>
+                                                <input type="submit" onclick="setDealOption(this)" class="form-control btn" name="submit" value="All" style="width: 100%">
+                                            </li>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- Message Box -->
+                    <div class="container mt-1 mb-2" style="height: 50%; display: flex; justify-content: space-between; flex-direction: column">
+                        <div id="gamemessageBox" style="cursor:default; height: 100%; overflow: scroll; background-color: white; color: black">
                             <p id="gamemessages" style="word-break: break-all;"></p>
                         </div>
-                        <form onsubmit="typeMessage(this, 'game');return false">
+                        <form onsubmit="typeMessage(this, 'game');return false" style="background-color: white;">
                             <div class="input-group">
                                 <input type="text" style="border-radius: 0" name="message" class="border form-control" placeholder="Type message..." id="gamemessagesInput">
                                 <div class="input-group-append">
@@ -166,6 +168,17 @@
                         </form>
                     </div>
                 </div>
+                <!-- Table Box-->
+                <div class = "col mb-2">
+                    <div id="gameBoard" class="container-fluid game-board-4p" style="color: black; height: 100%;">
+                        <div id="otherPlayers"></div>
+                        <div class="container align-self-center" style="display: flex; background-color: green; border-radius: 50px; flex-wrap: wrap; height: 500px;" id="gameCards"></div>
+                    </div>
+                    <div class = "container-fluid" style="color: black">
+                        <div style="display: flex; flex-wrap: wrap;" id="hand"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
