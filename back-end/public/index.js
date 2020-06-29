@@ -207,7 +207,7 @@ socket.on('join game response', response => {
 
 //LOBBY PAGE
 
-//infrom userbase new user has joined
+//inform userbase new user has joined
 socket.on('new user joined game', (user) => {
     console.log(user)
     document.getElementById("userList").innerHTML = ''
@@ -239,10 +239,12 @@ socket.on('player ready status changed', user => {
         document.getElementById("readyButton").value = "true"
         document.getElementById("readyButton").innerHTML = "unready"
         document.getElementById("readyButton").className = "mb-5 btn btn-warning"
+        document.getElementById(user.username).style = "background-color: #B7E2C0; transition: 0.5s"
     } else {
         document.getElementById("readyButton").value = "false"
         document.getElementById("readyButton").innerHTML = "ready up"
         document.getElementById("readyButton").className = "mb-5 btn btn-success"
+        document.getElementById(user.username).style = "background-color:; transition: 0.5s"
     }
 })
 

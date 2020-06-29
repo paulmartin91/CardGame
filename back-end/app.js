@@ -188,7 +188,7 @@ io.sockets.on('connection', (socket) => {
             setTimeout(()=>{
                 io.to(request.name).emit('new user joined game', {
                     username: socket.username,
-                    users: gameList[request.name].playerList,
+                    users: io.sockets.adapter.rooms[request.name].players,
                 });
              }, 200)
         }
@@ -204,15 +204,16 @@ io.sockets.on('connection', (socket) => {
             if (gameList[request.name].password) {
                 if (request.password == gameList[request.name].password) {
                     //join successful
+                    socket.gameName = request.name
                     await gameList[request.name].playerList.push(socket.username)
                     await socket.join(request.name);
                     await io.sockets.adapter.rooms[request.name].players.push(socket.username)
                     io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                     setTimeout(()=> {
-                    io.to(request.name).emit('new user joined game', {
-                        username: socket.username,
-                        users: io.sockets.adapter.rooms[request.name].players,
-                    });
+                        io.to(request.name).emit('new user joined game', {
+                            username: socket.username,
+                            users: io.sockets.adapter.rooms[request.name].players,
+                        });
                     }, 200)
                     socket.emit('join game response', {
                         success: true,
@@ -226,13 +227,17 @@ io.sockets.on('connection', (socket) => {
             console.log('game has no password')
                 //join successful
                 socket.gameName = request.name
+                await gameList[request.name].playerList.push(socket.username)
                 await socket.join(request.name);
                 await io.sockets.adapter.rooms[request.name].players.push(socket.username)
+                io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                 setTimeout(()=> {
-                io.to(request.name).emit('new user joined game', {
-                    username: socket.username,
-                    users: gameList[request.name].playerList,
-                });
+                    console.log(`players = ${io.sockets.adapter.rooms[request.name].players}`)
+                    console.log(`playerList = ${gameList[request.name].playerList}`)
+                    io.to(request.name).emit('new user joined game', {
+                        username: socket.username,
+                        users: io.sockets.adapter.rooms[request.name].players,
+                    });
                 }, 200)
                 socket.emit('join game response', {
                     success: true,
@@ -350,6 +355,7 @@ io.sockets.on('connection', (socket) => {
         } else {
             //to all players
             if (request.to === "All") {
+                console.log(io.sockets.adapter.rooms[socket.gameName].playersIds)
                 io.sockets.adapter.rooms[socket.gameName].players.forEach(username =>{
                     io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
                         hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
