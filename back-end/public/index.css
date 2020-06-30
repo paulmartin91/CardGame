@@ -32,37 +32,6 @@
 .game-board-4p {
     background-color:white;
     height: 400px;
-    /* display: grid;
-    grid-template-areas:
-        'p1 p1 p1' 
-        'p2 table p3';
-    grid-gap: 10px;
-    padding: 10px;
-    grid-template-columns: auto 50% auto;
-    grid-template-rows: 25% auto; */
-}
-
-.game-board-4p > div {
-    background-color: white;
-    text-align: center;
-    padding: 20px 0;
-    font-size: 30px;
-}
-
-.item1 { 
-    grid-area: table;
-}
-.item2 { 
-    grid-area: p1;
-}
-.item3 { 
-    grid-area: p2; 
-}
-.item4 { 
-    grid-area: p3; 
-}
-.item5 { 
-    grid-area: p4; 
 }
 
 /* cards */
