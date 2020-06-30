@@ -312,6 +312,8 @@ socket.on('starting game', (startObj) => {
             }
         })
 
+        console.log(`startObj = ${startObj}`)
+
         startObj.users.forEach(x=>{
             console.log(startObj.users)
             console.log(x)
@@ -335,19 +337,26 @@ const playCard = (card) => {
     let selectedCard = card.src.match(/(.{2})\.png$/)[1]
     socket.emit('request card played', {
         card: selectedCard,
-        blind: false,
+        cardSrc: card.src,
+        blind: false
     })
     //this needs to be done through the server, atm cards just appear to player that played them
-    document.getElementById("gameCards").innerHTML+= `<div class = "img-container"><img style="max-width:100%; height: auto;" src="${card.src}" onclick="playCard(this)"></img></div>`
+    
     card.remove()
 }
 
 //response from played card
-socket.on('deal cards reponse', reposnse => {
-
+socket.on('response card played', response => {
+    console.log('response card played')
+    document.getElementById("gameCards").innerHTML+= `<div class = "img-container"><img style="max-width:100%; height: auto;" src="${response.cardSrc}" onclick="#"></img></div>`
+    //console.log(document.getElementById(`${response.player}blindcards`)) //.removeChild(document.getElementById(`${response.player}blindcards`).lastChild);
 })
 
+socket.on('response es card played', response => {
+    document.getElementById(`${response}blindcards`).removeChild(document.getElementById(`${response}blindcards`).lastChild)
+})
 
+//Who to deal to
 const setDealOption = (event) => {
     dealTo = event.value
 }

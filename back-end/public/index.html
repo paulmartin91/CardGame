@@ -170,21 +170,21 @@
                 </div>
                 <!-- Table Box-->
                 <div class = "col mb-2">
-                    <div class="container-fluid game-board-4p" style="color: black; height: 100%; background-color: red;">
+                    <div class="container-fluid game-board-4p" style="color: black; height: 100%; background-color: red; display: flex;">
                         <div class="container align-self-center" style="display: flex; background-color: green; border-radius: 50px; flex-direction: column; justify-content: space-between; height: 500px;">
                             <!-- Other Players -->
-                            <div class = "container" style="display: flex; color: black; background-color: pink; height: 150px; width: 80%;">
-                                <div id="${x}blindcards" class="player"></div>
+                            <div class = "container" id="otherPlayers" style="display: flex; justify-content: flex-end; color: black; border: dashed 1px; height: 150px; max-width: 700px;">
+                            
                             </div>
                             
                             <!-- Active Cards -->
-                            <div class = "container" id="gameCards" id="gameBoard" style="display: flex; color: black; background-color: pink; height: 150px; width: 80%;">
-                                <div id="${x}blindcards" class="player"></div>
+                            <div class = "container" id="gameCards" id="gameBoard" style="display: flex; color: black; border: dashed 1px; height: 150px; width: 50%;">
+                                
                             </div>
 
                             <!-- Player -->
-                            <div class = "container" style="display: flex; color: black; background-color: pink; height: 150px; width: 80%;">
-                                <div style="display: flex; flex-wrap: wrap;" id="hand"></div>
+                            <div class = "container" id="hand" style="display: flex; color: black; border: dashed 1px; height: 150px; width: 80%;">
+
                             </div>
                         </div>
                     </div>

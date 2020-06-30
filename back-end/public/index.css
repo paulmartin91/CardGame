@@ -40,10 +40,9 @@
 }
 
 .img-container-blind {
-    flex-shrink: 40;
+    flex-wrap: wrap;
     overflow: hidden;
-    width: 1px;
-    flex-grow: 5
+    flex-grow: 0
 }
 
 .img-container-blind img {

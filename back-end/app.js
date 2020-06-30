@@ -324,26 +324,24 @@ io.sockets.on('connection', (socket) => {
     socket.on('request card played', request => {
         // card: selectedCard,
         // blind: false
-        // io.to(request.gameName).emit('')
-        console.log(`${socket.username} just played a ${request.card} in ${socket.gameName}`)
+        console.log(socket.gameName)
+        io.to(socket.gameName).emit('response card played', {
+            player: socket.username,
+            card: request.card,
+            cardSrc: request.cardSrc,
+            blind: request.blind
+        })
+        socket.to(socket.gameName).emit('response es card played', socket.username)
 
+        console.log(`${socket.username} just played a ${request.card} in ${socket.gameName}`)
     })
 
     //deal cards
     socket.on('deal cards request', async request => {
-        console.log(request.to)
-        console.log(`request to deal from ${socket.username}`)
+
+        console.log(`request to deal from ${socket.username} to ${request.to}`)
 
         let cardsRequested = await request.to == "All" ? (request.number * io.sockets.adapter.rooms[socket.gameName].length) : request.number
-
-        console.log(`cardsRequested = ${cardsRequested}`)
-        console.log(`request to = ${request.to}`)
-        console.log(`userList.length = ${io.sockets.adapter.rooms[socket.gameName].length}`)
-        console.log(`req.number = ${request.number}`)
-        console.log(`game name = ${socket.gameName}`)
-
-        console.log(`length of deck = ${io.sockets.adapter.rooms[socket.gameName].deckInPlay.length}`)
-
 
         //if user requested more cards than deck has available
         if (cardsRequested > io.sockets.adapter.rooms[socket.gameName].deckInPlay.length) {
