@@ -279,7 +279,7 @@ io.sockets.on('connection', (socket) => {
         //if all players are ready and there is more than one player
         if (io.sockets.adapter.rooms[socket.gameName].readyPlayers == io.sockets.adapter.rooms[socket.gameName].length){// to test with one user --> && Object.keys(users).length > 1) {
             console.log('starting game')
-            let countDown = 5
+            let countDown = 1 //<-- 1 for dev stage, 5 in production
             const count = setInterval( () => {
                 console.log(io.sockets.adapter.rooms[socket.gameName].players)
                 //if a player unreadys, stop the countdown
@@ -353,11 +353,11 @@ io.sockets.on('connection', (socket) => {
         } else {
             //to all players
             if (request.to === "All") {
-                console.log(io.sockets.adapter.rooms[socket.gameName].playersIds)
+                let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (io.sockets.adapter.rooms[socket.gameName].players.length * request.number)
                 io.sockets.adapter.rooms[socket.gameName].players.forEach(username =>{
                     io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
                         hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
-                        cardsLeft: io.sockets.adapter.rooms[socket.gameName].deckInPlay.length,
+                        cardsLeft: cardsLeft,
                         enoughCards: true
                     });
                 })
@@ -368,9 +368,10 @@ io.sockets.on('connection', (socket) => {
                 })
             } else {
                 //to one player
+                let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (io.sockets.adapter.rooms[socket.gameName].players.length * request.number)
                 io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[request.to]).emit('hand delt', {
                     hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
-                    cardsLeft: io.sockets.adapter.rooms[socket.gameName].deckInPlay.length,
+                    cardsLeft: cardsLeft,
                     enoughCards: true
                 });
                 io.in(socket.gameName).emit('hand delt notification', {

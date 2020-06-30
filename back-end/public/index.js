@@ -319,7 +319,7 @@ socket.on('starting game', (startObj) => {
             console.log(x)
             if (x !== socket.username) {
                 document.getElementById('otherPlayers').innerHTML += `
-                <div id="${x}blindcards" class="player"></div>`
+                <div id="${x}blindcards" class="player" style="display: flex; justify-content: flex-end; color: black; border: dashed 1px; height: 150px; max-width: 700px;"></div>`    
             }
             //deal form controles
             document.getElementById('dealSelect').innerHTML += `
@@ -348,7 +348,8 @@ const playCard = (card) => {
 //response from played card
 socket.on('response card played', response => {
     console.log('response card played')
-    document.getElementById("gameCards").innerHTML+= `<div class = "img-container"><img style="max-width:100%; height: auto;" src="${response.cardSrc}" onclick="#"></img></div>`
+    document.getElementById("gameCards").innerHTML+= `<div class = "img-container" style="box-sizing: content-box;"><img src="${response.cardSrc}" onclick="#"></img></div>`//`<div class = "img-container"><img src="${response.cardSrc}" onclick="#"></img></div>`
+                                                     
     //console.log(document.getElementById(`${response.player}blindcards`)) //.removeChild(document.getElementById(`${response.player}blindcards`).lastChild);
 })
 
@@ -377,8 +378,9 @@ socket.on('hand delt', (result) => {
         console.log(`you've requested too many cards, there ${result.cardsLeft == 1 ? "is" : "are"} only ${result.cardsLeft} left`)
     } else {
         console.log(result)
+        document.getElementById("deckCount").innerHTML = result.cardsLeft
         result.hand.forEach(x=> {
-            document.getElementById('hand').innerHTML +=`<div class = "img-container"><img style="max-width:100%; height: auto;" src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img></div>`
+            document.getElementById('hand').innerHTML +=`<div class = "img-container"><img src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img></div>`
         })
     }
 });
@@ -391,7 +393,7 @@ socket.on('hand delt notification', (data)=>{
     data.to.forEach(x=>{
         if (x !== socket.username) {
             console.log('x')
-            document.getElementById(`${x}blindcards`).innerHTML += `<div class="img-container-blind"><img src="CardPics/blue_back.png"></img></div>`.repeat(data.number)
+            document.getElementById(`${x}blindcards`).innerHTML += `<div class = "img-container"><img src="CardPics/blue_back.png" onclick="playCard(this)"></img></div>`.repeat(data.number)
             // let childrenCount = document.getElementById(`${x}blindcards`).childElementCount
             // let widthNumber = 200/childrenCount*3
             // document.getElementsByClassName(`${x}img-container-blind`).width = `${widthNumber}px`

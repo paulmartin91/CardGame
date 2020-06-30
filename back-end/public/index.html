@@ -130,7 +130,7 @@
             </div>
             <div class = "row" style="height: calc(100% - 60px);">
                 <!--Deal Box-->
-                <div class = "col-sm-3" style="display: flex; flex-direction: column; justify-content: space-between">
+                <div class = "col-sm-3" style="display: flex; flex-direction: column; justify-content: space-between;">
                     <div class="container" style="background-color: ''; height: 50%; display: flex; justify-content: space-between; flex-direction: column; color: black">
                         <div class="container mb-1" style="background-color: white; height: 100%; color: black">
                             <h2>Deal Options</h2>
@@ -170,20 +170,23 @@
                 </div>
                 <!-- Table Box-->
                 <div class = "col mb-2">
-                    <div class="container-fluid game-board-4p" style="color: black; height: 100%; background-color: red; display: flex;">
+                    <div class="container game-board-4p" style="color: black; height: 100%; background-color: ''; display: flex;">
                         <div class="container align-self-center" style="display: flex; background-color: green; border-radius: 50px; flex-direction: column; justify-content: space-between; height: 500px;">
                             <!-- Other Players -->
-                            <div class = "container" id="otherPlayers" style="display: flex; justify-content: flex-end; color: black; border: dashed 1px; height: 150px; max-width: 700px;">
-                            
+                            <div class = "container" id="otherPlayers" style="height: 150px; max-width: 700px;">
+                                
                             </div>
                             
                             <!-- Active Cards -->
-                            <div class = "container" id="gameCards" id="gameBoard" style="display: flex; color: black; border: dashed 1px; height: 150px; width: 50%;">
-                                
+                            <div class = "container" id="gameCards" id="gameBoard" class="gameBoard" style="display: flex; align-items: center; color: black; border: dashed 1px; max-height: 150px; max-width: 800px; min-width: 800px;">
+                                <!-- Deck -->
+                                <div class="img-container-blind" style="min-width: 70px;"><div id="deckCount" style="position: absolute; height: 25px; width: 20px; background: white; border-radius: 5px; padding: 1px; z-index: 5;">52</div><img src="CardPics/blue_back.png"></img></div>
+                                <!-- Played Cards -->
+                                <!-- <div class = "img-container" style="box-sizing: content-box;"><img src="./CardPics/2C.png" onclick="playCard(this)"></img></div> -->
                             </div>
 
                             <!-- Player -->
-                            <div class = "container" id="hand" style="display: flex; color: black; border: dashed 1px; height: 150px; width: 80%;">
+                            <div class = "container" id="hand" style="display: flex; color: black; border: dashed 1px; height: 150px; max-width: 700px;">
 
                             </div>
                         </div>

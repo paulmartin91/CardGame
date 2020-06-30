@@ -36,13 +36,24 @@
 
 /* cards */
 .img-container {
-    width: 80px;
+    flex-wrap: wrap;
+    overflow: hidden;
+    flex-grow: 0;
+}
+
+.img-container:last-child {
+    overflow: visible;
+}
+
+.img-container img {
+    width: auto;
+    height: 100px;
 }
 
 .img-container-blind {
     flex-wrap: wrap;
     overflow: hidden;
-    flex-grow: 0
+    flex-grow: 0;
 }
 
 .img-container-blind img {
