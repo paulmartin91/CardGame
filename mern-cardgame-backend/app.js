@@ -33,7 +33,6 @@ var userSchema = new mongoose.Schema({
 var Users = mongoose.model("users", userSchema);
 
 //info on server
-var userList = {}; //might not need this?
 var gameList = {};
 
 //Socket Conection Start
@@ -43,7 +42,6 @@ io.on('connection', socket => {
 
       //request to log in
       socket.on('login attempt',  user => {
-          console.log('yes')
         Users.findOne({username: user.username}, (err, instance) => {
             if (err) console.log(err)
             //doesn't exist
@@ -57,10 +55,6 @@ io.on('connection', socket => {
             } else {
                 //all valid
                 if (instance.password == user.password && !instance.loggedIn) {
-                    userList[user.username] = {
-                        ready: false,
-                        userId: socket.id,
-                    }
                     //set db loggedin to true
                     Users.findOneAndUpdate({"username" : user.username}, {$set: {loggedIn: true}}, {returnNewDocument:true}).then(res => console.log(res))
                     
@@ -123,6 +117,11 @@ io.on('connection', socket => {
         })
     })
     
+    socket.on('disconnect', async () => {
+        if (socket.isLoggedIn == true){
+            Users.findOneAndUpdate({"username" : socket.username}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(`${socket.username} disconnected`))
+        }
+    });
 
 })
 

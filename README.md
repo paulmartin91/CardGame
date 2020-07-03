@@ -33,8 +33,8 @@ General App
 - Background
 
 Login Page
-- Successful login crashes server
-- 
+- ~~Successful login crashes server~~ ✓
+- Warning close button outline needs removing
 
 Pre Lobby Page
 - 

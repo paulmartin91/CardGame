@@ -7,23 +7,29 @@ import Login from './components/Login'
 import Lobby from './components/Lobby'
 import GameSearch from './components/GameSearch'
 
-const App = () => {
+//Socket Variables
+const ENDPOINT = 'localhost:3001'
+const socket = io(ENDPOINT)
+
+function App() {
 
   //States
-  const [pageDirect, setPageDirect] = useState('');
+  const [pageDirect, setPageDirect] = useState('Login');
   
-  //Socket Variables
-  const ENDPOINT = 'localhost:3001'
-  const socket = io(ENDPOINT)
-
+  
   useEffect(() => {
+
 
   }, [ENDPOINT])
 
   return(
     <div>
-      <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} />
-      <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} />
+      {
+        pageDirect == 'Login' ? <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
+        pageDirect == 'GameSearch' ? <GameSearch socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
+        pageDirect == 'Lobby' ? <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> :
+        <p>error</p>
+      }
       {/* <Lobby />
       <GameSearch />
       <GamePage /> */}

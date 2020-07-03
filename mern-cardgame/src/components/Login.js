@@ -11,7 +11,6 @@ const Login = ({socket, ENDPOINT, pageDirect, setPageDirect}) => {
     const [loginUsernameInvalid, setLoginUsernameInvalid] = useState(false)
     const [loginUsernameAlreadyLoggedIn, setLoginUsernameAlreadyLoggedIn] = useState(false)
     const [loginPasswordInvalid, setLoginPasswordInvalid] = useState(false)
-    const [loginSuccess, setLoginSuccess] = useState(false)
 
     //Create Account
     const [createAccountUsername, setCreateAccountUsername] = useState('')
@@ -29,7 +28,9 @@ const Login = ({socket, ENDPOINT, pageDirect, setPageDirect}) => {
         //Handle Login Response
         socket.on('log in attempt response', response => {
             console.log(response)
-            if (!response.exists) {
+            if (response.success) {
+                setPageDirect('GameSearch')
+            } else if (!response.exists) {
                 //Hide other warnings
                 setLoginUsernameAlreadyLoggedIn(false)
                 setLoginPasswordInvalid(false)
@@ -45,7 +46,6 @@ const Login = ({socket, ENDPOINT, pageDirect, setPageDirect}) => {
                 //Hide other warnings
                 setLoginUsernameAlreadyLoggedIn(false)
                 setLoginUsernameInvalid(false)
-                console.log('here')
                 //Show This Warning
                 setLoginPasswordInvalid(true)
             }
@@ -126,7 +126,7 @@ const Login = ({socket, ENDPOINT, pageDirect, setPageDirect}) => {
                             </button>
                         </div>
                         <div className="alert alert-warning alert-dismissible fade show" style={{display: loginUsernameAlreadyLoggedIn ? '' : 'none'}}>
-                            Username doesn't exist
+                            User already logged in
                             <button type="button" class="close">
                                 <span onClick={() => setLoginUsernameAlreadyLoggedIn(false)} style={{cursor: "pointer"}}>&times;</ span>
                             </button>
