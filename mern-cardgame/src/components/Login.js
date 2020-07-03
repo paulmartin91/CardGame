@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Style/Login.scss'
 
-const Login = ({socket, ENDPOINT}) => {
+const Login = ({socket, ENDPOINT, pageDirect, setPageDirect}) => {
 
     //States
     
@@ -49,7 +49,6 @@ const Login = ({socket, ENDPOINT}) => {
                 //Show This Warning
                 setLoginPasswordInvalid(true)
             }
-            setLoginSuccess(true)
         })
 
         //Handle Create New Account Response

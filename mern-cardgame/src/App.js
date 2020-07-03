@@ -9,24 +9,21 @@ import GameSearch from './components/GameSearch'
 
 const App = () => {
 
-  //set state
-  const [name, setName] = useState('');
+  //States
+  const [pageDirect, setPageDirect] = useState('');
+  
+  //Socket Variables
   const ENDPOINT = 'localhost:3001'
   const socket = io(ENDPOINT)
 
-
   useEffect(() => {
-    
-    socket.emit('test1')
-
-    setName(name)
 
   }, [ENDPOINT])
 
   return(
     <div>
-      <Login socket={socket} ENDPOINT={ENDPOINT} />
-      <Lobby socket={socket} />
+      <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} />
+      <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} />
       {/* <Lobby />
       <GameSearch />
       <GamePage /> */}
