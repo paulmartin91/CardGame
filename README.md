@@ -19,8 +19,7 @@
 - 
 
 ### To fix...
-
-- 
+- Standardise request/resoponse calls to the server
 
 
 ### To do...
@@ -35,9 +34,13 @@ General App
 Login Page
 - ~~Successful login crashes server~~ ✓
 - Warning close button outline needs removing
+- Too many states, could I use strings for each instance instead of seperate states? Could jst use standard JS forms.
 
-Pre Lobby Page
-- 
+Game Search Page
+- Saving info on server variables and socket object, should only be in one place (saved on 'create game request')
+- Why am I emiting 'new user joined' on create new game, surely there's noone to hear it?
+- Game already exists needs an error message
+- Finish server side join game
 
 Lobby Page
 - 
