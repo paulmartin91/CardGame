@@ -26,7 +26,7 @@
 
 General App
 - ~~Migrate Login Page to React build~~ ✓
-- Migrate GameSearch Pageto React build
+- ~~Migrate GameSearch Pageto React build~~ ✓
 - Migrate Lobby Page to React build
 - Migrate Game Page to React build
 - Background
@@ -40,7 +40,7 @@ Game Search Page
 - Saving info on server variables and socket object, should only be in one place (saved on 'create game request')
 - Why am I emiting 'new user joined' on create new game, surely there's noone to hear it?
 - Game already exists needs an error message
-- Finish server side join game
+- ~~Finish server side join game~~ ✓
 
 Lobby Page
 - 

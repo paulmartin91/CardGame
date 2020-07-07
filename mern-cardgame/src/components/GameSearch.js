@@ -10,6 +10,9 @@ const GameSearch = ({socket, ENDPOINT, setPageDirect}) => {
 
     useEffect(() => {        
 
+        //Load games
+        socket.emit('request refresh games')
+
         socket.on('response refresh games', response => {
             setGameList(response)
             console.log(response)

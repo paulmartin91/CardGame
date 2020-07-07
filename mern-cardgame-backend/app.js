@@ -50,6 +50,21 @@ var gameList = {
     }
 };
 
+//Create a safe gamelist to send
+const CreateExternalGameList = () => {
+    let externalGameList = {}
+    Object.keys(gameList).forEach( x=> {
+        externalGameList[x] = {
+            maxPlayers: gameList[x].maxPlayers,
+            currentPlayers: gameList[x].currentPlayers,
+            password: gameList[x].password == false ? false : '******',
+            name: gameList[x].name,
+            playerList: gameList[x].playerList,
+        }
+    })
+    return externalGameList;
+}
+
 //import card object
 var cards = require('./cards.js');
 
@@ -148,8 +163,8 @@ io.on('connection', socket => {
     //GAMESEARCH PAGE
 
     //Refresh Game List
-    socket.on('request refresh games', ()=>{
-        socket.emit('response refresh games', gameList)
+    socket.on('request refresh games', async ()=>{
+        socket.emit('response refresh games', CreateExternalGameList())
     })
 
     //Create a Game
@@ -195,7 +210,6 @@ io.on('connection', socket => {
     })
 
     //Join a Game
-    //join a game
     socket.on('join game request', async request => {
         console.log(request)
         if (!request.name in gameList) {
