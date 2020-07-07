@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import { Socket } from 'net';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 import Login from './components/Login'
@@ -14,7 +13,8 @@ const socket = io(ENDPOINT)
 function App() {
 
   //States
-  const [pageDirect, setPageDirect] = useState('Login');
+  //const [pageDirect, setPageDirect] = useState('Login');
+  const [pageDirect, setPageDirect] = useState('GameSearch'); //<- for development
   
   
   useEffect(() => {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 import './Style/Login.scss'
 
-const Login = ({socket, ENDPOINT, pageDirect, setPageDirect}) => {
+const Login = ({socket, ENDPOINT, setPageDirect}) => {
 
     //States
     
