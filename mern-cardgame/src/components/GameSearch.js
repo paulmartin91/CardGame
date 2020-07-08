@@ -22,16 +22,19 @@ const GameSearch = ({socket, ENDPOINT, setPageDirect}) => {
             if (response.exists) {
                 console.log(`response = ${response}`, 'exists')
             } else {
-                console.log(`response = ${response}`, 'success')
-                setPageDirect('Lobby')
+                console.log(response)
                 socket.gameName = response.name
+                socket.playerList = response.playerList
+                setPageDirect('Lobby')
             }
         })
 
         //Join game response
         socket.on('join game response', response => {
-            setPageDirect('Lobby')
+            console.log(response)
             socket.gameName = response.name
+            socket.playerList = response.playerList
+            setPageDirect('Lobby')
         })
 
     }, [ENDPOINT])

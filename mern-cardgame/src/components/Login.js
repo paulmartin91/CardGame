@@ -1,5 +1,4 @@
 import React, { useState, useEffect} from 'react';
-import './Style/Login.scss'
 
 const Login = ({socket, ENDPOINT, setPageDirect}) => {
 

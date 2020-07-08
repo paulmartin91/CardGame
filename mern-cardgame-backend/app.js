@@ -196,15 +196,16 @@ io.on('connection', socket => {
 
             socket.emit('response create new game', {
                 exists: false,
-                name: request.name
+                name: request.name,
+                playerList: io.sockets.adapter.rooms[request.name].players
             })
 
-            setTimeout(()=>{
-                io.to(request.name).emit('new user joined game', {
-                    username: socket.username,
-                    users: io.sockets.adapter.rooms[request.name].players,
-                });
-            }, 200)
+            // setTimeout(()=>{
+            //     io.to(request.name).emit('new user joined game', {
+            //         username: socket.username,
+            //         users: io.sockets.adapter.rooms[request.name].players,
+            //     });
+            // }, 200)
 
         }
     })
@@ -228,7 +229,7 @@ io.on('connection', socket => {
                     setTimeout(()=> {
                         io.to(request.name).emit('new user joined game', {
                             username: socket.username,
-                            users: io.sockets.adapter.rooms[request.name].players,
+                            playerList: io.sockets.adapter.rooms[request.name].players,
                         });
                     }, 200)
                     socket.emit('join game response', {
@@ -252,17 +253,70 @@ io.on('connection', socket => {
                     console.log(`playerList = ${gameList[request.name].playerList}`)
                     io.to(request.name).emit('new user joined game', {
                         username: socket.username,
-                        users: io.sockets.adapter.rooms[request.name].players,
+                        playerList: io.sockets.adapter.rooms[request.name].players,
                     });
                 }, 200)
                 socket.emit('join game response', {
                     success: true,
-                    name: request.name
+                    name: request.name,
+                    playerList: io.sockets.adapter.rooms[request.name].players
                 })
             }
         }
     })
 
+
+    //LOBBY
+/*
+    //handle ready requests from lobby
+    socket.on('ready', async isReady => {
+        //toggle user ready
+        userList[socket.username].ready = await isReady
+        //add or subtract from readyplayers
+        isReady ? io.sockets.adapter.rooms[socket.gameName].readyPlayers++ : io.sockets.adapter.rooms[socket.gameName].readyPlayers--
+        //add or remove from 'ready' room
+        // userList[username].ready == true ? socket.join('ready') : socket.leave('ready')
+        // console.log(`${username} ready = ${users[username].ready}`)
+
+        console.log(socket.username)
+        console.log(socket.gameName)
+
+        socket.to(socket.gameName).emit('other player ready status changed', {
+            username: socket.username,
+            ready: isReady,
+        });
+
+        socket.emit('player ready status changed', {
+            username: socket.username,
+            ready: isReady,
+        })
+
+        console.log(`number of ready players = ${io.sockets.adapter.rooms[socket.gameName].readyPlayers}`)
+        console.log(`number of players = ${io.sockets.adapter.rooms[socket.gameName].length}`)
+
+        //if all players are ready and there is more than one player
+        if (io.sockets.adapter.rooms[socket.gameName].readyPlayers == io.sockets.adapter.rooms[socket.gameName].length){// to test with one user --> && Object.keys(users).length > 1) {
+            console.log('starting game')
+            let countDown = 1 //<-- 1 for dev stage, 5 in production
+            const count = setInterval( () => {
+                console.log(io.sockets.adapter.rooms[socket.gameName].players)
+                //if a player unreadys, stop the countdown
+                if (io.sockets.adapter.rooms[socket.gameName].length !== io.sockets.adapter.rooms[socket.gameName].readyPlayers) {
+                    clearInterval(count)
+                } else {
+                    io.to(socket.gameName).emit('starting game', {
+                        count: countDown,
+                        start: countDown == 0,
+                        users: io.sockets.adapter.rooms[socket.gameName].players,
+                        chat: io.sockets.adapter.rooms[socket.gameName].chat
+                    })
+                }
+                countDown--
+                if (countDown < 0) clearInterval(count)
+            }, 1000)
+        }
+    })
+*/
     
     socket.on('disconnect', async () => {
         if (socket.isLoggedIn == true){

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
+//Components
 import Login from './components/Login'
 import Lobby from './components/Lobby'
 import GameSearch from './components/GameSearch'
+import './components/Style/Components.scss'
 
 //Socket Variables
 const ENDPOINT = 'localhost:3001'
@@ -14,7 +16,7 @@ function App() {
 
   //States
   //const [pageDirect, setPageDirect] = useState('Login');
-  const [pageDirect, setPageDirect] = useState('GameSearch'); //<- for development
+  const [pageDirect, setPageDirect] = useState('Login'); //<- for development
   
   
   useEffect(() => {
