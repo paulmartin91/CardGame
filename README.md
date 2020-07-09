@@ -1,5 +1,5 @@
 # Full MERN stack multiplayer card game
-
+.
 ## The what...
 <p>A simple, yet versitile multiplayer game that gives users a set of deck cards and the functions to do anything they want with them.</p>
 
