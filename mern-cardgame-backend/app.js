@@ -32,6 +32,9 @@ var userSchema = new mongoose.Schema({
 
 var Users = mongoose.model("users", userSchema);
 
+//Log out all users on app start
+Users.updateMany({}, {$set: {loggedIn: false}}, {returnNewDocument:true}).then(res => console.log(`logged out all users`))
+
 //info on server that depreciates on server reset
 var gameList = {
     paul: {
@@ -182,13 +185,15 @@ io.on('connection', socket => {
                 password: request.password == '' ? false : request.password,
                 currentPlayers: 1,
                 name: request.name,
-                playerList: [socket.username]
+                playerList: {
+                    [socket.username]: false
+                }
             }
 
             socket.gameName = request.name
             socket.join(request.name);
 
-            io.sockets.adapter.rooms[request.name].players = [socket.username]
+            io.sockets.adapter.rooms[request.name].players = {[socket.username]: false}
             io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
             io.sockets.adapter.rooms[request.name].deckInPlay = shuffle(Array.from(cards.Deck))
             io.sockets.adapter.rooms[request.name].readyPlayers = 0
@@ -222,9 +227,9 @@ io.on('connection', socket => {
                 if (request.password == gameList[request.name].password) {
                     //join successful
                     socket.gameName = request.name
-                    await gameList[request.name].playerList.push(socket.username)
+                     gameList[request.name].playerList[socket.username] = false
                     await socket.join(request.name);
-                    await io.sockets.adapter.rooms[request.name].players.push(socket.username)
+                    io.sockets.adapter.rooms[request.name].players[socket.username] = false
                     io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                     setTimeout(()=> {
                         io.to(request.name).emit('new user joined game', {
@@ -244,9 +249,9 @@ io.on('connection', socket => {
             console.log('game has no password')
                 //join successful
                 socket.gameName = request.name
-                await gameList[request.name].playerList.push(socket.username)
+                gameList[request.name].playerList[socket.username] = false
                 await socket.join(request.name);
-                await io.sockets.adapter.rooms[request.name].players.push(socket.username)
+                io.sockets.adapter.rooms[request.name].players[socket.username] = false
                 io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                 setTimeout(()=> {
                     console.log(`players = ${io.sockets.adapter.rooms[request.name].players}`)
@@ -267,13 +272,14 @@ io.on('connection', socket => {
 
 
     //LOBBY
-/*
+
     //handle ready requests from lobby
     socket.on('ready', async isReady => {
+        console.log(!isReady)
         //toggle user ready
-        userList[socket.username].ready = await isReady
+        io.sockets.adapter.rooms[socket.gameName].players[socket.username] = !isReady
         //add or subtract from readyplayers
-        isReady ? io.sockets.adapter.rooms[socket.gameName].readyPlayers++ : io.sockets.adapter.rooms[socket.gameName].readyPlayers--
+        !isReady ? io.sockets.adapter.rooms[socket.gameName].readyPlayers++ : io.sockets.adapter.rooms[socket.gameName].readyPlayers--
         //add or remove from 'ready' room
         // userList[username].ready == true ? socket.join('ready') : socket.leave('ready')
         // console.log(`${username} ready = ${users[username].ready}`)
@@ -283,13 +289,10 @@ io.on('connection', socket => {
 
         socket.to(socket.gameName).emit('other player ready status changed', {
             username: socket.username,
-            ready: isReady,
+            ready: !isReady,
         });
 
-        socket.emit('player ready status changed', {
-            username: socket.username,
-            ready: isReady,
-        })
+        socket.emit('player ready status changed', !isReady)
 
         console.log(`number of ready players = ${io.sockets.adapter.rooms[socket.gameName].readyPlayers}`)
         console.log(`number of players = ${io.sockets.adapter.rooms[socket.gameName].length}`)
@@ -316,7 +319,7 @@ io.on('connection', socket => {
             }, 1000)
         }
     })
-*/
+
     
     socket.on('disconnect', async () => {
         if (socket.isLoggedIn == true){
