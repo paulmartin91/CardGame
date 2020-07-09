@@ -28,6 +28,7 @@ const Login = ({socket, ENDPOINT, setPageDirect}) => {
         socket.on('log in attempt response', response => {
             console.log(response)
             if (response.success) {
+                socket.username = response.username
                 setPageDirect('GameSearch')
             } else if (!response.exists) {
                 //Hide other warnings

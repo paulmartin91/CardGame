@@ -17,3 +17,13 @@
     max-width: 500px;
     background-color: "white";
 }
+
+.ready {
+    background-color: #B7E2C0; 
+    transition: 0.5s
+}
+
+.not-ready {
+    background-color: '';
+    transition: 0.5s;
+} 
