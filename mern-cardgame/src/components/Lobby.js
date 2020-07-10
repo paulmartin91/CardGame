@@ -1,12 +1,13 @@
 import React, { useState, useEffect} from 'react';
 
 
-const Lobby = ({socket}) => {
+const Lobby = ({socket, ENDPOINT}) => {
 
     //States
     const [playerList, setPlayerList] = useState(socket.playerList)
     const [isReady, setIsReady] = useState(false)
-
+    const [messages, setMessages] = useState([])
+    
     useEffect(()=>{
 
         socket.on('other player ready status changed', ready => {
@@ -20,9 +21,21 @@ const Lobby = ({socket}) => {
         })
   
         socket.on('new user joined game', response => {
-            console.log(response)
+            setMessages(messages => [...messages, {
+                time: response.time,
+                username: 'Server',
+                message: `${response.username} has joined the lobby, currently ${Object.keys(playerList).length == 1 ? ' 1 player' : `${Object.keys(playerList).length} players`} in the lobby`
+            }])
+            document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
             setPlayerList(response.playerList)
             // document.getElementById("lobbymessages").innerHTML += `${user.username} has joined the lobby, currently ${user.users.length == 1 ? ' 1 player' : `${user.users.length} players`} in lobby <br>`
+        })
+
+        socket.on('recieve message', async message => {
+            setMessages(messages => [...messages, message])
+            document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
+            document.getElementById(`messagesInput`).value = ''
+            console.log(messages)
         })
 
         /*
@@ -61,10 +74,22 @@ const Lobby = ({socket}) => {
         })
         */
 
-    })
+    }, [ENDPOINT])
+
+    const handleSubmit = event => {
+
+        if (event.target.message.value.length > 0) {
+            socket.emit(`send message`, {
+                message: event.target.message.value,
+                username: socket.username,
+                location: 'Lobby',
+            })
+        }
+
+        event.preventDefault();
+    }
 
     const handleClick = (event) => {
-        console.log(playerList)
         if (event.target.name === "ready-button") {
             socket.emit('ready', isReady);
         }
@@ -82,12 +107,14 @@ const Lobby = ({socket}) => {
                 <button class={isReady ? "ready mb-5 btn btn-warning" : "not-ready mb-5 btn btn-success"} name="ready-button" onClick={handleClick}>{isReady ? "unready" : "ready up"}</button>
                 <div class="mt-5">
                     <div class="border">
-                        <div id="lobbymessageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>
-                            <p id="lobbymessages" style={{wordBreak: "break-all"}}></p>
+                        <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>
+                            <p id="messages" style={{wordBreak: "break-all"}}>
+                                { messages.map( x => <p1><span class="text-muted small">[{x.time}]</span>{x.username}: {x.message}<br /></p1>) }
+                            </p>
                         </div>
-                        <form onsubmit="typeMessage(this, 'lobby');return false">
+                        <form onSubmit={handleSubmit}>
                             <div class="input-group">
-                                <input type="text" style={{borderRadius: 0}} name="message" class="border form-control" placeholder="Type message..." id="lobbymessagesInput" />
+                                <input type="text" style={{borderRadius: 0}} name="message" class="border form-control" placeholder="Type message..." id="messagesInput" />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit" style={{borderRadius: 0}}>Send Message</button>
                                 </div>

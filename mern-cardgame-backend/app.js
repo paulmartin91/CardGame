@@ -53,6 +53,17 @@ var gameList = {
     }
 };
 
+//Get the time
+const getTime = () => {
+    let unix_timestamp = Math.round((new Date()).getTime() / 1000);
+    var date = new Date(unix_timestamp * 1000);
+    var hours = date.getHours();
+    var minutes = "0" + date.getMinutes();
+    var seconds = "0" + date.getSeconds();
+    var formattedTime = hours + ':' + minutes.substr(-2)// + ':' + seconds.substr(-2);
+    return formattedTime
+}
+
 //Create a safe gamelist to send
 const CreateExternalGameList = () => {
     let externalGameList = {}
@@ -259,6 +270,7 @@ io.on('connection', socket => {
                     io.to(request.name).emit('new user joined game', {
                         username: socket.username,
                         playerList: io.sockets.adapter.rooms[request.name].players,
+                        time: getTime()
                     });
                 }, 200)
                 socket.emit('join game response', {
@@ -318,6 +330,27 @@ io.on('connection', socket => {
                 if (countDown < 0) clearInterval(count)
             }, 1000)
         }
+    })
+
+    //Messages
+    socket.on('send message', async message => {
+
+        await io.sockets.adapter.rooms[socket.gameName].chat.push({
+            message: message.message,
+            location: message.location,
+            username: message.username,
+            time: getTime()
+        })
+
+        console.log('here')
+
+        io.emit('recieve message', {
+            message: message.message,
+            location: message.location,
+            username: message.username,
+            time: getTime()
+        })
+
     })
 
     

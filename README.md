@@ -1,5 +1,5 @@
 # Full MERN stack multiplayer card game
-.
+
 ## The what...
 <p>A simple, yet versitile multiplayer game that gives users a set of deck cards and the functions to do anything they want with them.</p>
 
@@ -27,13 +27,14 @@
 General App
 - ~~Migrate Login Page to React build~~ ✓
 - ~~Migrate GameSearch Pageto React build~~ ✓
-- Migrate Lobby Page to React build
+- ~~Migrate Lobby Page to React build~~ ✓
 - Migrate Game Page to React build
+- Add keys to mapped objects
 - Background
+- Button outlines keep showing up, might be something in the old .css file that fixed this
 
 Login Page
 - ~~Successful login crashes server~~ ✓
-- Warning close button outline needs removing
 - Too many states, could I use strings for each instance instead of seperate states? Could jst use standard JS forms.
 
 Game Search Page
@@ -43,7 +44,10 @@ Game Search Page
 - ~~Finish server side join game~~ ✓
 
 Lobby Page
-- 
+- ~~Ready up not operating~~ ✓
+- ~~Chat box not working~~ ✓
+- Ready button turns green for some reason when clicked
+- Need to handle 'start game'
 
 Game Page
 - 
