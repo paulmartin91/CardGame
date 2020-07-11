@@ -6,6 +6,7 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import Login from './components/Login'
 import Lobby from './components/Lobby'
 import GameSearch from './components/GameSearch'
+import GamePage from './components/GamePage'
 import './components/Style/Components.scss'
 
 //Socket Variables
@@ -16,7 +17,7 @@ function App() {
 
   //States
   //const [pageDirect, setPageDirect] = useState('Login');
-  const [pageDirect, setPageDirect] = useState('Login'); //<- for development
+  const [pageDirect, setPageDirect] = useState('GamePage'); //<- for development
   
   
   useEffect(() => {
@@ -26,15 +27,14 @@ function App() {
 
   return(
     <div>
+      <p>Q: What page am I on?<br />A: {pageDirect}</p>
       {
-        pageDirect == 'Login' ? <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
-        pageDirect == 'GameSearch' ? <GameSearch socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
-        pageDirect == 'Lobby' ? <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> :
+        pageDirect === 'Login' ? <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
+        pageDirect === 'GameSearch' ? <GameSearch socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
+        pageDirect === 'Lobby' ? <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> :
+        pageDirect === 'GamePage' ? <GamePage socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> :
         <p>error</p>
       }
-      {/* <Lobby />
-      <GameSearch />
-      <GamePage /> */}
     </div>
   )
 }

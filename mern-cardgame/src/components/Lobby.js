@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react';
 
 
-const Lobby = ({socket, ENDPOINT}) => {
+const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
 
     //States
     const [playerList, setPlayerList] = useState(socket.playerList)
@@ -38,41 +38,50 @@ const Lobby = ({socket, ENDPOINT}) => {
             console.log(messages)
         })
 
-        /*
+        
         socket.on('starting game', (startObj) => {
-            if (!startObj.start) document.getElementById("lobbymessages").innerHTML += `Game starting in ${startObj.count}...<br>`
-            document.getElementById("lobbymessageBox").scrollTop = document.getElementById("lobbymessageBox").scrollHeight
-            if (startObj.start) {
-                document.getElementById("lobbyPage").style.display = 'none'
-                document.getElementById("gamePage").style.display = ''
-        
-                //fill messages
-                startObj.chat.forEach((x, y)=>{
-                    console.log(`y = ${y} and len = ${startObj.chat.length}`)
-                    document.getElementById(`gamemessages`).innerHTML += `<span class="text-muted small">[${x.time}]</span> ${x.username}: ${x.message}<br>`
-                    if (y == startObj.chat.length-1) {
-                        document.getElementById(`gamemessageBox`).scrollTop = document.getElementById(`gamemessageBox`).scrollHeight
-                    }
-                })
-        
-                console.log(`startObj = ${startObj}`)
-        
-                startObj.users.forEach(x=>{
-                    console.log(startObj.users)
-                    console.log(x)
-                    if (x !== socket.username) {
-                        document.getElementById('otherPlayers').innerHTML += `
-                        <div id="${x}blindcards" class="player" style="display: flex; justify-content: flex-end; color: black; border: dashed 1px; height: 150px; max-width: 700px;"></div>`    
-                    }
-                    //deal form controles
-                    document.getElementById('dealSelect').innerHTML += `
-                    <li>
-                        <input type="submit" onclick="setDealOption(this)" class="form-control btn" name="submit" value="${x}" style="width: 100%">
-                    </li>`
-                })
+            if (!startObj.start) {
+                setMessages(messages => [...messages, {
+                    time: 'n/a',
+                    username: 'Server',
+                    message: `Game starting in ${startObj.count}...`
+                }])
+                document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
             }
+            if (startObj.start) {
+                socket.playerList = playerList
+                setPageDirect('GamePage')
+            }
+            
+            console.log(`startObj = ${startObj}`)
+
+                // //fill messages
+                // startObj.chat.forEach((x, y)=>{
+                //     console.log(`y = ${y} and len = ${startObj.chat.length}`)
+                //     document.getElementById(`gamemessages`).innerHTML += `<span class="text-muted small">[${x.time}]</span> ${x.username}: ${x.message}<br>`
+                //     if (y == startObj.chat.length-1) {
+                //         document.getElementById(`gamemessageBox`).scrollTop = document.getElementById(`gamemessageBox`).scrollHeight
+                //     }
+                //})
+        
+                
+        
+                // startObj.users.forEach(x=>{
+                //     console.log(startObj.users)
+                //     console.log(x)
+                //     if (x !== socket.username) {
+                //         document.getElementById('otherPlayers').innerHTML += `
+                //         <div id="${x}blindcards" class="player" style="display: flex; justify-content: flex-end; color: black; border: dashed 1px; height: 150px; max-width: 700px;"></div>`    
+                //     }
+                //     //deal form controles
+                //     document.getElementById('dealSelect').innerHTML += `
+                //     <li>
+                //         <input type="submit" onclick="setDealOption(this)" class="form-control btn" name="submit" value="${x}" style="width: 100%">
+                //     </li>`
+                // })
+                //}
         })
-        */
+        
 
     }, [ENDPOINT])
 
@@ -109,7 +118,7 @@ const Lobby = ({socket, ENDPOINT}) => {
                     <div class="border">
                         <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>
                             <p id="messages" style={{wordBreak: "break-all"}}>
-                                { messages.map( x => <p1><span class="text-muted small">[{x.time}]</span>{x.username}: {x.message}<br /></p1>) }
+                                { messages.map( x => <p1><span class="text-muted small">{x.time == 'n/a' ? '' : [x.time]}</span>{x.username}: {x.message}<br /></p1>) }
                             </p>
                         </div>
                         <form onSubmit={handleSubmit}>

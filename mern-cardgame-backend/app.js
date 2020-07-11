@@ -312,7 +312,7 @@ io.on('connection', socket => {
         //if all players are ready and there is more than one player
         if (io.sockets.adapter.rooms[socket.gameName].readyPlayers == io.sockets.adapter.rooms[socket.gameName].length){// to test with one user --> && Object.keys(users).length > 1) {
             console.log('starting game')
-            let countDown = 1 //<-- 1 for dev stage, 5 in production
+            let countDown = 5 //<-- 1 for dev stage, 5 in production
             const count = setInterval( () => {
                 console.log(io.sockets.adapter.rooms[socket.gameName].players)
                 //if a player unreadys, stop the countdown
