@@ -342,7 +342,7 @@ io.on('connection', socket => {
             time: getTime()
         })
 
-        console.log('here')
+        console.log(message)
 
         io.emit('recieve message', {
             message: message.message,

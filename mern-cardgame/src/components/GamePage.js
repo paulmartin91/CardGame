@@ -1,22 +1,39 @@
 import React, { useState, useEffect } from 'react';
 
-const GamePage = (socket, ENDPOINT) => {
+const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
+
+    //States
 
     useEffect(()=>{
+
+        socket.on('recieve message', async message => {
+            if (message.location == "GamePage") {
+                setMessages(messages => [...messages, message])
+                document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
+                document.getElementById(`messagesInput`).value = ''
+            }
+        })
 
     }, [ENDPOINT])
 
     const handleSubmit = event => {
         
+        if (event.target.message.value.length > 0) {
+            socket.emit(`send message`, {
+                message: event.target.message.value,
+                username: socket.username,
+                location: 'GamePage',
+            })
+        }
         event.preventDefault();
     }
 
     return(
-
         <div class = "container-fluid gamePage" >
             <div class="container-fluid text-center">
                 <h1>Card Game Page - <span id="gameUsername"></span></h1>
             </div>
+            {/* Deal Controls */}
             <div class = "row" style={{height: "calc(100% - 60px)"}}>
                 <div class = "col-sm-3" style={{display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
                     <div class="container" style={{backgroundColor: '', height: "50%", display: "flex", justifyContent: "spaceBetween", flexDirection: "column", color: "black"}}>
@@ -41,19 +58,25 @@ const GamePage = (socket, ENDPOINT) => {
                             </form>
                         </div>
                     </div>
-                    <div class="container mt-1 mb-2" style={{height: "50%", display: "flex", justifyContent: "space-between", flexDirection: "column"}}>
-                        <div id="gamemessageBox" style={{cursor: "default", height: "100%", overflow: "scroll", backgroundColor: "white", color: "black"}}>
-                            <p id="gamemessages" style={{wordBreak: "break-all"}}></p>
+                    {/* Message Box */}
+                    <div class="mt-5">
+                    <div class="border">
+                        <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>
+                            <p id="messages" style={{wordBreak: "break-all"}}>
+                                { messages.map( message => message.username != "Server" && <p1><span class="text-muted small">{message.time == 'n/a' ? '' : [message.time]}</span>{message.username}: {message.message}<br /></p1>) }
+                            </p>
                         </div>
-                        <form onsubmit="typeMessage(this, 'game');return false" style={{backgroundColor: "white"}}>
+                        <form onSubmit={handleSubmit}>
                             <div class="input-group">
-                                <input type="text" style={{borderRadius: 0}} name="message" class="border form-control" placeholder="Type message..." id="gamemessagesInput" />
+                                <input type="text" style={{borderRadius: 0}} name="message" class="border form-control" placeholder="Type message..." id="messagesInput" />
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="submit" style={{borderRadius: 0}}>Send Message</button>
                                 </div>
                             </div>
                         </form>
                     </div>
+                </div>
+                {/* Gameboard */}
                 </div>
                 <div class = "col mb-2">
                     <div class="container game-board-4p" style={{color: "black", height: "100%", backgroundColor: '', display: "flex"}}>

@@ -16,8 +16,9 @@ const socket = io(ENDPOINT)
 function App() {
 
   //States
-  //const [pageDirect, setPageDirect] = useState('Login');
-  const [pageDirect, setPageDirect] = useState('GamePage'); //<- for development
+  const [pageDirect, setPageDirect] = useState('Login');
+  const [messages, setMessages] = useState([])
+  //const [pageDirect, setPageDirect] = useState('GamePage'); //<- for development
   
   
   useEffect(() => {
@@ -31,8 +32,8 @@ function App() {
       {
         pageDirect === 'Login' ? <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
         pageDirect === 'GameSearch' ? <GameSearch socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
-        pageDirect === 'Lobby' ? <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> :
-        pageDirect === 'GamePage' ? <GamePage socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> :
+        pageDirect === 'Lobby' ? <Lobby socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} messages={messages} setMessages={setMessages}/> :
+        pageDirect === 'GamePage' ? <GamePage socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} messages={messages} setMessages={setMessages}/> :
         <p>error</p>
       }
     </div>

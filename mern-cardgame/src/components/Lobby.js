@@ -1,12 +1,11 @@
 import React, { useState, useEffect} from 'react';
 
 
-const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
+const Lobby = ({socket, ENDPOINT, setPageDirect, messages, setMessages}) => {
 
     //States
     const [playerList, setPlayerList] = useState(socket.playerList)
     const [isReady, setIsReady] = useState(false)
-    const [messages, setMessages] = useState([])
     
     useEffect(()=>{
 
@@ -32,10 +31,11 @@ const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
         })
 
         socket.on('recieve message', async message => {
-            setMessages(messages => [...messages, message])
-            document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
-            document.getElementById(`messagesInput`).value = ''
-            console.log(messages)
+            if (message.location == "Lobby") {
+                setMessages(messages => [...messages, message])
+                document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
+                document.getElementById(`messagesInput`).value = ''
+            }
         })
 
         
@@ -53,7 +53,7 @@ const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
                 setPageDirect('GamePage')
             }
             
-            console.log(`startObj = ${startObj}`)
+            console.log(startObj)
 
                 // //fill messages
                 // startObj.chat.forEach((x, y)=>{
@@ -114,6 +114,7 @@ const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
                 </ul>
                 {/* Ready Button */}
                 <button class={isReady ? "ready mb-5 btn btn-warning" : "not-ready mb-5 btn btn-success"} name="ready-button" onClick={handleClick}>{isReady ? "unready" : "ready up"}</button>
+                {/* Message Box */}
                 <div class="mt-5">
                     <div class="border">
                         <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>

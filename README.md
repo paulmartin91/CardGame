@@ -47,7 +47,10 @@ Lobby Page
 - ~~Ready up not operating~~ ✓
 - ~~Chat box not working~~ ✓
 - Ready button turns green for some reason when clicked
-- Need to handle 'start game'
+- ~~Need to handle 'start game'~~ ✓
 
 Game Page
-- 
+- Player list keys need to map to 'deal to' form
+- Need to create a dev environment where I can simulate a 2player game without signing in every time
+- Cards object should be a class and creating a game should create a new instance of said class
+- Players need to sit around a table, this needs to be represented, preferably dynamically

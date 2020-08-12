@@ -1,3 +1,4 @@
 mern-cardgame-backend/node_modules/
 mern-cardgame/node_modules/
 .DS_Store
+.vscode
