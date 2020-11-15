@@ -210,29 +210,36 @@ module.exports = {
         "value": 14
     }
     ],
-    Shuffle: function shuffle(array) {
-        var currentIndex = array.length, temporaryValue, randomIndex;
-      
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-      
-          // Pick a remaining element...
-          randomIndex = Math.floor(Math.random() * currentIndex);
-          currentIndex -= 1;
-      
-          // And swap it with the current element.
-          temporaryValue = array[currentIndex];
-          array[currentIndex] = array[randomIndex];
-          array[randomIndex] = temporaryValue;
-        }
-        
-        return array;
+    Shuffle: shuffle = (deck) => {
+        let newDeck = []
+        const shuffleCards = async (oldDeck, newDeck = [], CID = 1) => {
+            if (oldDeck.length == 1){
+              let card = oldDeck[0]
+              card.CID = CID
+              newDeck.push(card)
+              console.log(newDeck)
+              return newDeck
+              }
+            else {
+              let randomNumber = Math.floor(Math.random() * Math.floor(oldDeck.length))
+              let card = oldDeck[randomNumber]
+              card.CID = await CID
+              newDeck.push(card)
+              oldDeck.splice(randomNumber, 1)
+              CID = await CID + 1
+              return shuffleCards(oldDeck, newDeck, CID)
+            }
+          }
+          
+          return shuffleCards(deck)
     },
+
     Deal: function deal(deck, numCards){
         let hand = [];
         for (let i = 0; i<numCards; i++){
             hand.push(...deck.splice(0, 1));
         }
+        console.log(deck)
         console.log(numCards)
         return hand
     }

@@ -206,7 +206,8 @@ io.on('connection', socket => {
 
             io.sockets.adapter.rooms[request.name].players = {[socket.username]: false}
             io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
-            io.sockets.adapter.rooms[request.name].deckInPlay = shuffle(Array.from(cards.Deck))
+            let currentDeck = shuffle(cards.Deck)
+            io.sockets.adapter.rooms[request.name].deckInPlay = currentDeck
             io.sockets.adapter.rooms[request.name].readyPlayers = 0
             io.sockets.adapter.rooms[request.name].chat = []
 
@@ -353,6 +354,58 @@ io.on('connection', socket => {
 
     })
 
+    //GAME PAGE
+
+    //Handle Deal Cards Request
+    socket.on('deal cards request', async request => {
+
+        console.log(`request to deal from ${socket.username} to ${request.to}`)
+        //console.log(io.sockets.adapter.rooms[socket.gameName].deckInPlay)
+        let cardsRequested = await request.to == "All" ? (request.number * io.sockets.adapter.rooms[socket.gameName].length) : request.number
+
+        //if user requested more cards than deck has available
+        if (cardsRequested > io.sockets.adapter.rooms[socket.gameName].deckInPlay.length) {
+            io.in(socket.gameName).emit('hand delt', {
+                enoughCards: false,
+                cardsLeft: io.sockets.adapter.rooms[socket.gameName].deckInPlay.length,
+                number: request.number
+            })
+        } else {
+            //to all players
+            if (request.to === "All") {
+                let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (Object.keys(io.sockets.adapter.rooms[socket.gameName].players).length * request.number)
+                console.log(`Deck size = ${io.sockets.adapter.rooms[socket.gameName].deckInPlay.length}`,
+                `number of players = ${Object.keys(io.sockets.adapter.rooms[socket.gameName].players).length}`,
+                `req number = ${request.number}`
+                )
+                Object.keys(io.sockets.adapter.rooms[socket.gameName].players).forEach(username =>{
+                    io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
+                        hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
+                        cardsLeft: cardsLeft,
+                        enoughCards: true
+                    });
+                })
+                io.in(socket.gameName).emit('hand delt notification', {
+                    number: request.number,
+                    from: socket.username,
+                    to: Object.keys(io.sockets.adapter.rooms[socket.gameName].players)
+                })
+            } else {
+                //to one player
+                let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (Object.keys(io.sockets.adapter.rooms[socket.gameName].players.length) * request.number)
+                io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[request.to]).emit('hand delt', {
+                    hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
+                    cardsLeft: cardsLeft,
+                    enoughCards: true
+                });
+                io.in(socket.gameName).emit('hand delt notification', {
+                    number: request.number,
+                    from: socket.username,
+                    to: [request.to]
+                })
+            }
+        }
+    });
     
     socket.on('disconnect', async () => {
         if (socket.isLoggedIn == true){

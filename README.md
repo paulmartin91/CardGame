@@ -32,6 +32,7 @@ General App
 - Add keys to mapped objects
 - Background
 - Button outlines keep showing up, might be something in the old .css file that fixed this
+- Cards object should be a class and creating a game should create a new instance of said class
 
 Login Page
 - ~~Successful login crashes server~~ ✓
@@ -50,7 +51,21 @@ Lobby Page
 - ~~Need to handle 'start game'~~ ✓
 
 Game Page
+- Optimise html/css for React
+- Wireframe the design
+- Work out how cards should be played
+- ~~Card shuffling duplicates cards in deck!~~
+- Cards need to be able to be put back into the deck in certain orders
+- Do cards need to be classes?
+- Deck count needs to update
+- When cards are played, they should be able to be recalled
+- Multiple cards should be able to be selected
+- There should be a section for each player to play a card to
+- There should be a section where everyone can play a card
+- There should be a scoreboard with each players score
+- There should be a 'sort by suit' and 'sort by value' button for players to organise cards
+- Find a better way of importing card pictures
+- Sending messages not operating
+- Recieving messages not operating
 - Player list keys need to map to 'deal to' form
-- Need to create a dev environment where I can simulate a 2player game without signing in every time
-- Cards object should be a class and creating a game should create a new instance of said class
-- Players need to sit around a table, this needs to be represented, preferably dynamically
+- Players need to sit around a table, this needs to be represented dynamically
