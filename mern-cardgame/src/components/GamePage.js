@@ -116,7 +116,10 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
     //States
     const [numberOfCardsToDeal, setNumberOfCardsToDeal] = useState(1)
     const [deckCount, setDeckCount] = useState(52)
-    const [playerHand, setPlayerHand] = useState([])
+    const [hand, setHand] = useState([])
+    //const [selected, setSelected] = useState([])
+    const [playerSpace, setPlayerSpace] = useState([])
+    const [board, setBoard] = useState([])
 
     useEffect(()=>{
 
@@ -134,15 +137,20 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
             if (!result.enoughCards) {
                 console.log(`you've requested too many cards, there ${result.cardsLeft == 1 ? "is" : "are"} only ${result.cardsLeft} left`)
             } else {
-                console.log(result)
-                let newArr = []
-                result.hand.forEach(x => {
-                    let card = `${x.suit}${x.value}`
-                    let cardReversed = card.split("").reverse().join("")
-                    newArr.push(cardReversed)
+                let newArr = await []
+                await result.hand.forEach(card => {
+                    let temp_card = new Cards(card.suit, card.value, socket.username, card.CID) //suit, number, owner, CID
+                    newArr.push(temp_card)
+                    // let card = `${x.suit}${x.value}`
+                    // let cardReversed = card.split("").reverse().join("")
+                    // newArr.push(cardReversed)
                 })
+                
+                await console.log(newArr)
+                await console.log(result)
+                setHand(hand => [...hand, ...newArr])
+
                 //newArr.forEach(x=>console.log(`../CardPics/${x}.png"`))
-                setPlayerHand(playerHand => [...playerHand, ...newArr])
                 // let tempHandArr = []
                 // console.log(`player hand = ${playerHand}`)
                 // console.log(`tempHandArr = ${tempHandArr}`)
@@ -189,6 +197,9 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
             })
         //     console.log(`deal ${numberOfCardsToDeal} to ${event.target.name}`)
         }
+        if (event.target.value == "TEST") {
+            console.log(hand)
+        }
 /*
         if (event.target.value == "card") {
             let selectedCard = card.src.match(/(.{2})\.png$/)[1]
@@ -204,6 +215,73 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
         */
 
     }
+
+    const select = async (card, location) => {
+
+        const selectFunction = (locationState) => {
+          locationState(hand => 
+            hand.map(handCard => {
+              if (card.CID == handCard.CID){
+                handCard.selected = !handCard.selected
+              }
+              return handCard
+            })
+          )
+        }
+    
+    location == "hand" && selectFunction(setHand)
+    location == "playerSpace" && selectFunction(setPlayerSpace)
+    location == "board" && selectFunction(setBoard)
+
+    }
+
+    const play =  (event) => {
+
+        const playFunction = async (targetFunction, targetState) => {
+    
+          let selected = await []
+    
+          //board
+          selected = await [...selected, ...board.filter(card => card.selected)]
+          setBoard(board => board.filter(card => !card.selected))
+          //hand
+          selected = await [...selected, ...hand.filter(card => card.selected)]
+          setHand(hand => hand.filter(card => !card.selected))
+          //playerSpace
+          selected = await [...selected, ...playerSpace.filter(card => card.selected)]
+          setPlayerSpace(playerSpace => playerSpace.filter(card => !card.selected))
+    
+          await selected.map(card => {
+            card.selected = false
+            return card
+          })
+    
+          targetFunction(targetState => [...targetState, ...selected])
+        }
+    
+        event.target.id == "board" && playFunction(setBoard, board)
+        event.target.id == "playerSpace" && playFunction(setPlayerSpace, playerSpace)
+        event.target.id == "hand" && playFunction(setHand, hand)
+    
+      }
+
+    class Cards {
+        constructor(suit, number, owner, CID, selected = false){
+          this.CID = CID
+          this.suit = suit
+          this.number = number
+          this.owner = owner
+          this.selected = false
+          //console.log(this.suit)
+        }
+    
+        select(location){
+          console.log(location)
+          this.selected = !this.selected
+          select(this, location)
+        }
+      }
+
 
     return(
         <div class = "container-fluid gamePage" >
@@ -241,21 +319,30 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
                 </div>
                 {/* Gameboard */}
                 </div>
-                <div class = "col mb-2">
-                    <div class="container game-board-4p" style={{color: "black", height: "100%", backgroundColor: '', display: "flex"}}>
-                        <div class="container align-self-center" style={{display: "flex", backgroundColor: "green", borderRadius: 50, flexDirection: "column", justifyContent: "space-between", height: 500}}>
-                            <div class = "container" id="otherPlayers" style={{height: 150, maxWidth: 700}}>
-                            </div>
-                            <div class = "container" id="gameCards" id="gameBoard" class="gameBoard" style={{display: "flex", alignItems: "center", color: "black", border: "dashed 1px", maxHeight: 150, maxWidth: 800, minWidth: 800}}>
-                                <div class="img-container-blind" style={{minWidth: 70}}><div id="deckCount" style={{position: "absolute", height: 25, width: 20, background: "white", borderRadius: 5, padding: 1, zIndex: 5}}>{deckCount}</div><img src="CardPics/blue_back.png"></img></div>
-                            </div>
-                            <div class = "container" id="hand" style={{display: "flex", color: "black", border: "dashed 1px", height: 150, maxWidth: 700}}>
-                                {/*playerHand.map(x=> x.suit)*/}
-                                {playerHand.map(x => <div class = "img-container"><img src={cardDeck[x]}></img></div>)}
-                            </div>
-                        </div>
+                <div style={{backgroundColor: "red", margin:"auto", width: 1000, height: 350, display: "flex", flexDirection: "column"}}>
+                    {/*<div style={{backgroundColor: "yellow", margin:"auto", width: 800, height: 100, display: "flex"}} />*/}
+                    <div id="board" onClick={play} style={{backgroundColor: "blue", margin:"auto", width: 800, height: 100, display: "flex"}} >
+                    {board.map(card => {
+                        return (<div 
+                        style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}} 
+                        onClick={() => card.select("board")}
+                        > {card.suit+card.number} </div>)})}
                     </div>
-                </div>
+                    <div id="playerSpace" onClick={play} style={{backgroundColor: "orange", margin:"auto", width: 800, height: 100, display: "flex"}}>
+                        {playerSpace.map(card => {
+                        return (<div 
+                            style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}}
+                            onClick={() => card.select("playerSpace")}
+                        > {card.suit+card.number} </div>)})}
+                    </div>
+                    </div>
+                    <div id="hand" onClick={play} style={{backgroundColor: "green", margin: "auto", width: 800, height: 150, display: "flex"}}>
+                        {hand.map(card => {
+                        return (<div 
+                        style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}}
+                        onClick={() => card.select("hand")}
+                        > {card.suit+card.number} </div>)})}
+                    </div>
             </div>
         </div>
     )

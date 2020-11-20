@@ -53,15 +53,17 @@ Lobby Page
 Game Page
 - Optimise html/css for React
 - Wireframe the design
-- Work out how cards should be played
+- ~~Work out how cards should be played~~
+- Work out how cards should be played though the server
 - ~~Card shuffling duplicates cards in deck!~~
 - Cards need to be able to be put back into the deck in certain orders
-- Do cards need to be classes?
+- ~~Do cards need to be classes?~~
 - Deck count needs to update
+- Multiple cards should be able to be selected quicker
 - When cards are played, they should be able to be recalled
-- Multiple cards should be able to be selected
-- There should be a section for each player to play a card to
-- There should be a section where everyone can play a card
+- ~~Multiple cards should be able to be selected~~
+- ~~There should be a section for each player to play a card to~~
+- ~~There should be a section where everyone can play a card~~
 - There should be a scoreboard with each players score
 - There should be a 'sort by suit' and 'sort by value' button for players to organise cards
 - Find a better way of importing card pictures

@@ -182,7 +182,7 @@ io.on('connection', socket => {
     })
 
     //Create a Game
-    socket.on('request create new game', request => {
+    socket.on('request create new game', async request => {
         //Name Taken
         if (request.name in gameList) {
             socket.emit('response create new game', {
@@ -206,11 +206,11 @@ io.on('connection', socket => {
 
             io.sockets.adapter.rooms[request.name].players = {[socket.username]: false}
             io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
-            let currentDeck = shuffle(cards.Deck)
-            io.sockets.adapter.rooms[request.name].deckInPlay = currentDeck
+            let currentDeck = await new cards.Deck
+            io.sockets.adapter.rooms[request.name].deckInPlay = await shuffle(currentDeck.deck)
             io.sockets.adapter.rooms[request.name].readyPlayers = 0
             io.sockets.adapter.rooms[request.name].chat = []
-
+            console.log("req name = ", request.name)
             socket.emit('response create new game', {
                 exists: false,
                 name: request.name,
@@ -313,7 +313,7 @@ io.on('connection', socket => {
         //if all players are ready and there is more than one player
         if (io.sockets.adapter.rooms[socket.gameName].readyPlayers == io.sockets.adapter.rooms[socket.gameName].length){// to test with one user --> && Object.keys(users).length > 1) {
             console.log('starting game')
-            let countDown = 5 //<-- 1 for dev stage, 5 in production
+            let countDown = 1 //<-- 1 for dev stage, 5 in production
             const count = setInterval( () => {
                 console.log(io.sockets.adapter.rooms[socket.gameName].players)
                 //if a player unreadys, stop the countdown
@@ -358,7 +358,8 @@ io.on('connection', socket => {
 
     //Handle Deal Cards Request
     socket.on('deal cards request', async request => {
-
+        console.log(socket.gameName)
+        console.log("rooms = ", io.sockets.adapter.rooms)
         console.log(`request to deal from ${socket.username} to ${request.to}`)
         //console.log(io.sockets.adapter.rooms[socket.gameName].deckInPlay)
         let cardsRequested = await request.to == "All" ? (request.number * io.sockets.adapter.rooms[socket.gameName].length) : request.number
@@ -374,7 +375,8 @@ io.on('connection', socket => {
             //to all players
             if (request.to === "All") {
                 let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (Object.keys(io.sockets.adapter.rooms[socket.gameName].players).length * request.number)
-                console.log(`Deck size = ${io.sockets.adapter.rooms[socket.gameName].deckInPlay.length}`,
+                console.log(
+                `Deck size = ${io.sockets.adapter.rooms[socket.gameName].deckInPlay.length}`,
                 `number of players = ${Object.keys(io.sockets.adapter.rooms[socket.gameName].players).length}`,
                 `req number = ${request.number}`
                 )
