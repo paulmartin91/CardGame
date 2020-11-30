@@ -28,7 +28,7 @@ function App() {
 
   return(
     <div>
-      <p>Q: What page am I on?<br />A: {pageDirect}</p>
+      {/* <p>Q: What page am I on?<br />A: {pageDirect}</p> */}
       {
         pageDirect === 'Login' ? <Login socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 
         pageDirect === 'GameSearch' ? <GameSearch socket={socket} ENDPOINT={ENDPOINT} pageDirect={pageDirect} setPageDirect={setPageDirect} /> : 

@@ -34,9 +34,11 @@ General App
 - Button outlines keep showing up, might be something in the old .css file that fixed this
 - Cards object should be a class and creating a game should create a new instance of said class
 
+
 Login Page
 - ~~Successful login crashes server~~ ✓
 - Too many states, could I use strings for each instance instead of seperate states? Could jst use standard JS forms.
+
 
 Game Search Page
 - Saving info on server variables and socket object, should only be in one place (saved on 'create game request')
@@ -44,13 +46,20 @@ Game Search Page
 - Game already exists needs an error message
 - ~~Finish server side join game~~ ✓
 
+
 Lobby Page
 - ~~Ready up not operating~~ ✓
 - ~~Chat box not working~~ ✓
 - Ready button turns green for some reason when clicked
 - ~~Need to handle 'start game'~~ ✓
+- ~~NEED TO FIX -> When joining a game the user list is not updating properly~~
+
 
 Game Page
+
+NEED TO FIX
+- ~~When the component renders, it updates the opponent list, however the ENDPOINT stops the from re-rendering (maybe?).~~
+
 - Optimise html/css for React
 - Wireframe the design
 - ~~Work out how cards should be played~~

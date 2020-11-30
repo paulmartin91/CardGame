@@ -268,7 +268,7 @@ io.on('connection', socket => {
                 setTimeout(()=> {
                     console.log(`players = ${io.sockets.adapter.rooms[request.name].players}`)
                     console.log(`playerList = ${gameList[request.name].playerList}`)
-                    io.to(request.name).emit('new user joined game', {
+                    socket.to(request.name).emit('new user joined game', {
                         username: socket.username,
                         playerList: io.sockets.adapter.rooms[request.name].players,
                         time: getTime()
@@ -358,9 +358,9 @@ io.on('connection', socket => {
 
     //Handle Deal Cards Request
     socket.on('deal cards request', async request => {
-        console.log(socket.gameName)
-        console.log("rooms = ", io.sockets.adapter.rooms)
-        console.log(`request to deal from ${socket.username} to ${request.to}`)
+        // console.log(socket.gameName)
+        // console.log("rooms = ", io.sockets.adapter.rooms)
+        // console.log(`request to deal from ${socket.username} to ${request.to}`)
         //console.log(io.sockets.adapter.rooms[socket.gameName].deckInPlay)
         let cardsRequested = await request.to == "All" ? (request.number * io.sockets.adapter.rooms[socket.gameName].length) : request.number
 
@@ -387,11 +387,13 @@ io.on('connection', socket => {
                         enoughCards: true
                     });
                 })
+
                 io.in(socket.gameName).emit('hand delt notification', {
                     number: request.number,
                     from: socket.username,
                     to: Object.keys(io.sockets.adapter.rooms[socket.gameName].players)
                 })
+
             } else {
                 //to one player
                 let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (Object.keys(io.sockets.adapter.rooms[socket.gameName].players.length) * request.number)

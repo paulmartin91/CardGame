@@ -26,6 +26,7 @@ const Lobby = ({socket, ENDPOINT, setPageDirect, messages, setMessages}) => {
                 message: `${response.username} has joined the lobby, currently ${Object.keys(playerList).length == 1 ? ' 1 player' : `${Object.keys(playerList).length} players`} in the lobby`
             }])
             document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
+            console.log("player list = ", response.playerList)
             setPlayerList(response.playerList)
             // document.getElementById("lobbymessages").innerHTML += `${user.username} has joined the lobby, currently ${user.users.length == 1 ? ' 1 player' : `${user.users.length} players`} in lobby <br>`
         })
@@ -40,6 +41,7 @@ const Lobby = ({socket, ENDPOINT, setPageDirect, messages, setMessages}) => {
 
         
         socket.on('starting game', (startObj) => {
+            console.log(startObj)
             if (!startObj.start) {
                 setMessages(messages => [...messages, {
                     time: 'n/a',
@@ -49,11 +51,9 @@ const Lobby = ({socket, ENDPOINT, setPageDirect, messages, setMessages}) => {
                 document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
             }
             if (startObj.start) {
-                socket.playerList = playerList
+                socket.playerList = startObj.users
                 setPageDirect('GamePage')
             }
-            
-            console.log(startObj)
 
                 // //fill messages
                 // startObj.chat.forEach((x, y)=>{
@@ -86,7 +86,7 @@ const Lobby = ({socket, ENDPOINT, setPageDirect, messages, setMessages}) => {
     }, [ENDPOINT])
 
     const handleSubmit = event => {
-
+        console.log(socket.playerList)
         if (event.target.message.value.length > 0) {
             socket.emit(`send message`, {
                 message: event.target.message.value,
@@ -99,6 +99,7 @@ const Lobby = ({socket, ENDPOINT, setPageDirect, messages, setMessages}) => {
     }
 
     const handleClick = (event) => {
+        console.log(playerList)
         if (event.target.name === "ready-button") {
             socket.emit('ready', isReady);
         }

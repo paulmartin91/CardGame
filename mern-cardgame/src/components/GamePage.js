@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Opponent from "./Opponent.js"
 
 import C2 from "../CardPics/2C.png"
 import C3 from "../CardPics/3C.png"
@@ -120,8 +121,23 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
     //const [selected, setSelected] = useState([])
     const [playerSpace, setPlayerSpace] = useState([])
     const [board, setBoard] = useState([])
+    const [opponent, setOpponent] = useState([])
 
     useEffect(()=>{
+
+        //setOpponent(Object.keys(socket.playerList).map(playerName => playerName != socket.username && [playerName, 0, []]))
+
+        Object.keys(socket.playerList).forEach(playerName => {
+            if (playerName != socket.username) {
+                console.log(playerName)    
+                setOpponent(opponent=> [...opponent, [playerName, 0, []]])
+            }
+        })
+
+        // console.log(Object.keys(socket.playerList).map(playerName => playerName != socket.username && [playerName, 0, []]))
+        // socket.playerList.forEach(player => {
+        //     if 
+        // })
 
         //Messaging System
         socket.on('recieve message', async message => {
@@ -141,42 +157,57 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
                 await result.hand.forEach(card => {
                     let temp_card = new Cards(card.suit, card.value, socket.username, card.CID) //suit, number, owner, CID
                     newArr.push(temp_card)
-                    // let card = `${x.suit}${x.value}`
-                    // let cardReversed = card.split("").reverse().join("")
-                    // newArr.push(cardReversed)
                 })
-                
-                await console.log(newArr)
-                await console.log(result)
-                setHand(hand => [...hand, ...newArr])
 
-                //newArr.forEach(x=>console.log(`../CardPics/${x}.png"`))
-                // let tempHandArr = []
-                // console.log(`player hand = ${playerHand}`)
-                // console.log(`tempHandArr = ${tempHandArr}`)
-                // setDeckCount(result.cardsLeft)
-                // await result.hand.forEach(x=> {
-                //     console.log(x.value)
-                //     tempHandArr.push({"value": x.value, "suit": x.suit})
-                //     console.log(tempHandArr)
-                // })
-                // setTimeout(()=>setPlayerHand(playerHand => [...playerHand, tempHandArr]), 200)//playerHand => [...playerHand, tempHandArr])
-                // // document.getElementById("deckCount").innerHTML = result.cardsLeft
-                // // result.hand.forEach(x=> {
-                // // document.getElementById('hand').innerHTML +=`<div class = "img-container"><img src="${getCard(x.suit, x.value)}" onclick="playCard(this)"></img></div>`
-            }//)
+                setHand(hand => [...hand, ...newArr])
+            }
         });
+
+        socket.on('hand delt notification', async result => {
+            console.log("result = ", result)
+            console.log("hand = ", hand)
+
+            setOpponent(opponent => {
+
+                let temp_opponents = opponent
+
+                result.to.forEach(to => {
+                    temp_opponents.forEach(opp => {
+                        if (opp[0] == to) {
+                            opp[1] = parseInt(result.number)
+                        }
+                    })
+                })
+
+                return temp_opponents
+
+            })
+
+            // let temp_opponents = await opponent
+
+            // console.log(temp_opponents)
+
+            // await result.to.forEach(to => {
+            //     temp_opponents.forEach(opp => {
+            //         if (opp[0] == to) {
+            //             opp[1] = parseInt(result.number)
+            //         }
+            //     })
+            // })
+
+            // console.log(temp_opponents)
+
+            //setOpponent(temp_opponents)
+
+            //let tempOpponents = opponent.map(opponent => opponent)
+            //console.log("temp_opponent = ", tempOpponents)
+            //setOpponent(tempOpponents)
+        })
+
     }, [ENDPOINT])
 
     const handleSubmit = event => {
-        if (event.target.name == "deal options"){
-            socket.emit('deal cards request', {
-                number: event.target.number.value,
-                to: '' //dealTo
-            })
-        }
-       
-        /*
+        console.log(opponent)
         if (event.target.message.value.length > 0) {
             socket.emit(`send message`, {
                 message: event.target.message.value,
@@ -184,7 +215,7 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
                 location: 'GamePage',
             })
         }
-        */
+
         event.preventDefault();
     }
 
@@ -282,67 +313,152 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
         }
       }
 
+    
+      const dealControlesStyle = {
+        backgroundColor: '', 
+        // height: "50%", 
+        display: "flex", 
+        ustifyContent: "spaceBetween", 
+        flexDirection: "column", 
+        color: "black", 
+        backgroundColor: "yellow"
+      }
+
+      const messageBoxStyle = {
+        cursor: "default", 
+        height: 150, 
+        overflow: "scroll",
+        backgroundColor: "lightBlue"
+      }
+
+      const messagesStyle = {
+        wordBreak: "break-all"
+      }
+
+      const leftPannelStyle = {
+        display: "flex", 
+        flexDirection: "column", 
+        justifyContent: "space-around", 
+        backgroundColor: "purple",
+      }
+
+      const gamePageStyle = {
+        height: "calc(100% - 60px)",
+        backgroundColor: "black"
+      }
+
+      const wholeGamePageStyle = {
+          backgroundColor: "aqua",
+          height: "100vh"
+      }
+
+      const tabelStyle = {
+        backgroundColor: "red", 
+        margin:"auto",
+        height: "100%",
+        display: "flex", 
+        flexDirection: "column",
+        // justifyContent: "space-between"
+      }
+
+    const boardStyle = {
+        backgroundColor: "blue", 
+        width: "100%", 
+        height: 150, 
+        display: "flex",
+        alignSelf: "flex-start",
+    }
+    
+    const playerSpaceStyle = {
+        backgroundColor: "orange", 
+        width: "100%", 
+        height: 150,
+        display: "flex"
+    }
+
+    const playerHandStyle = {
+        backgroundColor: "green", 
+        width: "100%", 
+        height: 150,
+        display: "flex"
+    }
+
 
     return(
-        <div class = "container-fluid gamePage" >
-            <button value="TEST" onClick={handleCLick}>TEST</button>
-            <div class="container-fluid text-center">
+        <div class = "container-fluid" style={wholeGamePageStyle} >
+            {/* <button value="TEST" onClick={handleCLick}>TEST</button> */}
+            <div class="container-fluid text-center" style={{backgroundColor: "pink"}}>
                 <h1>Card Game Page - <span id="gameUsername"></span></h1>
             </div>
-            {/* Deal Controls */}
-            <div class = "row" style={{height: "calc(100% - 60px)"}}>
-                <div class = "col-sm-3" style={{display: "flex", flexDirection: "column", justifyContent: "space-between"}}>
-                    <div class="container" style={{backgroundColor: '', height: "50%", display: "flex", justifyContent: "spaceBetween", flexDirection: "column", color: "black"}}>
+            <div class = "row" style={gamePageStyle}>
+                <div class = "col-md-auto" style={leftPannelStyle}>
+
+                    {/* Deal Controls */}
+                    <div class="container" style={dealControlesStyle}>
                         <div class="container mb-1" style={{backgroundColor: "white", height: "100%", color: "black"}}>
                             <h2>Deal Options</h2>
                             <input type="number" value={numberOfCardsToDeal} onChange={event => setNumberOfCardsToDeal(event.target.value)}/>
                             <button name="All" value="deal button" onClick={handleCLick}>All</button>
                         </div>
                     </div>
+
                     {/* Message Box */}
                     <div class="mt-5">
-                    <div class="border">
-                        <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>
-                            <p id="messages" style={{wordBreak: "break-all"}}>
-                                { messages.map( message => message.username != "Server" && <p1><span class="text-muted small">{message.time == 'n/a' ? '' : [message.time]}</span>{message.username}: {message.message}<br /></p1>) }
-                            </p>
-                        </div>
-                        <form onSubmit={handleSubmit}>
-                            <div class="input-group">
-                                <input type="text" style={{borderRadius: 0}} name="message" class="border form-control" placeholder="Type message..." id="messagesInput" />
-                                <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="submit" style={{borderRadius: 0}}>Send Message</button>
-                                </div>
+                        <div class="border">
+                            <div id="messageBox" style={messageBoxStyle}>
+                                <p id="messages" style={messagesStyle}>
+                                    { messages.map( message => message.username != "Server" && <p1><span class="text-muted small">{message.time == 'n/a' ? '' : [message.time]}</span>{message.username}: {message.message}<br /></p1>) }
+                                </p>
                             </div>
-                        </form>
+                            <form onSubmit={handleSubmit}>
+                                <div class="input-group">
+                                    <input type="text" style={{borderRadius: 0}} name="message" class="border form-control" placeholder="Type message..." id="messagesInput" />
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="submit" style={{borderRadius: 0}}>Send Message</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-                {/* Gameboard */}
-                </div>
-                <div style={{backgroundColor: "red", margin:"auto", width: 1000, height: 350, display: "flex", flexDirection: "column"}}>
-                    {/*<div style={{backgroundColor: "yellow", margin:"auto", width: 800, height: 100, display: "flex"}} />*/}
-                    <div id="board" onClick={play} style={{backgroundColor: "blue", margin:"auto", width: 800, height: 100, display: "flex"}} >
-                    {board.map(card => {
-                        return (<div 
-                        style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}} 
-                        onClick={() => card.select("board")}
+
+                {/* Table */}
+                <div class = "col p-5" style={tabelStyle}>
+                    
+                    {/* Opponent */}
+                    { opponent.length > 0 && <Opponent name={opponent[0][0]} cardsLeft={opponent[0][1]} cards={opponent[0][2]}/> }
+
+                    {/* Board */}
+                    <div id="board" onClick={play} style={boardStyle} >
+
+                        {/* Deck */}
+                        <div style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: "lightBlue"}}> {deckCount} </div>
+                        {board.map(card => {
+                            return (<div 
+                            style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}} 
+                            onClick={() => card.select("board")}
                         > {card.suit+card.number} </div>)})}
                     </div>
-                    <div id="playerSpace" onClick={play} style={{backgroundColor: "orange", margin:"auto", width: 800, height: 100, display: "flex"}}>
+
+                    {/* playerSpace */}
+                    <div id="playerSpace" onClick={play} style={playerSpaceStyle}>
                         {playerSpace.map(card => {
                         return (<div 
                             style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}}
                             onClick={() => card.select("playerSpace")}
                         > {card.suit+card.number} </div>)})}
                     </div>
-                    </div>
-                    <div id="hand" onClick={play} style={{backgroundColor: "green", margin: "auto", width: 800, height: 150, display: "flex"}}>
+
+                    {/* hand */}
+                    <div id="hand" onClick={play} style={playerHandStyle}>
                         {hand.map(card => {
                         return (<div 
                         style={{width: "40px", height: "80px", border: "solid 2px", backgroundColor: card.selected && "white"}}
                         onClick={() => card.select("hand")}
                         > {card.suit+card.number} </div>)})}
                     </div>
+
+                </div>
             </div>
         </div>
     )
