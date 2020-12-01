@@ -121,19 +121,11 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
     //const [selected, setSelected] = useState([])
     const [playerSpace, setPlayerSpace] = useState([])
     const [board, setBoard] = useState([])
-    const [opponent, setOpponent] = useState([])
+    const [opponent, setOpponent] = useState(socket.playerList)
 
     useEffect(()=>{
 
         //setOpponent(Object.keys(socket.playerList).map(playerName => playerName != socket.username && [playerName, 0, []]))
-
-        Object.keys(socket.playerList).forEach(playerName => {
-            if (playerName != socket.username) {
-                console.log(playerName)    
-                setOpponent(opponent=> [...opponent, [playerName, 0, []]])
-            }
-        })
-
         // console.log(Object.keys(socket.playerList).map(playerName => playerName != socket.username && [playerName, 0, []]))
         // socket.playerList.forEach(player => {
         //     if 
@@ -164,44 +156,9 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
         });
 
         socket.on('hand delt notification', async result => {
-            console.log("result = ", result)
-            console.log("hand = ", hand)
 
-            setOpponent(opponent => {
+            console.log(opponent)
 
-                let temp_opponents = opponent
-
-                result.to.forEach(to => {
-                    temp_opponents.forEach(opp => {
-                        if (opp[0] == to) {
-                            opp[1] = parseInt(result.number)
-                        }
-                    })
-                })
-
-                return temp_opponents
-
-            })
-
-            // let temp_opponents = await opponent
-
-            // console.log(temp_opponents)
-
-            // await result.to.forEach(to => {
-            //     temp_opponents.forEach(opp => {
-            //         if (opp[0] == to) {
-            //             opp[1] = parseInt(result.number)
-            //         }
-            //     })
-            // })
-
-            // console.log(temp_opponents)
-
-            //setOpponent(temp_opponents)
-
-            //let tempOpponents = opponent.map(opponent => opponent)
-            //console.log("temp_opponent = ", tempOpponents)
-            //setOpponent(tempOpponents)
         })
 
     }, [ENDPOINT])
@@ -426,7 +383,7 @@ const GamePage = ({socket, ENDPOINT, messages, setMessages}) => {
                 <div class = "col p-5" style={tabelStyle}>
                     
                     {/* Opponent */}
-                    { opponent.length > 0 && <Opponent name={opponent[0][0]} cardsLeft={opponent[0][1]} cards={opponent[0][2]}/> }
+                    { Object.keys(opponent).length > 0 && Object.keys(opponent).map(opp => <Opponent name={opp} cardsLeft={opponent[opp].hand} cards={opponent[opp].cards}/>) }
 
                     {/* Board */}
                     <div id="board" onClick={play} style={boardStyle} >

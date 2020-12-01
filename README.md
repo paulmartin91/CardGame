@@ -59,8 +59,10 @@ Game Page
 
 NEED TO FIX
 - ~~When the component renders, it updates the opponent list, however the ENDPOINT stops the from re-rendering (maybe?).~~
+- Hand is now managed by the server entirely, need to optimise for new server responses
+- When cards are dealt, they do not show as blind for other players
 
-- Optimise html/css for React
+- ~~Optimise html/css for React~~
 - Wireframe the design
 - ~~Work out how cards should be played~~
 - Work out how cards should be played though the server

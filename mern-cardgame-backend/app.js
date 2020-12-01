@@ -204,7 +204,16 @@ io.on('connection', socket => {
             socket.gameName = request.name
             socket.join(request.name);
 
-            io.sockets.adapter.rooms[request.name].players = {[socket.username]: false}
+            io.sockets.adapter.rooms[request.name].players = {
+                [socket.username]: {
+                    "ready": false,
+                    "hand": [],
+                    "cardsLeft": 0
+                }
+            }
+
+            io.sockets.adapter.rooms[request.name].exPlayers = {[socket.username]: 0}
+
             io.sockets.adapter.rooms[request.name].playersIds = {[socket.username]: socket.id}
             let currentDeck = await new cards.Deck
             io.sockets.adapter.rooms[request.name].deckInPlay = await shuffle(currentDeck.deck)
@@ -241,7 +250,12 @@ io.on('connection', socket => {
                     socket.gameName = request.name
                      gameList[request.name].playerList[socket.username] = false
                     await socket.join(request.name);
-                    io.sockets.adapter.rooms[request.name].players[socket.username] = false
+                    io.sockets.adapter.rooms[request.name].players[socket.username] = {
+                        "ready": false,
+                        "hand": [],
+                        "cardsLeft": 0
+                    }
+                    io.sockets.adapter.rooms[request.name].exPlayers = {[socket.username]: 0}
                     io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                     setTimeout(()=> {
                         io.to(request.name).emit('new user joined game', {
@@ -263,7 +277,12 @@ io.on('connection', socket => {
                 socket.gameName = request.name
                 gameList[request.name].playerList[socket.username] = false
                 await socket.join(request.name);
-                io.sockets.adapter.rooms[request.name].players[socket.username] = false
+                io.sockets.adapter.rooms[request.name].players[socket.username] = {
+                    "ready": false,
+                    "hand": [],
+                    "cardsLeft": 0
+                }
+                io.sockets.adapter.rooms[request.name].exPlayers = {[socket.username]: 0}
                 io.sockets.adapter.rooms[request.name].playersIds[socket.username] = socket.id
                 setTimeout(()=> {
                     console.log(`players = ${io.sockets.adapter.rooms[request.name].players}`)
@@ -290,7 +309,7 @@ io.on('connection', socket => {
     socket.on('ready', async isReady => {
         console.log(!isReady)
         //toggle user ready
-        io.sockets.adapter.rooms[socket.gameName].players[socket.username] = !isReady
+        io.sockets.adapter.rooms[socket.gameName].players[socket.username].ready = !isReady
         //add or subtract from readyplayers
         !isReady ? io.sockets.adapter.rooms[socket.gameName].readyPlayers++ : io.sockets.adapter.rooms[socket.gameName].readyPlayers--
         //add or remove from 'ready' room
@@ -374,38 +393,77 @@ io.on('connection', socket => {
         } else {
             //to all players
             if (request.to === "All") {
+                
+                //count cards left in deck
                 let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (Object.keys(io.sockets.adapter.rooms[socket.gameName].players).length * request.number)
+
                 console.log(
                 `Deck size = ${io.sockets.adapter.rooms[socket.gameName].deckInPlay.length}`,
                 `number of players = ${Object.keys(io.sockets.adapter.rooms[socket.gameName].players).length}`,
                 `req number = ${request.number}`
                 )
+
                 Object.keys(io.sockets.adapter.rooms[socket.gameName].players).forEach(username =>{
-                    io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
-                        hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
+
+                    //deal cards
+                    let dealtHand = deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number)
+
+                    console.log(socket.gameName)
+
+                    //updated cards left in external player list
+                    io.sockets.adapter.rooms[socket.gameName].exPlayers[username] =  io.sockets.adapter.rooms[socket.gameName].exPlayers[username] + request.number
+
+                    //update hand in internal player list
+                    io.sockets.adapter.rooms[socket.gameName].players[username] = {
+                        "ready": true,
+                        "hand": [...io.sockets.adapter.rooms[socket.gameName].players[username].hand, ...dealtHand],
                         cardsLeft: cardsLeft,
-                        enoughCards: true
+                    }
+
+                    //emit hand to each player
+                    io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[username]).emit('hand delt', {
+                        hand: dealtHand,
+                        cardsLeft: cardsLeft,
+                        enoughCards: true,
                     });
                 })
 
                 io.in(socket.gameName).emit('hand delt notification', {
                     number: request.number,
                     from: socket.username,
-                    to: Object.keys(io.sockets.adapter.rooms[socket.gameName].players)
+                    to: Object.keys(io.sockets.adapter.rooms[socket.gameName].players),
+                    exPlayerObj: io.sockets.adapter.rooms[socket.gameName].exPlayers
                 })
 
             } else {
                 //to one player
+
+                //count cards left in deck
                 let cardsLeft = await io.sockets.adapter.rooms[socket.gameName].deckInPlay.length - (Object.keys(io.sockets.adapter.rooms[socket.gameName].players.length) * request.number)
-                io.to(io.sockets.adapter.rooms[socket.gameName].playersIds[request.to]).emit('hand delt', {
-                    hand: deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number),
+
+                //deal hand
+                let dealtHand = deal(io.sockets.adapter.rooms[socket.gameName].deckInPlay, request.number)
+
+                //emit dealt hand to player
+                io.sockets.adapter.rooms[socket.gameName].players[request.to] = {
+                    "ready": true,
+                    "hand": [...io.sockets.adapter.rooms[socket.gameName].players[request.to].hand, ...dealtHand],
                     cardsLeft: cardsLeft,
-                    enoughCards: true
+                }
+
+                //emit hand to player
+                io.to(request.to).emit('hand delt', {
+                    hand: dealtHand,
+                    cardsLeft: cardsLeft,
+                    enoughCards: true,
                 });
+
+                //emit to everyone else a hand has been dealt
                 io.in(socket.gameName).emit('hand delt notification', {
                     number: request.number,
                     from: socket.username,
-                    to: [request.to]
+                    to: [request.to],
+                    exPlayerObj: io.sockets.adapter.rooms[socket.gameName].exPlayers
                 })
             }
         }

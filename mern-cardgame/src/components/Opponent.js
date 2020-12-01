@@ -34,8 +34,8 @@ const Opponent = ({name, cardsLeft, cards}) => {
                 {Array(cardsLeft).fill(
                     <div 
                     style={{width: "40px", height: "80px", border: "solid 2px"}}
-                    > B </div>)
-                }
+                    > B </div>
+                )}
             </div>
 
             {/* playerSpace */}
