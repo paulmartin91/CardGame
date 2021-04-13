@@ -1,13 +1,19 @@
+const handleJoinGameRequest = require('./handleJoinRequest')
+const handleCreateGameRequest = require('./handleCreateGameRequest')
+
 const connect = io => {
   //when a user connects to web socket
   io.on('connection', (socket) => {
     console.log('a user connected');
     //client request to join a game
-    socket.on('client request join game', ({name, user}) => {
-      //add client to room
-      console.log(name, user)
-      //socket.join(name)
-    })
+    handleJoinGameRequest(socket)
+    handleCreateGameRequest(socket)
+
+    socket.on("disconnect", () => {
+      console.log(socket.id, "disconnected");
+      console.log(io.sockets.adapter.rooms)
+    });
+
   });
 }
 

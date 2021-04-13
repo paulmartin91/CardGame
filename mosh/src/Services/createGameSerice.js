@@ -5,5 +5,6 @@ const apiEndPoint = apiUrl + "/gameList/create"
 
 export function createGame({name, password, maxPlayers}, username) {
   //console.log(name, password, maxPlayers)
-  return http.post(apiEndPoint, {name, password, maxPlayers, players: [username]})
+  //return http.post(apiEndPoint, {name, password, maxPlayers, players: {[username]: {'ready': false, 'playerNumber': 0}}})
+  return http.post(apiEndPoint, {name, password, maxPlayers, players: {}})
 }

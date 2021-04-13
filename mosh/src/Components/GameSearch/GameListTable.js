@@ -23,7 +23,7 @@ function GameListTable({ games, showPassword, setShowPassword, handleSubmit, onS
               <tr key={name}>
                   <td scope="row">{name}</td>
                   <td>
-                      <span className={players.length == maxPlayers ? "ml-3 badge badge-danger badge-pill" : "ml-3 badge badge-primary badge-pill"}>{players.length}/{maxPlayers}</span>
+                      <span className={Object.keys(players).length == maxPlayers ? "ml-3 badge badge-danger badge-pill" : "ml-3 badge badge-primary badge-pill"}>{Object.keys(players).length}/{maxPlayers}</span>
                   </td>
                   <td colSpan="2" className="d-flex justify-content-end">
                       <form className="input-group d-flex justify-content-end w-75" name='join-game' onSubmit={ event => handleSubmit(event, name)}>

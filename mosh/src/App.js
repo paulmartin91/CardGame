@@ -9,6 +9,7 @@ import GamePage from "./Pages/GamePage";
 import Test from './Pages/Test';
 import { getCurrentUser } from './Services/authservice'
 import ProtectedRoute from './Components/Common/protectedRoute'
+import socket from './Services/Socket/socket'
 
 //for development
 const DEVplayerList = {
@@ -28,18 +29,31 @@ const App = () => {
   const [checkUser, setCheckUser] = useState(null) 
 
     useEffect(() => {
-
+      socket.on("connect_error", (err) => {
+        console.log(err.message)
+      })
     }, [])
   
   return (
     <Switch>
         <ProtectedRoute
           path='/gamesearch'
-          component={GameSearch}
+          render={(props) => 
+            <GameSearch 
+              setPlayerList={setPlayerList} 
+              {...props}
+            />
+          }
         />
         <ProtectedRoute
           path='/gamelobby'
-          component={GameLobby}
+          render={(props) => 
+            <GameLobby 
+              playerList={playerList}
+              setPlayerList={setPlayerList} 
+              {...props}
+            />
+          }
         />
         <ProtectedRoute
           path='/gamepage'

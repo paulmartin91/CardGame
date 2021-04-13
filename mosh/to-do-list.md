@@ -1,1 +1,0 @@
-- validation of create game form is broken

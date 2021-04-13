@@ -1,6 +1,7 @@
 import http from '../Services/httpService'
 import { apiUrl } from "../config.json"
 import jwtDecode from 'jwt-decode'
+import disconnect from './Socket/disconnect'
 
 const apiEndPoint = apiUrl + "/auth"
 
@@ -16,6 +17,7 @@ export const logout = () => {
   localStorage.removeItem("token")
   window.location = "/"
   http.removeJwt()
+  disconnect()
 }
 
 export const getCurrentUser = () => {

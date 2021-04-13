@@ -11,7 +11,7 @@ const gameListSchema = new mongoose.Schema({
     unique: true
   },
   players: {
-    type: [String],
+    type: Object,
     // maxLength: this.maxPlayers.max
   },
   maxPlayers: {

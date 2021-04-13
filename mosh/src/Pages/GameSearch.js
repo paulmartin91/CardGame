@@ -7,7 +7,6 @@ import { getGameList } from '../Services/getGameListService'
 import { createGame } from '../Services/createGameSerice'
 import { logout, getCurrentUser } from '../Services/authservice'
 import { joinGame } from '../Services/joinGameService'
-
 import socket from '../Services/Socket/socket'
 
 // const DEVgameList = [
@@ -98,7 +97,7 @@ import socket from '../Services/Socket/socket'
     
 // ]
 
-const GameSearch = ({history, username, gameName, setGameName}) => {
+const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) => {
 
     //States
     const [createGameData, setCreateGameData] = useState({maxPlayers: 2});
@@ -114,38 +113,20 @@ const GameSearch = ({history, username, gameName, setGameName}) => {
         gameRefresh()
         //get username from JWT
         setUser(getCurrentUser() || {})
-
-        // (async () => {
-        //     const tempGameList = await getGameList()
-        //     setGameList(tempGameList)
-        // })()
-
-        // //Load games
-        // socket.emit('request refresh games')
-
-        // socket.on('response refresh games', response => {
-        //     setGameList(response)
-        //     console.log(response)
-        // })
-
-        // socket.on('response create new game', response => {
-        //     if (response.exists) {
-        //         console.log(`response = ${response}`, 'exists')
-        //     } else {
-        //         console.log(response)
-        //         socket.gameName = response.name
-        //         socket.playerList = response.playerList
-        //         setPageDirect('Lobby')
-        //     }
-        // })
-
-        // //Join game response
-        // socket.on('join game response', response => {
-        //     console.log(response)
-        //     socket.gameName = response.name
-        //     socket.playerList = response.playerList
-        //     setPageDirect('Lobby')
-        // })
+        //join game error
+        socket.on("join error", (err) => console.log(err.message));
+        //create game error
+        socket.on("create error", (err) => console.log(err.message));
+        //join game success
+        socket.on("server response join game", (game) => {
+            setPlayerList(game.players)
+            history.push("/gameLobby")
+        });
+        //create game success
+        socket.on("server response create game", (game) => {
+            setPlayerList(game.players)
+            history.push("/gameLobby")
+        });
 
     }, [])
 
@@ -177,14 +158,7 @@ const GameSearch = ({history, username, gameName, setGameName}) => {
         const password = event.target.password ? event.target.password.value : false
         // if joined game...
         if (name) {
-            //check with server
-            const joinedGame = await joinGame(name, password, user.username)
-            //if server permits
-            if (joinedGame) {//history.push("/gameLobby")
-                //send request to join game with name
-                socket.emit('client request join game', {name, user})
-            }
-            else console.log("Something went wrong!")
+            socket.emit('client request join game', {name, user, password})
         //if creating a game...
         } else {
             //validate credentials
@@ -197,7 +171,11 @@ const GameSearch = ({history, username, gameName, setGameName}) => {
             }
             try {
                 //if all is well, create a new game
-                const newGame = await createGame(createGameData, user.username)
+                // const newGame = await createGame(createGameData, user.username)
+                // const gameName = newGame.name
+                //if (newGame) socket.emit('client request join game', {gameName, user, password})
+                const {name, password, maxPlayers} = createGameData
+                socket.emit('client request create game', {name, password, maxPlayers, user})
                 //join game
                 //socket.emit('client request join game', {name, user})
             } catch (ex) {
