@@ -40,7 +40,8 @@ const App = () => {
           path='/gamesearch'
           render={(props) => 
             <GameSearch 
-              setPlayerList={setPlayerList} 
+              setPlayerList={setPlayerList}
+              setGameName={setGameName}
               {...props}
             />
           }
@@ -50,7 +51,9 @@ const App = () => {
           render={(props) => 
             <GameLobby 
               playerList={playerList}
-              setPlayerList={setPlayerList} 
+              setPlayerList={setPlayerList}
+              gameName={gameName}
+              setGameName={setGameName}
               {...props}
             />
           }

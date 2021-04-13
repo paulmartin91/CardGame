@@ -1,13 +1,17 @@
 import React, { useState, useEffect} from 'react';
 import MessageBox from '../Containers/MessageBox';
-import socket from '../Services/Socket/socket'
+import { getCurrentUser } from '../Services/authservice';
+import socket, {connectSocket} from '../Services/Socket/socket'
 
 // const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
-const Lobby = ({history, gameName, playerList, setPlayerList, username = "paul"}) => {
+const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
     
     const [isReady, setIsReady] = useState(false)
+    const [username, setUsername] = useState()
 
     useEffect(()=>{
+
+        setUsername(getCurrentUser())
 
         // setPlayerList(playerList)
 
@@ -70,7 +74,7 @@ const Lobby = ({history, gameName, playerList, setPlayerList, username = "paul"}
 
     return (
         <div className="container w-50 p-3 border rounded container mt-5">
-            <h4 className="mb-5" style={{textAlign: "center"}}>Welcome to {}</h4>
+            <h4 className="mb-5" style={{textAlign: "center"}}>Welcome to {gameName}</h4>
             {/* {socket.gameName}</h4> */}
             <h3><small>Players currently in the lobby...</small></h3>
                 <ul className="list-group mb-1" style={{transition: "1s"}}>

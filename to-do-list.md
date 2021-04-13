@@ -13,5 +13,6 @@ GameSearch
 GameLobby
 - needs logout
 - needs leave game
+- delete auth token, then join game redirects to sign in (good), but sign in redirects to joined game (bad)
 
 GamePage

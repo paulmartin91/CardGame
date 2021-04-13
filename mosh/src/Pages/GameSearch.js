@@ -7,7 +7,7 @@ import { getGameList } from '../Services/getGameListService'
 import { createGame } from '../Services/createGameSerice'
 import { logout, getCurrentUser } from '../Services/authservice'
 import { joinGame } from '../Services/joinGameService'
-import socket from '../Services/Socket/socket'
+import socket, { connectSocket } from '../Services/Socket/socket'
 
 // const DEVgameList = [
 //     {
@@ -106,9 +106,8 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
     const [user, setUser] = useState({})
 
     useEffect(() => {
-
-        //connect to web socket
-        socket.connect();
+        connectSocket()
+        //(!socket.connected && socket.connect())
         //refresh game list
         gameRefresh()
         //get username from JWT
@@ -120,11 +119,13 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
         //join game success
         socket.on("server response join game", (game) => {
             setPlayerList(game.players)
+            setGameName(game.name)
             history.push("/gameLobby")
         });
         //create game success
         socket.on("server response create game", (game) => {
             setPlayerList(game.players)
+            setGameName(game.name)
             history.push("/gameLobby")
         });
 
@@ -158,6 +159,7 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
         const password = event.target.password ? event.target.password.value : false
         // if joined game...
         if (name) {
+            console.log('here')
             socket.emit('client request join game', {name, user, password})
         //if creating a game...
         } else {
