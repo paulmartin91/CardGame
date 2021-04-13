@@ -1,7 +1,8 @@
 import React, { useState, useEffect} from 'react';
 import MessageBox from '../Containers/MessageBox';
-import { getCurrentUser } from '../Services/authservice';
+import { getCurrentUser, logout } from '../Services/authservice';
 import socket, {connectSocket} from '../Services/Socket/socket'
+import leaveGame from '../Services/Socket/leaveGame'
 
 // const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
 const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
@@ -74,7 +75,13 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
 
     return (
         <div className="container w-50 p-3 border rounded container mt-5">
-            <h4 className="mb-5" style={{textAlign: "center"}}>Welcome to {gameName}</h4>
+            <div className="d-flex justify-content-between">
+                <h4 className="mb-5" style={{textAlign: "center"}}>Welcome to {gameName}</h4>
+                <div>
+                    <button className="btn-danger rounded mr-2" onClick={leaveGame}>Leave Game</button>
+                    <button className="btn-danger rounded" onClick={logout}>Logout</button>
+                </div>
+            </div>
             {/* {socket.gameName}</h4> */}
             <h3><small>Players currently in the lobby...</small></h3>
                 <ul className="list-group mb-1" style={{transition: "1s"}}>

@@ -1,5 +1,6 @@
 const handleJoinGameRequest = require('./handleJoinRequest')
 const handleCreateGameRequest = require('./handleCreateGameRequest')
+const handleLeaveGameRequest = require('./handleLeaveGameRequest')
 // const socketAuth = require('../middleware/auth')
 const jwt = require('jsonwebtoken')
 
@@ -15,6 +16,7 @@ const connect = io => {
     try {
       const decoded = jwt.verify(token, process.env.JWTPRIVATEKEY)
       console.log(decoded.username, 'has connected')
+      socket.user = decoded
       next()
     } catch (error) {
       console.log(error)
@@ -27,6 +29,7 @@ const connect = io => {
     //client request to join a game
     handleJoinGameRequest(socket)
     handleCreateGameRequest(socket)
+    handleLeaveGameRequest(socket)
 
     //when a user disconnects to web socket
     socket.on("disconnect", () => {
