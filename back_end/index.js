@@ -8,7 +8,7 @@ const app = express()
 const http = require('http').createServer(app)
 const io = require('socket.io')(http, {
   cors: {
-    origin: "http://localhost:3001",
+    origin: "http://localhost:3001"
   },
 })
 
@@ -17,27 +17,22 @@ const users = require('./routes/users')
 const auth = require('./routes/auth')
 const gameList = require('./routes/gameList')
 const connect = require('./socket/socket')(io)
-//const getGameList = require('./routes/getGameList')
 
-//express app
+//server port
 const port = 3000
 
-//allow requests from front end
+//enable cors from front end
 app.use(cors({origin: 'http://localhost:3001'}))
 
-//Need this to parse req body
+//Middleware for parssing req body
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
+//App will crash if no JWT private key is provided
 if (!process.env.JWTPRIVATEKEY) {
   console.log('FATAL ERROR: jwtPrivateKey is not defined.')
   process.exit(1);
 }
-
-//for websocket connections < -- NOT WORKING!
-// const server = http.createServer(app);
-// const io = socketio(server);
-// server.listen()
 
 //connect to mongodb locally
 mongoose.connect('mongodb://localhost/cardGame')
@@ -45,11 +40,9 @@ mongoose.connect('mongodb://localhost/cardGame')
   .catch(err => console.error('could not connect to MongoDB', err))
 
 //route by request
-app.use('/api/users', users)
+app.use('/api/users', users) 
 app.use('/api/auth', auth)
 app.use('/api/gameList', gameList)
-
-// app.use('')
 
 //run express server
 http.listen(port, () => {

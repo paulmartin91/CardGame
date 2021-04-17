@@ -1,5 +1,4 @@
 //dependencies
-const mongoose = require('mongoose')
 const express = require('express')
 const _ = require('lodash')
 const bcrypt = require('bcrypt')
@@ -32,10 +31,10 @@ router.post('/', async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt)
   //save user to db
   await user.save();
-
+  //generate a jwt
   const token = user.generateAuthToken()
 
-  //send 200 for success
+  //send 200 with token for success
   res
     .header('x-auth-token', token)
     .header("access-control-expose-headers", "x-auth-token")

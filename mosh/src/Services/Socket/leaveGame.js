@@ -1,3 +1,6 @@
 import socket from "./socket";
 
-export default function leaveGame(){socket.emit('client request leave current game')}
+export default function leaveGame(){
+  console.log('leave')
+  socket.emit('client_request_leave_current_game')
+}

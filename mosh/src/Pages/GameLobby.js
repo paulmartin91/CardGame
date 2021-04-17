@@ -12,7 +12,23 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
 
     useEffect(()=>{
 
+        connectSocket()
+
         setUsername(getCurrentUser())
+
+        //socket.on('server response playerList refresh', (res) => console.log(res));
+        socket.on("server_response_playerList_refresh", (players) => {
+            console.log(players)
+            setPlayerList(players)
+        });
+
+        socket.on("server_response_leave_current_game", response => {
+            if (response){
+                setGameName()
+                setPlayerList({})
+                history.push("/gameSearch")
+            } else console.log('error!')  
+        })
 
         // setPlayerList(playerList)
 
@@ -63,6 +79,10 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
 
     }, [])
 
+    const playerListRefresh = async () => {
+        socket.emit('client_request_playerList_refresh', gameName)
+    }
+
     const handleClick = event => {
         // if (event.target.name === "ready-button") {
         //     socket.emit('ready', isReady);
@@ -83,7 +103,10 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
                 </div>
             </div>
             {/* {socket.gameName}</h4> */}
-            <h3><small>Players currently in the lobby...</small></h3>
+            <div className="d-flex justify-content-between mb-2">
+                <h3><small>Players currently in the lobby...</small></h3>
+                <button className="btn btn-primary" onClick={playerListRefresh}>⟳</button>
+            </div>
                 <ul className="list-group mb-1" style={{transition: "1s"}}>
                     {/* Player List */}
                     {Object.keys(playerList).map(name => <li key={name} className="list-group-item d-flex justify-content-between align-items-center" style={{backgroundColor: playerList[name].ready && 'yellow'}} >{name}</li>)}

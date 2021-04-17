@@ -21,7 +21,7 @@ const DEVplayerList = {
 const App = () => {
 
   //for development
-  const [username, setUsername] = useState('paul')
+  const [username, setUsername] = useState('')
   const [gameName, setGameName] = useState()
   const [playerList, setPlayerList] = useState({})
 
@@ -32,12 +32,19 @@ const App = () => {
       socket.on("connect_error", (err) => {
         console.log(err.message)
       })
+
+      socket.on('server_redirect_user_to_game', game => {
+        setPlayerList(game.players)
+        setGameName(game.name)
+      })
+
     }, [])
   
   return (
     <Switch>
         <ProtectedRoute
           path='/gamesearch'
+          gameName={gameName}
           render={(props) => 
             <GameSearch 
               setPlayerList={setPlayerList}
@@ -113,7 +120,7 @@ const App = () => {
           path='/' 
           render={ props => 
             <Login 
-              setUsername={setUsername} 
+              setUsername={setUsername}
               {...props} 
             />
           }

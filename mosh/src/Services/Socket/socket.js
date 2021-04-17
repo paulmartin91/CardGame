@@ -7,7 +7,11 @@ const socket = io(URL, {
   autoConnect: false,
   auth: {
     token: ""
-  }
+  },
+  'reconnection delay': 2500,
+  'secure': true,
+  'max reconnection attempts': 10,
+  'reconnection': true 
 });
 
 export function connectSocket(){

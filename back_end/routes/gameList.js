@@ -7,7 +7,7 @@ const Joi = require('joi')
 
 //local files
 const { GameList } = require('../models/gameList')
-const auth = require('../middleware/auth')
+const {auth} = require('../middleware/auth')
 
 //express router
 const router = express.Router()

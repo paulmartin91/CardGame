@@ -1,40 +1,32 @@
 const handleJoinGameRequest = require('./handleJoinRequest')
 const handleCreateGameRequest = require('./handleCreateGameRequest')
-const handleLeaveGameRequest = require('./handleLeaveGameRequest')
-// const socketAuth = require('../middleware/auth')
-const jwt = require('jsonwebtoken')
+const {handleLeaveGameRequest} = require('./handleLeaveGameRequest')
+const handlePlayerListRefresh = require('./handlePlayerListRefresh')
+const {socketAuth} = require('../middleware/auth')
+const {isInGame} = require('../middleware/isInGame')
 
 const connect = io => {
-  //when a user connects to web socket
-  
-  io.use( async (socket, next)=> {
-    const token = await socket.handshake.auth.token
-    if (!token) {
-      console.log('no token')//return socket.emit('Access denied. No token provided.')
-      return
-    }
-    try {
-      const decoded = jwt.verify(token, process.env.JWTPRIVATEKEY)
-      console.log(decoded.username, 'has connected')
-      socket.user = decoded
-      next()
-    } catch (error) {
-      console.log(error)
-      return
-    } 
-  })
+
+  //middleware for authenticating users
+  io.use(socketAuth)
+  //middleware for checking if client is in a game
+  io.use(isInGame)
 
   io.on('connection', (socket) => {
 
     //client request to join a game
     handleJoinGameRequest(socket)
+    //client request to create a game
     handleCreateGameRequest(socket)
-    handleLeaveGameRequest(socket)
+    //client request to leave a game
+    handleLeaveGameRequest(socket, io)
+    //client request to refresh the player list
+    handlePlayerListRefresh(socket, io)
 
     //when a user disconnects to web socket
     socket.on("disconnect", () => {
-      console.log(socket.id, "disconnected");
-    });
+      console.log(socket.id, "disconnected")
+    })
 
   });
 }
