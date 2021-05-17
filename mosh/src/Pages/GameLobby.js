@@ -1,13 +1,12 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import MessageBox from '../Containers/MessageBox';
 import { getCurrentUser, logout } from '../Services/authservice';
 import socket, {connectSocket} from '../Services/Socket/socket'
 import leaveGame from '../Services/Socket/leaveGame'
 
 // const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
-const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
+const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messages, setMessages}) => {
     
-    const [isReady, setIsReady] = useState(false)
     const [username, setUsername] = useState()
 
     useEffect(()=>{
@@ -16,9 +15,13 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
 
         setUsername(getCurrentUser())
 
+        //if no game, redirect to gameSearch
+        !gameName && history.push("/gameSearch")
+
         //socket.on('server response playerList refresh', (res) => console.log(res));
-        socket.on("server_response_playerList_refresh", (players) => {
+        socket.on("server_response_playerList_refresh", players => {
             console.log(players)
+            //console.log('here')
             setPlayerList(players)
         });
 
@@ -29,6 +32,16 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
                 history.push("/gameSearch")
             } else console.log('error!')  
         })
+
+        socket.on('server_request_all_ready', () => console.log('ready!'))
+
+        socket.on('server_response_send_message', ({time, username, message}) => {
+            setMessages(oldMessages => [...oldMessages, {time, username, message}])
+            // let tempMessages = [...messages, [time, username, message]]
+            // setMessages(tempMessages)
+            // console.log(messages)
+        })
+
 
         // setPlayerList(playerList)
 
@@ -79,18 +92,14 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
 
     }, [])
 
-    const playerListRefresh = async () => {
-        socket.emit('client_request_playerList_refresh', gameName)
-    }
+    const playerListRefresh = () => socket.emit('client_request_playerList_refresh', gameName)
 
-    const handleClick = event => {
-        // if (event.target.name === "ready-button") {
-        //     socket.emit('ready', isReady);
-        // }
-        setIsReady(!isReady)
-        let templist = {...playerList}
-        templist[username].ready = !isReady //.ready = !oldList[username].ready
-        setPlayerList(templist)
+    const readyUp = () => socket.emit('client_request_ready');
+
+    const sendMessage = message => socket.emit(`client_request_send_message`, message)
+
+    const handleClick = async event => {
+       
     }
 
     return (
@@ -113,13 +122,18 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList}) => {
                 </ul>
                 
                 {/* Ready Button */}
-                <button className={isReady ? "ready mb-5 btn btn-warning" : "not-ready mb-5 btn btn-success"} name="ready-button" onClick={handleClick}>{isReady ? "unready" : "ready up"}</button>
+                <button className={playerList[username] && playerList[username].ready ? "mb-5 btn btn-warning" : "mb-5 btn btn-success"} name="ready-button" onClick={readyUp}>{playerList[username] && playerList[username].ready ? "unready" : "ready up"}</button>
 
                 {/* Start */}
                 <button className="mb-5 btn btn-success ml-5" onClick={() => history.push('./gamepage')}>Start!</button>
                 
                 {/* Message Box */}
-                <MessageBox username={username}/>
+                <MessageBox 
+                    username={username} 
+                    sendMessage={sendMessage} 
+                    messages={messages}
+                    setMessages={setMessages}
+                />
         </div>
     )
 }

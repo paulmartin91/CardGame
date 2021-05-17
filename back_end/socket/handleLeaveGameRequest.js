@@ -17,7 +17,7 @@ const leaveGame = async (io, socket, username) => {
   if (!game) {
     err.data = {content: "game doesn't exist"}
     socket.emit('Leave game error', err )
-    socket.leave(game.name)
+    // socket.leave(game.name)
     return true
   }
 

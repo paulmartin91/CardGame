@@ -16,10 +16,11 @@ export async function login(username, password) {
 }
 
 export const logout = () => {
+  disconnect()
   localStorage.removeItem("token")
   window.location = "/"
   http.removeJwt()
-  disconnect()
+  console.log('this place')
 }
 
 export const getCurrentUser = () => {

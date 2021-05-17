@@ -43,7 +43,8 @@ const handleCreateGameRequest = socket => {
     game.save()
     //join game
     socket.join(name)
-    console.log(socket.rooms)
+    //save game object to socket object
+    socket.game = [game]
     //send success
     socket.emit('server response create game', _.pick(game, ['name', 'players'] ))
   })

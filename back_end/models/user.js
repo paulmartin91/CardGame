@@ -25,6 +25,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 5,
     maxlength: 1024
+  },
+  isLoggedIn: {
+    type: Boolean,
+    required: true
   }
 })
 

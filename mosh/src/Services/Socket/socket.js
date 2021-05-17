@@ -27,7 +27,7 @@ export function connectSocket(){
 }
 
 socket.onAny((event, ...args) => {
-  console.log(event, args);
+  // console.log(event, args);
 });
 
 export default socket;

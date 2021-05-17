@@ -15,6 +15,9 @@ const isInGame = async (socket, next) => {
     socket.emit('server_redirect_user_to_game', _.pick(game[0], ['name', 'players']))
   }
 
+  //inform client they have left game
+  socket.emit('server_request_leave_game')
+
   next()
 }
 

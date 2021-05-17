@@ -32,6 +32,8 @@ const handleJoinGameRequest = socket => {
     const playerObject = {ready: false, playerNumber: numberOfPLayers}
     //add player object to gameList document
     game.players = {...game.players, [user.username]: playerObject}
+    //save game to socket obj
+    socket.game = [game]
     //save document
     game.save()
     //add player to socket room

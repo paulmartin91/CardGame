@@ -24,12 +24,13 @@ GamePage
 BACKEND
 
 - Can't currently tell who is in each room ✓
-- Need to make sure players are only in one game at a time (started, needs testing)
-
-- Need an isInGame function
-  - runs as middleware, if in game, redirect user to lobby ✓
-  - runs when creating or joining a game
+- Need to make sure players are only in one game at a time (started, needs testing) ✓
+- Need to make an isLoggedIn function
+  - User can only log in once
 
 
   MONGODB
-  - Joining games in progress?
+    GameList
+    - Needs started: bool
+    Users
+    - Needs isLoggedIn: bool

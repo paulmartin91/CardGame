@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
   //send 400 for email exists
   if (user) return res.status(400).send('Email already exists.')
   //select only relevant keys
-  user = new User(_.pick(req.body, ['username', 'email', 'password']))
+  user = new User({..._.pick(req.body, ['username', 'email', 'password']), isLoggedIn: true})
   //salt pw
   const salt = await bcrypt.genSalt(10)
   //hash pw
@@ -33,7 +33,6 @@ router.post('/', async (req, res) => {
   await user.save();
   //generate a jwt
   const token = user.generateAuthToken()
-
   //send 200 with token for success
   res
     .header('x-auth-token', token)

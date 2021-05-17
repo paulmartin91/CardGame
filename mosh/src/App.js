@@ -24,6 +24,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [gameName, setGameName] = useState()
   const [playerList, setPlayerList] = useState({})
+  const [messages, setMessages] = useState([])
 
   //actual
   const [checkUser, setCheckUser] = useState(null) 
@@ -37,6 +38,8 @@ const App = () => {
         setPlayerList(game.players)
         setGameName(game.name)
       })
+
+      socket.on('server_request_leave_game', () => setGameName(null))
 
     }, [])
   
@@ -61,6 +64,8 @@ const App = () => {
               setPlayerList={setPlayerList}
               gameName={gameName}
               setGameName={setGameName}
+              messages={messages}
+              setMessages={setMessages}
               {...props}
             />
           }

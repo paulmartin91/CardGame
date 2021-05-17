@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
-const MessageBox = ({ username }) => {
+const MessageBox = ({ username, sendMessage, messages, setMessages }) => {
 
-    const [messages, setMessages] = useState([])
     const [message, setMessage] = useState([])
+    // const chatBox = useRef(null)
 
     const handleSubmit = event => {
-        if (message.length > 0) {
-            console.log(message )
-            setMessages( oldMessages => [...oldMessages, {'time': 'x', 'username': username, 'message': message}])
-            setMessage('')
-            // socket.emit(`send message`, {
-            //     message: event.target.message.value,
-            //     username: socket.username,
-            //     location: 'Lobby',
-            // })
-        }
+        sendMessage(message)
+        setMessage('')
+        // socket.emit(`client_request_send_message`, message)
+        //     // setMessages( oldMessages => [...oldMessages, {'time': 'x', 'username': username, 'message': message}])
+        //     // setMessage('')
+        //     //     message: event.target.message.value,
+        //     //     location: 'Lobby',
+        //     // })
 
         event.preventDefault();
     }
@@ -23,16 +21,23 @@ const MessageBox = ({ username }) => {
     return (
         <div className="mt-5">
             <div className="border">
-                <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}}>
-                    <p id="messages" style={{wordBreak: "break-all"}}>
-                        { messages.map( message => <p1><span className="text-muted small">{message.time == 'n/a' ? '' : [message.time]}</span>{message.username}: {message.message}<br /></p1>) }
-                    </p>
+                <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}} >
+                    <ul id="messages" style={{wordBreak: "break-all", padding: 5}}>
+                        { messages.map(({time, username, message}, index) => 
+                            <li key={index}>
+                                <span className="text-muted small">
+                                    {time == 'n/a' ? '' : time}
+                                </span>
+                                {username}: {message}
+                            </li>
+                        )}
+                    </ul>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">
                         <input type="text" style={{borderRadius: 0}} name="message" className="border form-control" placeholder="Type message..." id="messagesInput" value={message} onChange={({target}) => setMessage(target.value)}/>
                         <div className="input-group-append">
-                            <button className="btn btn-outline-secondary" type="submit" style={{borderRadius: 0}}>Send Message</button>
+                            <button className="btn btn-outline-secondary" type="submit" style={{borderRadius: 0}} disabled={message.length==0} >Send Message</button>
                         </div>
                     </div>
                 </form>

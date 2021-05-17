@@ -34,6 +34,9 @@ if (!process.env.JWTPRIVATEKEY) {
   process.exit(1);
 }
 
+//findandupdate will depreciate without this
+mongoose.set('useFindAndModify', false);
+
 //connect to mongodb locally
 mongoose.connect('mongodb://localhost/cardGame')
   .then(() => console.log('connected to MongoDB...'))
