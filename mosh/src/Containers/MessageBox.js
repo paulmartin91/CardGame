@@ -1,37 +1,41 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-const MessageBox = ({ username, sendMessage, messages, setMessages }) => {
+import socket from '../Services/Socket/socket'
+
+const MessageBox = ({ username, messages, setMessages }) => {
 
     const [message, setMessage] = useState([])
-    // const chatBox = useRef(null)
+    const messageBoxRef = useRef(null)
+
+    useEffect(() => {
+        socket.on('server_response_send_message', ({time, username, message}) => {
+            setMessages(oldMessages => [...oldMessages, {time, username, message}])
+            if (messageBoxRef.current) messageBoxRef.current.scrollTop = messageBoxRef.current.scrollHeight
+        })
+    }, []);
 
     const handleSubmit = event => {
         sendMessage(message)
         setMessage('')
-        // socket.emit(`client_request_send_message`, message)
-        //     // setMessages( oldMessages => [...oldMessages, {'time': 'x', 'username': username, 'message': message}])
-        //     // setMessage('')
-        //     //     message: event.target.message.value,
-        //     //     location: 'Lobby',
-        //     // })
-
         event.preventDefault();
     }
+
+    const sendMessage = message => socket.emit(`client_request_send_message`, message)
 
     return (
         <div className="mt-5">
             <div className="border">
-                <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}} >
-                    <ul id="messages" style={{wordBreak: "break-all", padding: 5}}>
+                <div id="messageBox" style={{cursor: "default", height: 150, overflow: "scroll"}} ref={messageBoxRef}>
+                    <div id="messages" style={{wordBreak: "break-all"}}>
                         { messages.map(({time, username, message}, index) => 
-                            <li key={index}>
+                            <p key={index} className='m-0'>
                                 <span className="text-muted small">
                                     {time == 'n/a' ? '' : time}
                                 </span>
                                 {username}: {message}
-                            </li>
+                            </p>
                         )}
-                    </ul>
+                    </div>
                 </div>
                 <form onSubmit={handleSubmit}>
                     <div className="input-group">

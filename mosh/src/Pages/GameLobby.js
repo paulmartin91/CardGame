@@ -5,15 +5,16 @@ import socket, {connectSocket} from '../Services/Socket/socket'
 import leaveGame from '../Services/Socket/leaveGame'
 
 // const Lobby = ({socket, ENDPOINT, setPageDirect}) => {
-const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messages, setMessages}) => {
+const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messages, setMessages, username, setUsername}) => {
     
-    const [username, setUsername] = useState()
+    const [startGame, setStartGame] = useState(false)
 
     useEffect(()=>{
-
+        
+        //make sure the socket is connected
         connectSocket()
 
-        setUsername(getCurrentUser())
+        setUsername(getCurrentUser().username)
 
         //if no game, redirect to gameSearch
         !gameName && history.push("/gameSearch")
@@ -33,74 +34,22 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messa
             } else console.log('error!')  
         })
 
-        socket.on('server_request_all_ready', () => console.log('ready!'))
+        socket.on('server_request_all_ready', isStart => {
+            if (isStart === false) console.log('All players not ready')
+            else setStartGame(isStart) 
+        })        
 
-        socket.on('server_response_send_message', ({time, username, message}) => {
-            setMessages(oldMessages => [...oldMessages, {time, username, message}])
-            // let tempMessages = [...messages, [time, username, message]]
-            // setMessages(tempMessages)
-            // console.log(messages)
-        })
-
-
-        // setPlayerList(playerList)
-
-        // socket.on('other player ready status changed', ready => {
-        //     console.log(ready.ready)
-        //     ready.ready ? document.getElementById(ready.username).style = "background-color: #B7E2C0; transition: 0.5s" : document.getElementById(ready.username).style = "background-color:; transition: 0.5s"
-        // })
-
-        // socket.on('player ready status changed', isReady => {
-        //     setIsReady(isReady)
-        //     isReady ? document.getElementById(socket.username).style = "background-color: #B7E2C0; transition: 0.5s" : document.getElementById(socket.username).style = "background-color:; transition: 0.5s"
-        // })
-  
-        // socket.on('new user joined game', response => {
-        //     setMessages(messages => [...messages, {
-        //         time: response.time,
-        //         username: 'Server',
-        //         message: `${response.username} has joined the lobby, currently ${Object.keys(playerList).length == 1 ? ' 1 player' : `${Object.keys(playerList).length} players`} in the lobby`
-        //     }])
-        //     document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
-        //     setPlayerList(response.playerList)
-        //     // document.getElementById("lobbymessages").innerHTML += `${user.username} has joined the lobby, currently ${user.users.length == 1 ? ' 1 player' : `${user.users.length} players`} in lobby <br>`
-        // })
-
-        // socket.on('recieve message', async message => {
-        //     setMessages(messages => [...messages, message])
-        //     document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
-        //     document.getElementById(`messagesInput`).value = ''
-        //     console.log(messages)
-        // })
-
-        
-        // socket.on('starting game', (startObj) => {
-        //     if (!startObj.start) {
-        //         setMessages(messages => [...messages, {
-        //             time: 'n/a',
-        //             username: 'Server',
-        //             message: `Game starting in ${startObj.count}...`
-        //         }])
-        //         document.getElementById(`messageBox`).scrollTop = document.getElementById(`messageBox`).scrollHeight
-        //     }
-        //     if (startObj.start) {
-        //         socket.playerList = playerList
-        //         setPageDirect('GamePage')
-        //     }
-        // })
-        
+        socket.on('server_request_start', () => {
+            history.push('./gamePage')
+        })      
 
     }, [])
 
     const playerListRefresh = () => socket.emit('client_request_playerList_refresh', gameName)
 
-    const readyUp = () => socket.emit('client_request_ready');
+    const readyUp = () => socket.emit('client_request_ready')
 
-    const sendMessage = message => socket.emit(`client_request_send_message`, message)
-
-    const handleClick = async event => {
-       
-    }
+    const start = () => socket.emit('client_request_start_game')
 
     return (
         <div className="container w-50 p-3 border rounded container mt-5">
@@ -125,12 +74,11 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messa
                 <button className={playerList[username] && playerList[username].ready ? "mb-5 btn btn-warning" : "mb-5 btn btn-success"} name="ready-button" onClick={readyUp}>{playerList[username] && playerList[username].ready ? "unready" : "ready up"}</button>
 
                 {/* Start */}
-                <button className="mb-5 btn btn-success ml-5" onClick={() => history.push('./gamepage')}>Start!</button>
+                <button className="mb-5 btn btn-success ml-5" onClick={start} disabled={!startGame}>Start!</button>
                 
                 {/* Message Box */}
                 <MessageBox 
                     username={username} 
-                    sendMessage={sendMessage} 
                     messages={messages}
                     setMessages={setMessages}
                 />

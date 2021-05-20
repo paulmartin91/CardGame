@@ -3,8 +3,10 @@ import React, { useEffect, useState } from 'react';
 import MessageBox from '../Containers/MessageBox';
 import TableContainer from '../Containers/TableContainer';
 import GameTools from '../Containers/GameTools'
+import socket from '../Services/Socket/socket';
+import { getCurrentUser, logout } from '../Services/authservice';
 
-function GamePage({ history, username, playerList }) {
+function GamePage({ history, username, playerList, messages, setMessages, setUsername }) {
 
     const [number, setNumber] = useState(1)
     const [hands, setHands] = useState(() => {
@@ -13,6 +15,18 @@ function GamePage({ history, username, playerList }) {
         tempObj.openPlay =  []
         return tempObj
     })
+    const [selected, setSelected] = useState(false)
+
+    useEffect(() => {
+        //FOR DEVELOPMENT
+        socket.removeAllListeners("disconnect");
+
+        socket.on('server_response_play_cards', async ({ hand }) => {
+            const tempHand = await {...hands, ...hand}
+            setHands(tempHand)
+        })
+
+    }, [])
 
     const DEVrequestCards = name =>  {
         if (name == username) {
@@ -30,24 +44,26 @@ function GamePage({ history, username, playerList }) {
         }
     }
 
-    const DEVoppoentPlayCards = event => {            
-        let tempHands = {...hands}
+    const DEVoppoentPlayCards = event => {        
+        // let tempHands = {...hands}
 
-        let selectedCards = [
-            {'id': 2, 'suit': 'D', 'value': 2, 'selected': false},
-            {'id': 3, 'suit': 'S', 'value': 3, 'selected': false},
-            {'id': 4, 'suit': 'C', 'value': 4, 'selected': false},
-            {'id': 5, 'suit': 'H', 'value': 7, 'selected': false}
-        ]
+        // let selectedCards = [
+        //     {'id': 2, 'suit': 'D', 'value': 2, 'selected': false},
+        //     {'id': 3, 'suit': 'S', 'value': 3, 'selected': false},
+        //     {'id': 4, 'suit': 'C', 'value': 4, 'selected': false},
+        //     {'id': 5, 'suit': 'H', 'value': 7, 'selected': false}
+        // ]
 
-        tempHands['john'].blind = []
-        tempHands.openPlay = selectedCards
+        // tempHands['john'].blind = []
+        // tempHands.openPlay = selectedCards
 
-        //set hands
-        setHands(tempHands)
+        // //set hands
+        // setHands(tempHands)
     }
 
+    //needs to be socket request
     const leaveGame = () => history.replace('./gameSearch')
+
 
     const dealCards = dealTo => {
         if (dealTo == 'All Players') {
@@ -61,18 +77,28 @@ function GamePage({ history, username, playerList }) {
     }
 
     const select = (id, handArea) => {
-        console.log('select')
         let tempHands = {...hands}
         if (handArea == "openPlay") {
             tempHands.openPlay.find(card => card.id == id).selected = !tempHands.openPlay.find(card => card.id == id).selected
         } else {
             tempHands[username][handArea].find(card => card.id == id).selected = !tempHands[username][handArea].find(card => card.id == id).selected
         }
+
+        let selectedCards = [
+            ...tempHands[username].blind.filter(card => card.selected), 
+            ...tempHands[username].open.filter(card => card.selected), 
+            ...tempHands.openPlay.filter(card => card.selected)
+        ]
+
+        setSelected(selectedCards.length > 0)
+
         setHands(tempHands)
     }
 
     const playCard = (event, handArea) => {
         if (event.target.nodeName == 'DIV') {
+            selected && socket.emit('client_request_play_cards', {...hands}, handArea)
+            /*
             //copy hands into temp object
             let tempHands = {...hands}
             //make new arr with selected cards
@@ -98,6 +124,7 @@ function GamePage({ history, username, playerList }) {
             }
             //set hands
             setHands(tempHands)
+            */
         }
     }
 
@@ -114,6 +141,8 @@ function GamePage({ history, username, playerList }) {
                 />
                 <MessageBox
                     username={username} 
+                    messages={messages}
+                    setMessages={setMessages}
                 />  
             </div>
             <TableContainer 

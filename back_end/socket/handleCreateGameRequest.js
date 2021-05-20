@@ -36,7 +36,7 @@ const handleCreateGameRequest = socket => {
     //create player object
     const playerObject = {ready: false, playerNumber: 0}
     //create game
-    game = new GameList(_.pick(request, ['name', 'password', 'maxPlayers']))
+    game = new GameList({..._.pick(request, ['name', 'password', 'maxPlayers']), isStarted: false})
     //add player to game
     game.players = {[user.username]: playerObject}
     //save document

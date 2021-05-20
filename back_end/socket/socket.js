@@ -5,10 +5,15 @@ const handlePlayerListRefresh = require('./handlePlayerListRefresh')
 const handleMessageRequest = require('./handleMessageRequest')
 const {socketAuth} = require('../middleware/auth')
 const {isInGame} = require('../middleware/isInGame')
-const handleReadyRequest = require('./handleReadyRequest')
-const logout = require('./logout')
+const { handleReadyRequest, handleStartRequest } = require('./handleReadyRequest')
+const { handleLogout, logoutAllUsers } = require('./logout')
+const deleteGames = require('./deleteGames')
+const handlePlayCardsRequest = require('./handlePlayCardsRequest')
 
 const connect = io => {
+
+  logoutAllUsers(io)
+  deleteGames()
 
   //middleware for authenticating users
   io.use(socketAuth)
@@ -16,6 +21,11 @@ const connect = io => {
   io.use(isInGame)
 
   io.on('connection', (socket) => {
+
+    //FOR DEVELOPMENT
+    socket.join('paulsgame')
+
+    console.log('connected')
 
     //client request to join a game
     handleJoinGameRequest(socket)
@@ -29,10 +39,14 @@ const connect = io => {
     handleReadyRequest(socket, io)
     //client request to send message
     handleMessageRequest(socket, io)
+    //client request to start a game
+    handleStartRequest(socket, io)
+    //client request play cards
+    handlePlayCardsRequest(socket, io)
 
     //when a user disconnects to web socket
     socket.on('client_request_disconnect_reason', reason => {
-      reason == 'logged_out' && logout(socket.user.username)
+      reason == 'logged_out' && handleLogout(socket.user.username)
     })
 
     socket.on("disconnect", reason => {
@@ -43,6 +57,7 @@ const connect = io => {
     })
 
   });
+
 }
 
 module.exports = connect

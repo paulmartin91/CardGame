@@ -20,7 +20,6 @@ export const logout = () => {
   localStorage.removeItem("token")
   window.location = "/"
   http.removeJwt()
-  console.log('this place')
 }
 
 export const getCurrentUser = () => {

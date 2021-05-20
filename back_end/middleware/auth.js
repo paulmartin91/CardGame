@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const { User } = require('../models/user')
 
 //http requests
 const auth = (req, res, next) => {
@@ -30,8 +31,11 @@ const socketAuth = async (socket, next) => {
     const decoded = jwt.verify(token, process.env.JWTPRIVATEKEY)
     //see user connected
     console.log(decoded.username, 'has connected')
+    // const isLoggedIn = await User.findOne({username: [decoded.username]})
+    // console.log(isLoggedIn)
     //save user in the socket object
     socket.user = decoded
+    
     next()
   } catch (error) {
     //cath invalid token errors

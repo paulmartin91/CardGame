@@ -7,7 +7,9 @@ function TableContainer({hands, select, playCard, username}) {
     return (
         <div className="w-75 m-5 p-5 bg-success border d-flex flex-column justify-content-between align-items-center" style={styles.container}>
             {Object.keys(hands).map(name =>
-                hands[name].playerNumber !== 0 && name != 'openPlay' && <PlayerArea open={hands[name].open} blind={hands[name].blind} player={hands[name].playerNumber}/>
+                {
+                    console.log(hands[name] !== username)
+                    return name !== username && name != 'openPlay' && <PlayerArea open={hands[name].open} blind={hands[name].blind} player={name}/>}
             )}
             <CardsArea 
                 cards={hands.openPlay}
@@ -18,7 +20,8 @@ function TableContainer({hands, select, playCard, username}) {
             <PlayerArea 
                 open={hands[username].open} 
                 blind={hands[username].blind} 
-                select={select} player={0} 
+                select={select} 
+                player={username} 
                 username={username} 
                 playCard={playCard}
             />                

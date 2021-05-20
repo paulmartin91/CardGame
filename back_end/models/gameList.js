@@ -1,4 +1,5 @@
 //dependencies
+const { boolean } = require('joi');
 const mongoose = require('mongoose')
 
 //gameList db schema
@@ -23,6 +24,9 @@ const gameListSchema = new mongoose.Schema({
     type: String,
     minlength: 5,
     maxlength: 1024
+  },
+  isStarted: {
+    type: Boolean
   }
 })
 

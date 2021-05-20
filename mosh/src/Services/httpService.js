@@ -8,7 +8,7 @@ axios.interceptors.response.use(null, error => {
 
     if (!expectedError) {
       console.log("Logging the error", error)
-      alert("An unexpected error occurred.")
+      alert("Cannot connect to the server right now")
     }
 
     return Promise.reject(error)

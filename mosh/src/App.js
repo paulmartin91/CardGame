@@ -13,8 +13,8 @@ import socket from './Services/Socket/socket'
 
 //for development
 const DEVplayerList = {
-  'paul': {'ready': false, 'playerNumber': 0},
-  'john': {'ready': false, 'playerNumber': 1},
+  'paul12': {'ready': false, 'playerNumber': 0},
+  'paul21': {'ready': false, 'playerNumber': 1},
   // {'name': 'george', 'ready': false, 'hand': []},
 }
 
@@ -66,57 +66,28 @@ const App = () => {
               setGameName={setGameName}
               messages={messages}
               setMessages={setMessages}
+              username={username}
+              setUsername={setUsername}
               {...props}
             />
           }
         />
         <ProtectedRoute
           path='/gamepage'
-          component={GamePage}
-        />
-        {/* <Route 
-          path='/gamesearch' 
-          render={props => {
-            if (checkUser === null) {
-              console.log(checkUser)
-              return <Redirect to="/" />
-            }
-            return (
-              <GameSearch 
-                username={username} 
-                gameName={gameName} 
-                setGameName={setGameName} 
-                {...props} 
-              />
-            )
-          }} 
-        /> */}
-        {/* <Route 
-          path='/gamelobby/' 
-          render={props => {
-            // if (!user) return <Redirect to="/" />
-            return(
-              <GameLobby 
-                username={username} 
-                gameName={gameName} 
-                playerList={playerList} 
-                setPlayerList={setPlayerList} 
-                {...props} 
-              />)
-            }
-          } 
-        /> */}
-        {/* <Route 
-          path='/gamepage/' 
-          render={props => 
+          render={(props) => 
             <GamePage 
-              username={username} 
-              gameName={gameName} 
-              playerList={playerList} 
-              {...props} 
+              // playerList={playerList}
+              playerList={DEVplayerList}
+              setPlayerList={setPlayerList}
+              gameName={gameName}
+              messages={messages}
+              setMessages={setMessages}
+              username={username}
+              setUsername={setUsername}
+              {...props}
             />
-          } 
-        /> */}
+          }
+        />
         <Route 
           path='/not-found' 
           component={NotFound} 

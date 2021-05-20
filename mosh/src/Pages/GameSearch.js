@@ -112,6 +112,14 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
         gameRefresh()
         //get username from JWT
         setUser(getCurrentUser() || {})
+
+        socket.on('disconnect', reason => {
+            if (reason === 'transport close') {
+                logout()
+                window.alert('Server closed, user logged out')
+            }
+        })
+
         //join game error
         socket.on("join error", (err) => console.log(err.message));
         //create game error
