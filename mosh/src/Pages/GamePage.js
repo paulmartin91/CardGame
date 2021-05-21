@@ -21,9 +21,17 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
         //FOR DEVELOPMENT
         socket.removeAllListeners("disconnect");
 
-        socket.on('server_response_play_cards', async ({ hand }) => {
-            const tempHand = await {...hands, ...hand}
-            setHands(tempHand)
+        socket.on('server_response_play_cards', ({ hand }) => {
+            // console.log('hands', hands)
+            // const tempHand = await {...hands, ...hand}
+            //console.log('temphand', tempHand)
+
+            setHands(oldHand => {
+                return {
+                    ...oldHand,
+                    ...hand
+                }
+            })
         })
 
     }, [])
@@ -44,7 +52,8 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
         }
     }
 
-    const DEVoppoentPlayCards = event => {        
+    const DEVoppoentPlayCards = event => {     
+        console.log(hands)   
         // let tempHands = {...hands}
 
         // let selectedCards = [
@@ -97,7 +106,7 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
 
     const playCard = (event, handArea) => {
         if (event.target.nodeName == 'DIV') {
-            selected && socket.emit('client_request_play_cards', {...hands}, handArea)
+            selected && socket.emit('client_request_play_cards', hands, handArea)
             /*
             //copy hands into temp object
             let tempHands = {...hands}

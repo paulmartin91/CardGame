@@ -3,7 +3,7 @@ const _ = require('lodash')
 module.exports = function handlePlayCardsRequest(socket, io){
   socket.on('client_request_play_cards', async (hands, handArea) => {
 
-    const {username} = socket.user
+    const {username} = await socket.user
 
     //create a new player hand with clients cards
     let tempHandsPlayer = {
@@ -47,9 +47,12 @@ module.exports = function handlePlayCardsRequest(socket, io){
     }
 
     //add empty arrays for blind cards
-    tempHandsOpponents[username].blind = tempHandsPlayer[username].blind.map(x => [])
-    tempHandsOpponents[username].open = tempHandsPlayer[username].open.map(x => x)
+    tempHandsOpponents[username].blind = await tempHandsPlayer[username].blind.map(x => [])
+    tempHandsOpponents[username].open = await tempHandsPlayer[username].open.map(x => x)
     tempHandsOpponents.openPlay = tempHandsPlayer.openPlay.map(x => x)
+
+    console.log('tempHandsPlayer', tempHandsPlayer)
+    console.log('tempHandsOpp', tempHandsOpponents)
 
     //send client their cards
     socket.emit('server_response_play_cards', {

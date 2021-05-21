@@ -6,10 +6,8 @@ function TableContainer({hands, select, playCard, username}) {
 
     return (
         <div className="w-75 m-5 p-5 bg-success border d-flex flex-column justify-content-between align-items-center" style={styles.container}>
-            {Object.keys(hands).map(name =>
-                {
-                    console.log(hands[name] !== username)
-                    return name !== username && name != 'openPlay' && <PlayerArea open={hands[name].open} blind={hands[name].blind} player={name}/>}
+            {Object.keys(hands).map(name => {
+                return name !== username && name !== 'openPlay' && <PlayerArea key={name} open={hands[name].open} blind={hands[name].blind} player={name}/>}
             )}
             <CardsArea 
                 cards={hands.openPlay}
