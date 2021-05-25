@@ -8,7 +8,7 @@ const {isInGame} = require('../middleware/isInGame')
 const { handleReadyRequest, handleStartRequest } = require('./handleReadyRequest')
 const { handleLogout, logoutAllUsers } = require('./logout')
 const deleteGames = require('./deleteGames')
-const handlePlayCardsRequest = require('./handlePlayCardsRequest')
+const {handleDealRequest, handlePlayCardsRequest} = require('./handleCardsRequest')
 
 const connect = io => {
 
@@ -41,8 +41,11 @@ const connect = io => {
     handleMessageRequest(socket, io)
     //client request to start a game
     handleStartRequest(socket, io)
+    //client request deal cards
+    handleDealRequest(socket, io)
     //client request play cards
     handlePlayCardsRequest(socket, io)
+
 
     //when a user disconnects to web socket
     socket.on('client_request_disconnect_reason', reason => {

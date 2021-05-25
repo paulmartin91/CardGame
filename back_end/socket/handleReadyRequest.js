@@ -22,6 +22,7 @@ function handleReadyRequest(socket, io){
     io.in(gameName).emit('server_request_all_ready', playerReady == Object.keys(game.players).length)
     //refresh game for players
     io.in(gameName).emit('server_response_playerList_refresh', game.players)
+    console.log(socket.game[0].players)
   })
 }
 

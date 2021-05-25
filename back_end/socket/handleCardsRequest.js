@@ -1,6 +1,6 @@
 const _ = require('lodash')
 
-module.exports = function handlePlayCardsRequest(socket, io){
+const handlePlayCardsRequest = (socket, io) => {
   socket.on('client_request_play_cards', async (hands, handArea) => {
 
     const {username} = await socket.user
@@ -65,4 +65,65 @@ module.exports = function handlePlayCardsRequest(socket, io){
     });
 
   })
+}
+
+const handleDealRequest = (socket, io) => {
+  socket.on("client_request_deal_cards", async ({dealTo, numberOfCards, playerList}) => {
+
+    const {username} = await socket.user
+    const {players} = playerList
+
+    const DEVrequestCards = name =>  {
+      return [
+          {'id': 1, 'suit': 'C', 'value': 5, 'selected': false},
+          {'id': 2, 'suit': 'D', 'value': 2, 'selected': false},
+          {'id': 3, 'suit': 'S', 'value': 3, 'selected': false},
+          {'id': 4, 'suit': 'C', 'value': 4, 'selected': false},
+          {'id': 5, 'suit': 'H', 'value': 7, 'selected': false}
+      ].splice(0, numberOfCards)
+    }
+
+    const dealtCardsPlayer = DEVrequestCards(dealTo, numberOfCards)
+    const dealtCardsOpponents = dealtCardsPlayer.map(card => [])
+
+    // let rooms = io.sockets.adapter.rooms[];
+    // console.log(playerList)
+
+    io.to(playerList[dealTo].sid).emit('server_response_deal_cards', {
+      dealTo,
+      blind: dealtCardsPlayer
+    })
+
+    // //send other clients new card state
+    Object.keys(playerList).forEach(name => {
+      if (name !== dealTo) {   
+        console.log(dealtCardsOpponents)
+        io.to(playerList[name].sid).emit('server_response_deal_cards', {
+          dealTo,
+          blind: dealtCardsOpponents
+        })
+      }
+    })
+
+    // socket.to(socket.game[0].name).emit('server_response_deal_cards', {
+    //   dealTo,
+    //   blind: dealtCardsOpponents
+    // });
+
+
+    // if (dealTo == 'All Players') {
+    //   console.log('all players')
+    // } else {
+    //   const tempObj = {...hands}
+    //   
+    //   tempObj[dealTo].blind = [...tempObj[dealTo].blind, ...dealtCards]
+    //   // tempArray[dealTo][0] = [...tempArray[dealTo][0], ...DEVrequestCards(dealTo, number)]
+    //   console.log(tempObj)
+    // }
+  })
+}
+
+module.exports = {
+  handlePlayCardsRequest,
+  handleDealRequest
 }

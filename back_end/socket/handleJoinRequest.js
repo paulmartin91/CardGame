@@ -29,7 +29,7 @@ const handleJoinGameRequest = socket => {
     
     //On success...
     //create player object
-    const playerObject = {ready: false, playerNumber: numberOfPLayers}
+    const playerObject = {ready: false, playerNumber: numberOfPLayers, sid: socket.id}
     //add player object to gameList document
     game.players = {...game.players, [user.username]: playerObject}
     //save game to socket obj
@@ -43,7 +43,7 @@ const handleJoinGameRequest = socket => {
     //send refresh to all clients
     socket.to(name).emit('server_response_playerList_refresh', game.players);
 
-    console.log(socket.rooms)
+    // console.log(socket.rooms)
 
   })
 } 

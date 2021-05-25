@@ -8,7 +8,7 @@ import { getCurrentUser, logout } from '../Services/authservice';
 
 function GamePage({ history, username, playerList, messages, setMessages, setUsername }) {
 
-    const [number, setNumber] = useState(1)
+    const [numberOfCards, setNumberOfCards] = useState(1)
     const [hands, setHands] = useState(() => {
         let tempObj = {...playerList}
         Object.keys(tempObj).forEach(name => tempObj[name] = {'playerNumber': tempObj[name].playerNumber, 'blind': [], 'open': []})
@@ -21,11 +21,18 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
         //FOR DEVELOPMENT
         socket.removeAllListeners("disconnect");
 
-        socket.on('server_response_play_cards', ({ hand }) => {
-            // console.log('hands', hands)
-            // const tempHand = await {...hands, ...hand}
-            //console.log('temphand', tempHand)
+        socket.on('server_response_deal_cards', ({dealTo, blind}) => {
+            console.log(dealTo, blind)
+            //WORKS
+            setHands(oldHand => {
+                return {
+                    ...oldHand,
+                    [dealTo]: {...oldHand[dealTo], blind: blind} 
+                }
+            })
+        })
 
+        socket.on('server_response_play_cards', ({ hand }) => {
             setHands(oldHand => {
                 return {
                     ...oldHand,
@@ -34,23 +41,8 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
             })
         })
 
-    }, [])
 
-    const DEVrequestCards = name =>  {
-        if (name == username) {
-            return [
-                {'id': 1, 'suit': 'C', 'value': 5, 'selected': false},
-                {'id': 2, 'suit': 'D', 'value': 2, 'selected': false},
-                {'id': 3, 'suit': 'S', 'value': 3, 'selected': false},
-                {'id': 4, 'suit': 'C', 'value': 4, 'selected': false},
-                {'id': 5, 'suit': 'H', 'value': 7, 'selected': false}
-            ].splice(0, number)
-        } else {
-            return [
-                {}, {}, {}, {}
-            ].splice(0, number)
-        }
-    }
+    }, [])
 
     const DEVoppoentPlayCards = event => {     
         console.log(hands)   
@@ -75,14 +67,7 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
 
 
     const dealCards = dealTo => {
-        if (dealTo == 'All Players') {
-            console.log('all players')
-        } else {
-            const tempObj = {...hands}
-            tempObj[dealTo].blind = [...tempObj[dealTo].blind, ...DEVrequestCards(dealTo, number)]
-            // tempArray[dealTo][0] = [...tempArray[dealTo][0], ...DEVrequestCards(dealTo, number)]
-            setHands(tempObj)
-        }
+        socket.emit('client_request_deal_cards', {dealTo, numberOfCards, playerList})
     }
 
     const select = (id, handArea) => {
@@ -143,8 +128,8 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
                 <button onClick={DEVoppoentPlayCards}>OPPONENT PLAY</button>
                 <GameTools
                     hands={hands}
-                    number={number}
-                    setNumber={setNumber}
+                    number={numberOfCards}
+                    setNumber={setNumberOfCards}
                     dealCards={dealCards}
                     leaveGame={leaveGame}
                 />

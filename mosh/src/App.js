@@ -77,7 +77,7 @@ const App = () => {
           render={(props) => 
             <GamePage 
               // playerList={playerList}
-              playerList={DEVplayerList}
+              playerList={playerList}
               setPlayerList={setPlayerList}
               gameName={gameName}
               messages={messages}
