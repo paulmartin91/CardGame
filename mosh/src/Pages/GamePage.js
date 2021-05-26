@@ -22,14 +22,27 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
         socket.removeAllListeners("disconnect");
 
         socket.on('server_response_deal_cards', ({dealTo, blind}) => {
-            console.log(dealTo, blind)
-            //WORKS
-            setHands(oldHand => {
-                return {
-                    ...oldHand,
-                    [dealTo]: {...oldHand[dealTo], blind: blind} 
-                }
-            })
+            if (dealTo == "All Players"){
+                //copy hands
+                const tempHands = {...hands}
+                //create blind hand
+                const blindCards = blind.map(() => [])
+                //add blind hand to all players besides player
+                Object.keys(tempHands).forEach(name => (name !== "openPlay" && name !== username) && tempHands[name].blind.push(...blindCards))
+                //add player hand
+                tempHands[username].blind = [...tempHands[username].blind, ...blind]
+                //set hands
+                setHands(tempHands)
+            }
+            else {
+                setHands(oldHand => {
+                    const tempHand = [...blind, ...oldHand[dealTo].blind]
+                    return {
+                        ...oldHand,
+                        [dealTo]: {...oldHand[dealTo], blind: tempHand} 
+                    }
+                })
+            }
         })
 
         socket.on('server_response_play_cards', ({ hand }) => {
@@ -44,31 +57,13 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
 
     }, [])
 
-    const DEVoppoentPlayCards = event => {     
-        console.log(hands)   
-        // let tempHands = {...hands}
-
-        // let selectedCards = [
-        //     {'id': 2, 'suit': 'D', 'value': 2, 'selected': false},
-        //     {'id': 3, 'suit': 'S', 'value': 3, 'selected': false},
-        //     {'id': 4, 'suit': 'C', 'value': 4, 'selected': false},
-        //     {'id': 5, 'suit': 'H', 'value': 7, 'selected': false}
-        // ]
-
-        // tempHands['john'].blind = []
-        // tempHands.openPlay = selectedCards
-
-        // //set hands
-        // setHands(tempHands)
-    }
+    const DEVoppoentPlayCards = event => console.log(hands)
 
     //needs to be socket request
     const leaveGame = () => history.replace('./gameSearch')
 
 
-    const dealCards = dealTo => {
-        socket.emit('client_request_deal_cards', {dealTo, numberOfCards, playerList})
-    }
+    const dealCards = dealTo => socket.emit('client_request_deal_cards', {dealTo, numberOfCards, playerList})
 
     const select = (id, handArea) => {
         let tempHands = {...hands}
@@ -90,36 +85,7 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
     }
 
     const playCard = (event, handArea) => {
-        if (event.target.nodeName == 'DIV') {
-            selected && socket.emit('client_request_play_cards', hands, handArea)
-            /*
-            //copy hands into temp object
-            let tempHands = {...hands}
-            //make new arr with selected cards
-            let selectedCards = [
-                ...hands[username].blind.filter(card => card.selected), 
-                ...hands[username].open.filter(card => card.selected), 
-                ...hands.openPlay.filter(card => card.selected)
-            ]
-            //filter out selected cards
-            let handTypes = ['blind', 'open']
-            handTypes.forEach(hand => tempHands[username][hand] = tempHands[username][hand].filter(card => !card.selected))
-            tempHands.openPlay = tempHands.openPlay.filter(card => !card.selected)
-
-            //unselect all selected cards
-            selectedCards.forEach(card => card.selected = false)
-
-            if (handArea == "openPlay") {
-                //add selected cards to open play
-                tempHands.openPlay = [...tempHands.openPlay, ...selectedCards]
-            } else {
-                //add selected cards hand
-                tempHands[username][handArea] = [...tempHands[username][handArea], ...selectedCards]
-            }
-            //set hands
-            setHands(tempHands)
-            */
-        }
+        if (event.target.nodeName == 'DIV') selected && socket.emit('client_request_play_cards', hands, handArea)
     }
 
     return (

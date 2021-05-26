@@ -20,7 +20,9 @@ GameLobby
 
 GamePage
 
-- Passing cards from openplay duplicates cards
+- Passing cards from openplay duplicates cards ✓
+- Dealing to all players deletes openPlay cards
+- Dealing to openPlay crashes server (no SID)
 
 BACKEND
 

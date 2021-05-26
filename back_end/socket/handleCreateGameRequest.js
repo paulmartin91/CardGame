@@ -2,6 +2,7 @@
 const { GameList } = require('../models/gameList')
 const _ = require('lodash')
 const Joi = require('joi')
+const { gameDecks, deck, assignCardId } = require('../common/cards')
 
 const handleCreateGameRequest = socket => {
   socket.on('client request create game', async (request) => {
@@ -45,6 +46,15 @@ const handleCreateGameRequest = socket => {
     socket.join(name)
     //save game object to socket object
     socket.game = [game]
+    //create deck for game
+    gameDecks[name] = {
+      deck: [...deck],
+      lastId: [0]
+    }
+    console.log(gameDecks)
+    assignCardId(name)
+    // console.log(gameDecks[name].deck[20])
+    // console.log(gameDecks[name].lastId)
     //send success
     socket.emit('server response create game', _.pick(game, ['name', 'players'] ))
   })
