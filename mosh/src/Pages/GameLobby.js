@@ -26,13 +26,13 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messa
             setPlayerList(players)
         });
 
-        socket.on("server_response_leave_current_game", response => {
-            if (response){
-                setGameName()
-                setPlayerList({})
-                history.push("/gameSearch")
-            } else console.log('error!')  
-        })
+        // socket.on("server_response_leave_current_game", response => {
+        //     if (response){
+        //         setGameName()
+        //         setPlayerList({})
+        //         history.push("/gameSearch")
+        //     } else console.log('error!')  
+        // })
 
         socket.on('server_request_all_ready', isStart => {
             if (isStart === false) console.log('All players not ready')
@@ -40,6 +40,7 @@ const Lobby = ({history, gameName, setGameName, playerList, setPlayerList, messa
         })        
 
         socket.on('server_request_start', () => {
+            // socket.removeAllListeners();
             history.push('./gamePage')
         })      
 

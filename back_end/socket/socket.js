@@ -7,13 +7,13 @@ const {socketAuth} = require('../middleware/auth')
 const {isInGame} = require('../middleware/isInGame')
 const { handleReadyRequest, handleStartRequest } = require('./handleReadyRequest')
 const { handleLogout, logoutAllUsers } = require('./logout')
-const deleteGames = require('./deleteGames')
-const {handleDealRequest, handlePlayCardsRequest} = require('./handleCardsRequest')
+const {handleDealRequest, handlePlayCardsRequest, handleReturnCardRequest, handleShuffleDeckRequest} = require('./handleCardsRequest')
+
+const activeGames = require('../common/games')
 
 const connect = io => {
 
   logoutAllUsers(io)
-  deleteGames()
 
   //middleware for authenticating users
   io.use(socketAuth)
@@ -24,8 +24,6 @@ const connect = io => {
 
     //FOR DEVELOPMENT
     socket.join('paulsgame')
-
-    console.log('connected')
 
     //client request to join a game
     handleJoinGameRequest(socket)
@@ -45,7 +43,13 @@ const connect = io => {
     handleDealRequest(socket, io)
     //client request play cards
     handlePlayCardsRequest(socket, io)
+    //Client request to return cards to the deck
+    handleReturnCardRequest(socket, io)
+    //Client request to shuffle deck
+    handleShuffleDeckRequest(socket, io)
 
+    //for client side testing of server
+    socket.on('client_request_test', () => console.log(activeGames.paulsgame.lastKnownHands.paul12))
 
     //when a user disconnects to web socket
     socket.on('client_request_disconnect_reason', reason => {

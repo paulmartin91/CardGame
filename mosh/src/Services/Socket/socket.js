@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
 import { getJwt } from "../authservice";
+import {logout} from '../authservice'
 
 const URL = "http://localhost:3000/";
 
@@ -19,15 +20,23 @@ export function connectSocket(){
   if (!socket.connected) {
     //assign auth token
     socket.auth.token = getJwt()
-    //connect to the socket
+    //try and connect to the socket
     socket.connect()
   } else{
     console.log('user already connected')
   }
 }
 
+socket.on('disconnect', reason => {
+  console.log('disconnect')
+  if (reason === 'transport close') {
+      logout()
+      window.alert('Server closed, user logged out')
+  }
+})
+
 socket.onAny((event, ...args) => {
-  // console.log(event, args);
+  //console.log(event, args);
 });
 
 export default socket;

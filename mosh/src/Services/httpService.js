@@ -1,4 +1,6 @@
 import axios from "axios";
+//import history from "../Components/Common/history";
+import {logout} from './authservice'
 
 axios.interceptors.response.use(null, error => {
   const expectedError = 
@@ -8,6 +10,8 @@ axios.interceptors.response.use(null, error => {
 
     if (!expectedError) {
       console.log("Logging the error", error)
+      // history.push('/')
+      logout()
       alert("Cannot connect to the server right now")
     }
 

@@ -1,4 +1,6 @@
-const { GameList } = require('../models/gameList')
+//const { GameList } = require('../models/gameList')
+const activeGames = require('../common/games')
+
 const _ = require('lodash')
 
 const leaveGame = async (io, socket, username) => {
@@ -11,41 +13,37 @@ const leaveGame = async (io, socket, username) => {
   }
 
   //find game
-  const game = await GameList.findOne( { [`players.${username}`] : { $exists : true } })
+  //const game = await GameList.findOne( { [`players.${username}`] : { $exists : true } })
+  const gameName = _.findKey(activeGames, game => Object.keys(game.players).includes(socket.user.username))
 
-  //if game doesn't exist
-  if (!game) {
-    err.data = {content: "game doesn't exist"}
-    socket.emit('Leave game error', err )
-    // socket.leave(game.name)
+  // if game doesn't exist
+  if (!gameName) {
     return true
   }
 
-  const games = await GameList.find( { [`players.${username}`] : { $exists : true } })
-
-  if (!games) return
-
-  games.forEach(async game => {
-    //if last player in game, delete game
-    if (Object.keys(game.players).length == 1) {
-      const test = await GameList.deleteOne({_id: game._id})
-    } else { //else remove player from playerlist
-        game.players = _.omitBy(game.players, (value, key) => key == username)
-        //save game object
-        game.save()
-    }
+  //if last player in game, delete game
+  if (Object.keys(activeGames[gameName].players).length == 1) {
+    delete activeGames[gameName]
+  } else {
+    //else remove player from playerlist
+    activeGames[gameName].players = _.omitBy(activeGames[gameName].players, (value, key) => key == username)
     //remove from socket room
-    socket.leave(game.name)
+    socket.leave(gameName)
     //send refresh to all other clients
-    io.in(game.name).emit('server_response_playerList_refresh', game.players)
-  })
+    io.in(gameName).emit('server_response_playerList_refresh', activeGames[gameName].players)
+  }
+
   return true
+
+
 }
 
 const handleLeaveGameRequest = (socket, io) => {
   socket.on('client_request_leave_current_game', async () => {
     const success = await leaveGame(io, socket, socket.user.username)  
-    if (success) socket.emit("server_response_leave_current_game", true)
+    if (success) {
+      socket.emit("server_response_leave_current_game", true)
+    }
   })
 } 
 

@@ -3,16 +3,12 @@ import { Route, Redirect } from 'react-router-dom'
 
 import {getCurrentUser} from '../../Services/authservice'
 
-const ProtectedRoute = ({path, location, component: Component, render, gameName, ...rest}) => 
+const ProtectedRoute = ({path, location, component: Component, render, gameName, playerList, ...rest}) => 
   <Route
     {...rest}
     render={props => {
       if (!getCurrentUser()) return <Redirect to={{
         pathname: '/login',
-        state: {from: location}
-      }} />
-      if (gameName) return <Redirect to={{
-        pathname: '/gamelobby',
         state: {from: location}
       }} />
       return Component ? <Component {...props} /> : render(props)

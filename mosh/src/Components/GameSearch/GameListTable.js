@@ -14,7 +14,7 @@ function GameListTable({ games, showPassword, setShowPassword, handleSubmit, onS
                       <a className="mr-5" onClick={() => setShowPassword(!showPassword)}>
                           {showPassword ? "Hide " : "Show "} Passwords
                       </a>
-                      <button className="btn btn-primary" onClick={gameRefresh}>⟳</button>
+                      <button className="btn btn-primary" onClick={() => gameRefresh()}>⟳</button>
                   </th>
               </tr>
           </thead>

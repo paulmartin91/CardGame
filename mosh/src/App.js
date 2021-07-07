@@ -10,6 +10,7 @@ import Test from './Pages/Test';
 import { getCurrentUser } from './Services/authservice'
 import ProtectedRoute from './Components/Common/protectedRoute'
 import socket from './Services/Socket/socket'
+import history from './Components/Common/history'
 
 //for development
 const DEVplayerList = {
@@ -41,6 +42,16 @@ const App = () => {
 
       socket.on('server_request_leave_game', () => setGameName(null))
 
+      socket.on("server_response_leave_current_game", response => {
+        console.log(response)
+        if (response){
+            window.location.reload()
+            setGameName()
+            setPlayerList({})
+            setMessages()
+        } else console.log('error!')  
+      })
+
     }, [])
   
   return (
@@ -58,6 +69,7 @@ const App = () => {
         />
         <ProtectedRoute
           path='/gamelobby'
+          playerList={playerList}
           render={(props) => 
             <GameLobby 
               playerList={playerList}
@@ -74,6 +86,7 @@ const App = () => {
         />
         <ProtectedRoute
           path='/gamepage'
+          playerList={playerList}
           render={(props) => 
             <GamePage 
               // playerList={playerList}

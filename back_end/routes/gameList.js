@@ -1,26 +1,27 @@
-//dependencies
-const mongoose = require('mongoose')
+// //dependencies
 const express = require('express')
 const _ = require('lodash')
-const bcrypt = require('bcrypt')
-const Joi = require('joi')
 
-//local files
-const { GameList } = require('../models/gameList')
+// //local files
+const activeGames = require('../common/games')
 const {auth} = require('../middleware/auth')
 
-//express router
+// //express router
 const router = express.Router()
 
-//handle get request
+// //handle get request
 router.get('/', auth, async (req, res) => {
-  //get gameList from db
-  let gameList = await GameList.find()
-  //hide passwords
-  _(gameList).forEach(game => {if (game.password) game.password = true})
-  //send game object on success
-  res.send(gameList)
+  const newList = Object.keys(activeGames).map(name => {
+    return {
+      name: name,
+      maxPlayers: activeGames[name].maxPlayers,
+      password: activeGames[name].password && true,
+      players: activeGames[name].players
+    }
+
+  })
+
+  res.send(newList)
 })
 
-//export router
 module.exports = router

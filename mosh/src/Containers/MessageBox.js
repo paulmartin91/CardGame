@@ -32,7 +32,7 @@ const MessageBox = ({ username, messages, setMessages }) => {
                                 <span className="text-muted small">
                                     {time == 'n/a' ? '' : time}
                                 </span>
-                                {username}: {message}
+                                <span color='red'>{username}: {message}</span>
                             </p>
                         )}
                     </div>

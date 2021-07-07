@@ -11,7 +11,9 @@ import {getCurrentUser} from '../Services/authservice'
 
 const Login = ({match, history, location, setUsername}) => {
 
-    const [loginData, setLoginData] = useState({loginUsername: "", loginPassword: ""})
+    //FOR DEV
+    const [loginData, setLoginData] = useState({loginUsername: "paul12", loginPassword: "paul12"})
+    //const [loginData, setLoginData] = useState({loginUsername: "", loginPassword: ""})
     const [registerData, setRegisterData] = useState({registerUsername: "", registerPassword: "", registerEmail: ""})
     const [errors, setErrors] = useState(null)//({login: "", createAccount: ""})
 

@@ -1,19 +1,17 @@
 const Card = ({value, suit, id, selected, handArea, select}) => (
-        <p 
+        <div 
             key={id}
-            className={selected ? 'card bg-secondary h-75' : 'card h-75' }
-            style={styles.card}
+            ///className={selected && selected : 'card' }
             onClick={select && (() => select(id, handArea))}
-        >
-            {value && `${value} of ${suit}`}
-            {/* {selected && "selected!"} */}
-        </p>
+            className={!selected && "pb-2"}
+        >  
+        <img
+            style={{width: 50}} 
+            src={ value ? `CardImages/${value + suit}.png` : `CardImages/blue_back.png`}
+        />   
+        {selected && <div style={{width: "98%", height: 10, backgroundColor: "green", borderBottomLeftRadius: 5, borderBottomRightRadius: 5, marginTop: -5}}/>}
+            
+        </div>
 )
-
-const styles = {
-    card: {
-        width: 60
-    }
-}
 
 export default Card

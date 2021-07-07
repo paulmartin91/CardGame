@@ -99,8 +99,9 @@ import socket, { connectSocket } from '../Services/Socket/socket'
 
 const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) => {
 
-    //States
-    const [createGameData, setCreateGameData] = useState({maxPlayers: 2});
+    //FOR DEV
+    const [createGameData, setCreateGameData] = useState({name: "paulsgame", maxPlayers: 2});
+    //const [createGameData, setCreateGameData] = useState({maxPlayers: 2});
     const [errors, setErrors] = useState({}) 
     const [gameList, setGameList] = useState([]);
     const [user, setUser] = useState({})
@@ -112,13 +113,6 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
         gameRefresh()
         //get username from JWT
         setUser(getCurrentUser() || {})
-
-        socket.on('disconnect', reason => {
-            if (reason === 'transport close') {
-                logout()
-                window.alert('Server closed, user logged out')
-            }
-        })
 
         //join game error
         socket.on("join error", (err) => console.log(err.message));

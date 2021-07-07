@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Pagination from './pagination'
 import paginate from '../../utils/paginate'
 import GameListTable from './GameListTable';

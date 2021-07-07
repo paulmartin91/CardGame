@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import MessageBox from '../Containers/MessageBox';
 import TableContainer from '../Containers/TableContainer';
 import GameTools from '../Containers/GameTools'
-import socket from '../Services/Socket/socket';
+import socket, {connectSocket} from '../Services/Socket/socket';
 import { getCurrentUser, logout } from '../Services/authservice';
+import leaveGame from '../Services/Socket/leaveGame'
 
-function GamePage({ history, username, playerList, messages, setMessages, setUsername }) {
+const GamePage = ({ history, username, playerList, messages, setMessages, setUsername }) => {
 
     const [numberOfCards, setNumberOfCards] = useState(1)
     const [hands, setHands] = useState(() => {
@@ -18,22 +19,41 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
     const [selected, setSelected] = useState(false)
 
     useEffect(() => {
-        //FOR DEVELOPMENT
-        socket.removeAllListeners("disconnect");
+
+        //make sure the socket is connected
+        connectSocket()
+
+        //if user refreshes page when server is down
+        Object.keys(playerList).length == 0 && history.replace('/gameSearch')
+
+        // //FOR DEVELOPMENT
+        // socket.removeAllListeners("disconnect");
+        // //
 
         socket.on('server_response_deal_cards', ({dealTo, blind}) => {
             if (dealTo == "All Players"){
+               setHands(oldHand => {
                 //copy hands
-                const tempHands = {...hands}
+                const tempHands = {...oldHand}
                 //create blind hand
                 const blindCards = blind.map(() => [])
                 //add blind hand to all players besides player
                 Object.keys(tempHands).forEach(name => (name !== "openPlay" && name !== username) && tempHands[name].blind.push(...blindCards))
                 //add player hand
                 tempHands[username].blind = [...tempHands[username].blind, ...blind]
-                //set hands
-                setHands(tempHands)
+                return tempHands
+               })
             }
+            //Open Play
+            else if (dealTo == "openPlay") {
+                setHands(oldHand => {
+                    return {
+                        ...oldHand, 
+                        openPlay: [...oldHand.openPlay, ...blind]
+                    }
+                })
+            }
+            //Specific Player
             else {
                 setHands(oldHand => {
                     const tempHand = [...blind, ...oldHand[dealTo].blind]
@@ -54,14 +74,30 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
             })
         })
 
+        socket.on('server_response_return_cards', ({blind, dealTo}) => {
+            if (dealTo == "neutral") {
+                setHands(oldHand => {
+                    return {
+                        ...oldHand,
+                        openPlay: []
+                    }
+                })
+            } else {
+                setHands(oldHand => {
+                    return {
+                        ...oldHand,
+                        [dealTo]: blind[dealTo],
+                        openPlay: blind.openPlay
+                    }
+                })
+            }
+        })
+
 
     }, [])
 
-    const DEVoppoentPlayCards = event => console.log(hands)
-
-    //needs to be socket request
-    const leaveGame = () => history.replace('./gameSearch')
-
+    // //needs to be socket request
+    // const leaveGame = () => history.replace('./gameSearch')
 
     const dealCards = dealTo => socket.emit('client_request_deal_cards', {dealTo, numberOfCards, playerList})
 
@@ -88,32 +124,44 @@ function GamePage({ history, username, playerList, messages, setMessages, setUse
         if (event.target.nodeName == 'DIV') selected && socket.emit('client_request_play_cards', hands, handArea)
     }
 
+    const returnCard = (quantity) => socket.emit('client_request_return_cards', {hands, playerList, quantity})
+    
+    const shuffleDeck = () => socket.emit('client_request_shuffle_deck')
+
     return (
-        <div className="d-flex">
-            <div className="w-25 mr-3 border-right d-flex flex-column justify-content-between">
-                <button onClick={DEVoppoentPlayCards}>OPPONENT PLAY</button>
-                <GameTools
-                    hands={hands}
-                    number={numberOfCards}
-                    setNumber={setNumberOfCards}
-                    dealCards={dealCards}
-                    leaveGame={leaveGame}
+        <>
+          {Object.keys(playerList).length > 0 &&
+          <div className="d-flex">
+                <div className="w-25 border-right d-flex flex-column justify-content-between align-items-center"
+                    style={{minWidth: 200}}
+                >
+                    <button onClick={() => socket.emit('client_request_test')}>TEST BUTTON</button>
+                    <GameTools
+                        hands={hands}
+                        number={numberOfCards}
+                        setNumber={setNumberOfCards}
+                        dealCards={dealCards}
+                        leaveGame={leaveGame}
+                        selected={selected}
+                        returnCard={returnCard}
+                        shuffleDeck={shuffleDeck}
+                    />
+                    <MessageBox
+                        username={username} 
+                        messages={messages}
+                        setMessages={setMessages}
+                    />  
+                </div>
+                <TableContainer 
+                    username={username}
+                    playerList={playerList}
+                    hands = {hands}
+                    select={select}
+                    playCard={playCard}
+                    username={username}
                 />
-                <MessageBox
-                    username={username} 
-                    messages={messages}
-                    setMessages={setMessages}
-                />  
-            </div>
-            <TableContainer 
-                username={username}
-                playerList={playerList}
-                hands = {hands}
-                select={select}
-                playCard={playCard}
-                username={username}
-            />
-        </div>
+            </div>}
+        </>
     );
 }
 

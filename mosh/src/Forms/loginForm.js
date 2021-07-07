@@ -12,7 +12,7 @@ const LoginForm = ({validate, styles, handleChange, handleSubmit, errors, loginD
                   name='loginUsername'
                   onChange={event => handleChange(event)} 
                   className="form-control" 
-                  placeholder="username" 
+                  placeholder="username"
               />
               <input
                   //={loginInformation.password}

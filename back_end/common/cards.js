@@ -1,7 +1,12 @@
-const gameDecks = {}
+// gameName: {
+//  lastid: [int],
+//  deck: [obj]
+// }
+const activeGames = require('./games')
 
 const assignCardId = (gameName) => {
-    const {deck, lastId} = gameDecks[gameName]
+    console.log(activeGames)
+    const {deck, lastId} = activeGames[gameName]
     deck.forEach((card, index) => card.id = index + lastId[0])
     lastId[0] = deck.length
 }
@@ -217,37 +222,42 @@ const deck = [
     }
 ]
    
-const shuffle = (array) => {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-    
+const shuffle = (gameName) => {
+    const deck = activeGames[gameName].deck
+    var currentIndex = deck.length, temporaryValue, randomIndex;
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-    
         // Pick a remaining element...
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
-    
         // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
+        temporaryValue = deck[currentIndex];
+        deck[currentIndex] = deck[randomIndex];
+        deck[randomIndex] = temporaryValue;
     }
-    
-    return array;
+    console.log(activeGames[gameName].deck[0])
 }
 
 const deal = (name, numCards) => {
     let hand = [];
     for (let i = 0; i<numCards; i++){
-        hand.push(...gameDecks[name].deck.splice(0, 1));
+        hand.push(...activeGames[name].deck.splice(0, 1));
     }
     return hand
 }
 
+const returnCards = (name, cards) => {
+    activeGames[name].deck.push(...cards)
+    console.log(activeGames[name].deck[51])
+}
+
+const getRemaining = (name) => activeGames[name].deck.length
+
 module.exports = {
-    gameDecks,
     assignCardId,
     deck,
     deal,
     shuffle,
+    returnCards,
+    getRemaining
 }
