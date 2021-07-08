@@ -71,6 +71,7 @@ function handleStartRequest(socket, io) {
     //else create last known hands object
     Object.keys(game.players).forEach(name => activeGames[gameName].lastKnownHands[name] = {'playerNumber': game.players[name].playerNumber, 'blind': [], 'open': []})
     activeGames[gameName].lastKnownHands.openPlay = []
+    activeGames[gameName].isStarted = true
     //send start to room
     io.in(gameName).emit('server_request_start')
   })

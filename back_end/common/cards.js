@@ -5,7 +5,6 @@
 const activeGames = require('./games')
 
 const assignCardId = (gameName) => {
-    console.log(activeGames)
     const {deck, lastId} = activeGames[gameName]
     deck.forEach((card, index) => card.id = index + lastId[0])
     lastId[0] = deck.length
@@ -235,7 +234,6 @@ const shuffle = (gameName) => {
         deck[currentIndex] = deck[randomIndex];
         deck[randomIndex] = temporaryValue;
     }
-    console.log(activeGames[gameName].deck[0])
 }
 
 const deal = (name, numCards) => {
@@ -248,7 +246,6 @@ const deal = (name, numCards) => {
 
 const returnCards = (name, cards) => {
     activeGames[name].deck.push(...cards)
-    console.log(activeGames[name].deck[51])
 }
 
 const getRemaining = (name) => activeGames[name].deck.length

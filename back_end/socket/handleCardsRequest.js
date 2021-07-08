@@ -214,8 +214,6 @@ const handleReturnCardRequest = (socket, io) => {
       activeGames[gameName].lastKnownHands[username] = {...tempHandsPlayer[username]}
       activeGames[gameName].lastKnownHands.openPlay = [...tempHandsPlayer.openPlay]
 
-      console.log('here: ', tempHandsPlayer)
-
       //send any cards back to player
       io.to(playerList[username].sid).emit('server_response_return_cards', {
         blind: {...tempHandsPlayer},

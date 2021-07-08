@@ -52,6 +52,14 @@ const App = () => {
         } else console.log('error!')  
       })
 
+      // socket.on('player_left', ({currentGame, name, gameTime}) => {
+      //   //if not in game, do nothing
+      //   if (!gameName || playerList) return
+      //   setPlayerList(currentGame.players)
+        
+
+      // })
+
     }, [])
   
   return (

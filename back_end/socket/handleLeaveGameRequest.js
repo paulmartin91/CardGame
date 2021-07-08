@@ -1,7 +1,9 @@
 //const { GameList } = require('../models/gameList')
-const activeGames = require('../common/games')
-
 const _ = require('lodash')
+
+const { returnCards } = require('../common/cards')
+const activeGames = require('../common/games')
+const getTime = require('../common/getTime')
 
 const leaveGame = async (io, socket, username) => {
   //init error
@@ -29,8 +31,51 @@ const leaveGame = async (io, socket, username) => {
     activeGames[gameName].players = _.omitBy(activeGames[gameName].players, (value, key) => key == username)
     //remove from socket room
     socket.leave(gameName)
-    //send refresh to all other clients
-    io.in(gameName).emit('server_response_playerList_refresh', activeGames[gameName].players)
+
+    //if game has started, return players hands to deck
+    if (activeGames[gameName].isStarted) {
+      console.log('tried to leave game')
+      console.log(activeGames[gameName].lastKnownHands)
+
+      //make new arr with selected cards
+      let cardsToReturn = [
+        ...activeGames[gameName].lastKnownHands[username].blind,
+        ...activeGames[gameName].lastKnownHands[username].open,
+      ]
+
+      //ignore request if nothing is selected
+      if (cardsToReturn.length >= 1) {
+
+        //unselect all selected cards
+        cardsToReturn.forEach(card => card.selected = false)
+
+        //return cards to deck
+        returnCards(gameName, cardsToReturn)
+
+        //delete player from activeGames
+      }
+    }
+    
+    //send message to game that player has left
+    io.in(gameName).emit('server_response_send_message', {
+      message: `${username} has left the game`,
+      username: "Server",
+      time: getTime()
+    })
+
+    if (activeGames[gameName].isStarted) {
+      io.in(gameName).emit('player_left', {
+        username,
+        playerList: activeGames[gameName].players
+      })
+    } else {
+      //refresh playerlist
+      io.in(gameName).emit('server_response_playerList_refresh', {playerList: activeGames[gameName].players})
+    }
+
+
+
+
   }
 
   return true

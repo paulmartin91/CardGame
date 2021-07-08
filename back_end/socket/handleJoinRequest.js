@@ -1,6 +1,7 @@
 //const { GameList } = require('../models/gameList')
 const activeGames = require('../common/games')
 const _ = require('lodash')
+const getTime = require('../common/getTime')
 
 const handleJoinGameRequest = socket => {
   socket.on('client request join game', async ({name, user, password}) => {
@@ -45,7 +46,12 @@ const handleJoinGameRequest = socket => {
     socket.emit('server response join game', {name, ..._.pick(game, ['players'] )})
     //send refresh to all clients
     socket.to(name).emit('server_response_playerList_refresh', game.players);
-
+    //send message to game that player has left
+    socket.to(name).emit('server_response_send_message', {
+      message: `${user.username} has joined the game`,
+      username: "Server",
+      time: getTime()
+    })
     // console.log(socket.rooms)
 
   })

@@ -7,7 +7,7 @@ import socket, {connectSocket} from '../Services/Socket/socket';
 import { getCurrentUser, logout } from '../Services/authservice';
 import leaveGame from '../Services/Socket/leaveGame'
 
-const GamePage = ({ history, username, playerList, messages, setMessages, setUsername }) => {
+const GamePage = ({ history, username, playerList, setPlayerList, messages, setMessages, setUsername }) => {
 
     const [numberOfCards, setNumberOfCards] = useState(1)
     const [hands, setHands] = useState(() => {
@@ -93,7 +93,14 @@ const GamePage = ({ history, username, playerList, messages, setMessages, setUse
             }
         })
 
-
+        socket.on("player_left", ({playerList, username}) => {
+            setPlayerList(playerList)
+            setHands(oldHands => {
+                let tempHands = {...oldHands}
+                delete tempHands[username]
+                return tempHands
+            })
+        })
     }, [])
 
     // //needs to be socket request
@@ -135,7 +142,10 @@ const GamePage = ({ history, username, playerList, messages, setMessages, setUse
                 <div className="w-25 border-right d-flex flex-column justify-content-between align-items-center"
                     style={{minWidth: 200}}
                 >
-                    <button onClick={() => socket.emit('client_request_test')}>TEST BUTTON</button>
+                    <button onClick={() => {
+                        //socket.emit('client_request_test')
+                        console.log(hands)
+                    }}>TEST BUTTON</button>
                     <GameTools
                         hands={hands}
                         number={numberOfCards}
