@@ -31,18 +31,22 @@ function CreateNewGame({handleSubmit, setCreateGameData, createGameData, errors,
                 <input 
                     type="number"
                     value={createGameData.maxPlayers}
-                    min={2}
-                    max={6}
                     style={{borderRadius: 0}} 
                     className="border form-control mt-2" 
-                    onChange={event => setCreateGameData({...createGameData, maxPlayers: event.target.value})} 
+                    onChange={event => {
+                        setCreateGameData({...createGameData, maxPlayers: event.target.value})
+                        setErrors({})
+                    }} 
                 /> 
                 <small 
                     className="form-text text-muted"
                 >
                     *password only required for private games
                 </small>
-                {errors && errors.name}
+                <small className="mt-2" style={{minHeight: 25, color: 'tomato'}}>
+                    {errors && errors.name}
+                    {errors && !errors.name && errors.maxPlayers}
+                </small>
                 <button 
                     type="submit" 
                     className="btn btn-primary mb-2 mt-2">Create Game

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Joi from 'joi-browser'
 
-const LoginForm = ({validate, styles, handleChange, handleSubmit, errors, loginData, loginSchema}) => 
+const LoginForm = ({validate, handleChange, handleSubmit, errors, loginData, loginSchema}) => 
 
     <div className="border d-flex flex-column align-items-start p-3 w-50" >
       <div className="w-100 px-3 pt-3">
@@ -35,7 +35,7 @@ const LoginForm = ({validate, styles, handleChange, handleSubmit, errors, loginD
               </div>
           </form>
       </div>
-      <div className="mt-2 pl-3" style={styles.errors}>
+      <div className="mt-2 pl-3" style={{minHeight: 25, color: 'tomato'}}>
           {errors && errors.loginUsername}
           {errors && !errors.loginUsername && errors.loginPassword}
       </div>

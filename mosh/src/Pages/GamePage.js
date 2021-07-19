@@ -143,8 +143,7 @@ const GamePage = ({ history, username, playerList, setPlayerList, messages, setM
                     style={{minWidth: 200}}
                 >
                     <button onClick={() => {
-                        //socket.emit('client_request_test')
-                        console.log(hands)
+                        socket.emit('client_request_test')
                     }}>TEST BUTTON</button>
                     <GameTools
                         hands={hands}

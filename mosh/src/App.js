@@ -97,7 +97,6 @@ const App = () => {
           playerList={playerList}
           render={(props) => 
             <GamePage 
-              // playerList={playerList}
               playerList={playerList}
               setPlayerList={setPlayerList}
               gameName={gameName}

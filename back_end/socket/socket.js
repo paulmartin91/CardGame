@@ -49,7 +49,7 @@ const connect = io => {
     handleShuffleDeckRequest(socket, io)
 
     //for client side testing of server
-    socket.on('client_request_test', () => console.log(activeGames.paulsgame.lastKnownHands.paul12))
+    socket.on('client_request_test', () => console.log(activeGames.paulsgame.lastKnownHands))
 
     //when a user disconnects to web socket
     socket.on('client_request_disconnect_reason', reason => {

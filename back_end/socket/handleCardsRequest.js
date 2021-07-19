@@ -58,7 +58,8 @@ const handlePlayCardsRequest = (socket, io) => {
     //send client their cards
 
     //copy new hand serverside
-    activeGames[gameName].lastKnownHands = {...activeGames[gameName].lastKnownHands[username], ...tempHandsPlayer}
+    activeGames[gameName].lastKnownHands = {...activeGames[gameName].lastKnownHands, ...tempHandsPlayer}
+
 
     socket.emit('server_response_play_cards', {
       hand: tempHandsPlayer

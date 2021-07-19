@@ -135,9 +135,9 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
 
     //schema for create game validation
     const createGameSchema = {
-        name: Joi.string().required(),
+        name: Joi.string().required().label('Name'),
         password: Joi.string().optional(),
-        maxPlayers: Joi.number().required()
+        maxPlayers: Joi.number().required().max(6).min(2)
     }
 
     //create game validation
@@ -174,14 +174,8 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
                 return
             }
             try {
-                //if all is well, create a new game
-                // const newGame = await createGame(createGameData, user.username)
-                // const gameName = newGame.name
-                //if (newGame) socket.emit('client request join game', {gameName, user, password})
                 const {name, password, maxPlayers} = createGameData
                 socket.emit('client request create game', {name, password, maxPlayers, user})
-                //join game
-                //socket.emit('client request join game', {name, user})
             } catch (ex) {
                 if (ex.response && ex.response.status === 400) {
                     const tempErrors = {...errors}
@@ -202,8 +196,7 @@ const GameSearch = ({history, setPlayerList, username, gameName, setGameName}) =
             </div>
             <div className="row">
                 <CreateNewGame 
-                    handleSubmit = {handleSubmit}
-                    createGameData = {createGameData}
+ListOfGames                    createGameData = {createGameData}
                     setCreateGameData = {setCreateGameData}
                     errors = {errors}
                     setErrors = {setErrors}

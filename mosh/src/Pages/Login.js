@@ -40,14 +40,6 @@ const Login = ({match, history, location, setUsername}) => {
         registerEmail: Joi.string().required()
     }
 
-    // const validate = isLogin => {
-    //     const { error } = Joi.validate(isLogin ? loginData : registerData, isLogin ? loginSchema : registerSchema)
-    //     if (!error) return null
-    //     const tempErrors = {}
-    //     error.details.forEach(item => tempErrors[item.path[0]] = item.message)
-    //     return tempErrors
-    // }
-
     const validateProperty = ({name, value}) => {
         //init the temp oject to validate
         const obj = {[name]: value}
@@ -120,7 +112,6 @@ const Login = ({match, history, location, setUsername}) => {
                     validate = {validate}
                     loginData = {loginData}
                     loginSchema = {loginSchema}
-                    styles = {styles}
                     handleChange = {handleChange}
                     handleSubmit = {handleSubmit}
                     errors = {errors}
@@ -130,7 +121,6 @@ const Login = ({match, history, location, setUsername}) => {
                     validate = {validate}
                     registerData = {registerData}
                     registerSchema = {registerSchema}
-                    styles = {styles}
                     handleChange = {handleChange}
                     handleSubmit = {handleSubmit}
                     errors = {errors}
@@ -139,13 +129,6 @@ const Login = ({match, history, location, setUsername}) => {
 
         </main>
     )
-}
-
-const styles = {
-    errors: {
-        minHeight: 25,
-        color: 'tomato'
-    }
 }
 
 export default Login;
